@@ -7,5 +7,5 @@ GET        /api/        controllers.Application.index()
 
 
 # The Webclient is static and resides in /public redirect all non-api calls there
-GET        /*foo        controllers.Application.assets(path="/public/mobile", file="index.html", foo)
-GET        /            controllers.Assets.at(path="/public/mobile", file="index.html")
+GET        /*foo        controllers.Application.assets(path="/public", file="index.html", foo)
+GET        /            controllers.Assets.at(path="/public", file="index.html")
