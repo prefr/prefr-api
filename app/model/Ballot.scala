@@ -1,9 +1,7 @@
 package model
 
 import play.api.libs.json._
-import helper.IdHelper
 import play.api.libs.functional.syntax._
-import scala.concurrent.{ExecutionContext, Future}
 import traits.Model
 
 /**
@@ -12,18 +10,23 @@ import traits.Model
  * Time: 6:54 PM
  */
 case class Ballot(
-                   ranking: List[String],
+                   ranking: Seq[String],
                    name: Option[String],
                    email: Option[String]
                    )
 
-object Ballot extends {
+object Ballot extends Model[Ballot] {
 
   def inputReads = (
-      (__ \ 'ballots).read[List[String]] and
-        (__ \ 'name).readNullable[String] and
-        (__ \ 'email).readNullable[String]
+    (__ \ 'ranking).read[Seq[String]] and
+      (__ \ 'name).readNullable[String] and
+      (__ \ 'email).readNullable[String]
     )(Ballot.apply _)
 
-//  def outputWrites: Writes[Ballot] =
+  def outputWrites = Writes[Ballot] {
+    b =>
+      Json.obj("ranking" -> Json.arr(b.ranking)) ++
+        toJsonOrEmpty("name", b.name) ++
+        toJsonOrEmpty("email", b.email)
+  }
 }

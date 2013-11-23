@@ -1,13 +1,14 @@
 package traits
 
 import play.api.libs.json._
-import play.api.libs.json.Reads._
 import java.text.SimpleDateFormat
+
 //import org.mindrot.jbcrypt.BCrypt
+
 import java.util.{TimeZone, Date}
+
 //import play.modules.reactivemongo.json.collection.JSONCollection
-import scala.concurrent.{ExecutionContext, Future}
-import ExecutionContext.Implicits.global
+
 
 /**
  * User: Björn Reimer
@@ -16,26 +17,22 @@ import ExecutionContext.Implicits.global
  */
 trait Model[A] {
 
-//  implicit val collection: JSONCollection
-//  implicit val mongoFormat: Format[A]
+  //  implicit val collection: JSONCollection
+  //  implicit val mongoFormat: Format[A]
 
-  def inputReads: Reads[A]
+  implicit def inputReads: Reads[A]
 
-  def outputWrites: Writes[A]
+  implicit def outputWrites: Writes[A]
 
   /**
    * Helper
    */
 
-  def toJson(model: A): JsValue = {
-    Json.toJson[A](model)(outputWrites)
-  }
-
-  def toJsonCustomWrites(model: A, writes: Writes[A]): JsValue = {
+  def toJson(model: A, writes: Writes[A]): JsValue = {
     Json.toJson[A](model)(writes)
   }
 
-  def   toJsonOrEmpty(key: String, value: Option[String]): JsObject = {
+  def toJsonOrEmpty(key: String, value: Option[String]): JsObject = {
     value match {
       case Some(s) => Json.obj(key -> JsString(s))
       case None => Json.obj()
@@ -60,10 +57,10 @@ trait Model[A] {
     Json.obj("lastUpdated" -> defaultDateFormat.format(date))
   }
 
-//  val hashPassword: Reads[String] = Reads[String] {
-//    js => js.asOpt[String] match {
-//      case None => JsError("No password")
-//      case Some(pass) => JsSuccess(BCrypt.hashpw(pass, BCrypt.gensalt()))
-//    }
-//  }
+  //  val hashPassword: Reads[String] = Reads[String] {
+  //    js => js.asOpt[String] match {
+  //      case None => JsError("No password")
+  //      case Some(pass) => JsSuccess(BCrypt.hashpw(pass, BCrypt.gensalt()))
+  //    }
+  //  }
 }

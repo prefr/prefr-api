@@ -3,10 +3,12 @@
 # ~~~~
 
 # API
-GET        /api/                controllers.Application.index()
+GET         /api/                        controllers.Application.index()
 
+# calculation without saving to db
+POST        /api/get_schulze_rank        controllers.directSchulze.direct()
 
 # The Webclient is static and resides in /public redirect all non-api calls there
-GET        /static/*file        controllers.Assets.at(path="/public/static", file)
-GET        /*foo                controllers.Application.assets(path="/public", file="index.html", foo)
-GET        /                    controllers.Assets.at(path="/public", file="index.html")
+GET         /static/*file                controllers.Assets.at(path="/public/static", file)
+GET         /*foo                        controllers.Application.assets(path="/public", file="index.html", foo)
+GET         /                            controllers.Assets.at(path="/public", file="index.html")

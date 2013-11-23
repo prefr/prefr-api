@@ -17,6 +17,9 @@ import play.api.Logger
 import ExecutionContext.Implicits.global
 import traits.Model
 
+
+import play.api.libs.json._
+
 /**
  * User: Björn Reimer
  * Date: 11/23/13
@@ -24,24 +27,24 @@ import traits.Model
  */
 case class BallotBox(
                       id: String,
-                      ballots: List[Ballot],
+                      ballots: Seq[Ballot],
                       title: Option[String]
                       )
 
-object BallotBox {
+object BallotBox extends Model[BallotBox]{
 
   def inputReads = (
     Reads.pure[String](IdHelper.generateBallotId()) and
-      (__ \ 'ballots).read[List[Ballot]](Reads.list(Ballot.inputReads)) and
+      (__ \ 'ballots).read[Seq[Ballot]] and
       (__ \ 'title).readNullable[String]
     )(BallotBox.apply _)
 
-//  def outputWrites = Writes[BallotBox] {
-//    b =>
-//      Json.obj("id" -> b.id) ++
-//        Json.obj("ballots" -> b.ballots) ++
-//        toJsonOrEmpty("title", b.title)
-//  }
+  def outputWrites = Writes[BallotBox] {
+    b =>
+      Json.obj("id" -> b.id) ++
+        Json.obj("ballots" -> Json.toJson(b.ballots)) ++
+        toJsonOrEmpty("title", b.title)
+  }
 
 }
 
