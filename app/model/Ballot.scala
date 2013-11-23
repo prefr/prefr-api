@@ -10,7 +10,7 @@ import traits.Model
  * Time: 6:54 PM
  */
 case class Ballot(
-                   ranking: Seq[String],
+                   ranking: Seq[Seq[String]],
                    name: Option[String],
                    email: Option[String]
                    )
@@ -18,14 +18,14 @@ case class Ballot(
 object Ballot extends Model[Ballot] {
 
   def inputReads = (
-    (__ \ 'ranking).read[Seq[String]] and
+    (__ \ 'ranking).read[Seq[Seq[String]]] and
       (__ \ 'name).readNullable[String] and
       (__ \ 'email).readNullable[String]
     )(Ballot.apply _)
 
   def outputWrites = Writes[Ballot] {
     b =>
-      Json.obj("ranking" -> Json.arr(b.ranking)) ++
+      Json.obj("ranking" -> Json.toJson(b.ranking)) ++
         toJsonOrEmpty("name", b.name) ++
         toJsonOrEmpty("email", b.email)
   }

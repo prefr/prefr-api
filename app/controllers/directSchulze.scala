@@ -3,16 +3,13 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.{Json, JsError, JsValue}
 import model.BallotBox
+import helper.Schulze
 
 /**
  * User: Björn Reimer
  * Date: 11/23/13
  * Time: 8:24 PM
  */
-class directSchulze {
-
-}
-
 
 object directSchulze extends Controller {
 
@@ -23,7 +20,11 @@ object directSchulze extends Controller {
 
       jsBody.validate[BallotBox].fold (
             invalid = e => BadRequest(JsError.toFlatJson(e)),
-            valid = b => Ok(Json.toJson(b))
+            valid = b => {
+              //val ranking = Schulze.getRanking(b.ballots.toList)
+
+              Ok(Json.toJson(b))
+            }
       )
   }
 }
