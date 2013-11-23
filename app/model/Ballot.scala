@@ -4,6 +4,7 @@ import play.api.libs.json._
 import helper.IdHelper
 import play.api.libs.functional.syntax._
 import scala.concurrent.{ExecutionContext, Future}
+import traits.Model
 
 /**
  * User: Björn Reimer
@@ -24,4 +25,5 @@ object Ballot extends {
         (__ \ 'email).readNullable[String]
     )(Ballot.apply _)
 
+//  def outputWrites: Writes[Ballot] =
 }

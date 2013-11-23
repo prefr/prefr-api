@@ -1,3 +1,5 @@
+package traits
+
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import java.text.SimpleDateFormat
@@ -33,7 +35,7 @@ trait Model[A] {
     Json.toJson[A](model)(writes)
   }
 
-  def toJsonOrEmpty(key: String, value: Option[String]): JsObject = {
+  def   toJsonOrEmpty(key: String, value: Option[String]): JsObject = {
     value match {
       case Some(s) => Json.obj(key -> JsString(s))
       case None => Json.obj()

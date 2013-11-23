@@ -15,6 +15,7 @@ import play.api.libs.functional.syntax._
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logger
 import ExecutionContext.Implicits.global
+import traits.Model
 
 /**
  * User: Björn Reimer
@@ -39,11 +40,7 @@ object BallotBox {
 //    b =>
 //      Json.obj("id" -> b.id) ++
 //        Json.obj("ballots" -> b.ballots) ++
-//        Json.obj("title" -> m.messageBody) ++
-//        Json.obj("from" -> m.from) ++
-//        Recipient.toSortedJsonObjectOrEmpty("recipients", m.recipients)(OutputLimits(0,0)) ++
-//        Asset.toSortedJsonObjectOrEmpty("assets", m.assets) ++
-//        addCreated(m.created)
+//        toJsonOrEmpty("title", b.title)
 //  }
 
 }
