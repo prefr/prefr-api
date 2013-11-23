@@ -1,0 +1,44 @@
+<div>
+	<ul class="ballots">
+		<li 
+			class			=	"ballot"
+			ng-repeat		=	"ballot in ballots"
+			ng-controller	=	"BallotListItemCtrl"
+		>
+			<button ng-click = "toggleEdit()">edit</button>
+
+			<div ng-hide = "edit">
+				<input
+					type		=	"text"
+					ng-model	=	"ballot.participant"
+				>
+				<span
+					ng-repeat	=	"level in ballot.ranking"
+				>
+					<span
+						ng-repeat	=	"option in level"
+					>
+						{{option}}
+					</span>
+				</span>					
+			</div>
+			<div
+				ng-show	=	"edit"
+			>
+				<a href="#/ballot/{{ballotId}}">Details</a>
+			</div>
+		</li>
+
+	</ul>
+	<button
+		ng-click	=	"addBallot()"
+	>
+		Add Ballot
+	</button>
+
+	<button
+		ng-click	=	"submit()"
+	>
+		submit
+	</button>
+</div>	
