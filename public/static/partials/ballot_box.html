@@ -1,32 +1,42 @@
 <div>
-	<ul class="ballots">
+	Ballot box {{id}}:
+	<ul
+		class	=	"ballot-box"
+	>
 		<li 
-			class			=	"ballot"
-			ng-repeat		=	"ballot in ballots"
-			ng-controller	=	"BallotListItemCtrl"
+			class			=	"ballot-paper"
+			ng-repeat		=	"paper in papers"
 		>
-			<button ng-click = "toggleEdit()">edit</button>
+			<button 
+				ng-click	=	"quickEdit(paper.id)"
+			>
+				edit
+			</button>
 
-			<div ng-hide = "edit">
+			<!-- normal mode -->
+			<div ng-hide = "quick_edit == paper.id">
 				<input
 					type		=	"text"
-					ng-model	=	"ballot.participant"
+					ng-model	=	"paper.participant"
 				>
 				<span
-					ng-repeat	=	"level in ballot.ranking"
+					ng-repeat	=	"rank in paper.ranking"
 				>
 					<span
-						ng-repeat	=	"option in level"
+						ng-repeat	=	"option in rank"
 					>
 						{{option}}
 					</span>
 				</span>					
 			</div>
+
+			<!-- quick edit mode -->
 			<div
-				ng-show	=	"edit"
+				ng-hide	=	"quick_edit != paper.id"
 			>
-				<a href="#/ballot/{{ballotId}}">Details</a>
+				<a href="#/ballot_paper/{{paper.id}}">Details</a>
 			</div>
+
 		</li>
 
 	</ul>
@@ -36,9 +46,7 @@
 		Add Ballot
 	</button>
 
-	<button
-		ng-click	=	"submit()"
-	>
-		submit
-	</button>
+	<a href="#/evaluate/{{box_id}}">
+		Auswertung
+	</a>
 </div>	

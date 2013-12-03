@@ -1,59 +1,72 @@
 var schulzeDoodleControllers = angular.module('schulzeDoodleControllers', []);
  
+
 schulzeDoodleControllers.controller(
+
 	'BallotBoxCtrl', 
 	[
 		'$scope', 
 		'$http',
-		function ($scope, $http) {
-			$scope.ballots 		=	[
-										{
-											participant	:	"user1",
-											ranking		:	[["A"], ["B", "C"]]
-										},
-										{
-											participant	:	"user2",
-											ranking		:	[["B"], ["C", "A"]]
+		'$routeParams',
+		'Ballot',
+		function ($scope, $http, $routeParams, Ballot) {
+
+			angular.extend($scope, Ballot.getBallotBox($routeParams.box_id))
+
+			$scope.addBallot		=	function() {
+											paper	=	{
+															participant	:	"unnamed",
+															ranking		:	[["A", "C"], ["B"]]
+														}
+
+											$scope.papers.push(Ballot.addBallotPaper(paper))
 										}
-									]
-
-			$scope.newBallot	=	function() {
-										ballot	=	{
-														participant	:	"unnamed",
-														ranking		:	[]
-													}									
-										$scope.ballots.push(ballot)
-									}
-
-			$scope.submit		=	function(){
-										$http.post('/api/get_schulze_rank', {
-											"ballots"	:	$scope.ballots
-										})
-									}
+			$scope.quickEdit		=	function(paper_id) {
+											$scope.quick_edit = paper_id
+										}
 		}
 	]
 )
 
 schulzeDoodleControllers.controller(
+
 	'BallotListItemCtrl', 
 	[
 		'$scope', 
 		function($scope) {
 			$scope.edit			=	false
 			$scope.toggleEdit	=	function(){
-										$scope.edit	=	!$scope.edit
+										$scope.quick_edit	=	!$scope.quick_edit
 									}
 		}
 	]
 )
 
 schulzeDoodleControllers.controller(
-	'BallotCtrl', 
+
+	'BallotPaperCtrl',
 	[
 		'$scope', 
+		'$http',
 		'$routeParams',
-		function($scope, $routeParams) {
-			$scope.ballotId = $routeParams.ballotId;
+		'Ballot',
+		function ($scope, $http, $routeParams, Ballot) {
+
+			angular.extend($scope, Ballot.getBallotPaper($routeParams.paper_id))
+
+			$scope.addBallot		=	function() {
+											paper	=	{
+															participant	:	"unnamed",
+															ranking		:	[["A", "C"], ["B"]]
+														}
+
+											$scope.papers.push(Ballot.addBallotPaper(paper))
+										}
+			$scope.quickEdit		=	function(paper_id) {
+											$scope.quick_edit = paper_id
+										}
 		}
 	]
+
 )
+
