@@ -6,27 +6,19 @@ schulzeDoodleControllers.controller(
 	'BallotBoxCtrl', 
 	[
 		'$scope', 
-		'$http',
 		'$routeParams',
-		'Ballot',
-		function ($scope, $http, $routeParams, Ballot) {
-
-			angular.extend($scope, Ballot.getBallotBox($routeParams.box_id))
-
-			$scope.addBallot		=	function() {
-											paper	=	{
-															participant	:	"unnamed",
-															ranking		:	[["A", "C"], ["B"]]
-														}
-
-											$scope.papers.push(Ballot.addBallotPaper(paper))
-										}
-			$scope.quickEdit		=	function(paper_id) {
-											$scope.quick_edit = paper_id
-										}
+		function ($scope, $routeParams) {
+			$scope.box_id = $routeParams.box_id			
 		}
 	]
 )
+
+
+schulzeDoodleControllers.directive('ballotbox',		HTMLballotbox)
+schulzeDoodleControllers.directive('ballotAdd',		HTMLballotAdd)
+schulzeDoodleControllers.directive('ballotpaper',	HTMLballotpaper)
+
+
 
 schulzeDoodleControllers.controller(
 

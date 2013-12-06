@@ -6,6 +6,38 @@ var schulzeDoodle   =   angular.module(
                             ]
                         )
 
+schulzeDoodle.config([
+    '$routeProvider',
+    function($routeProvider) {
+        $routeProvider
+        .when(
+            '/ballot_box/:box_id',
+            {
+                templateUrl :   'static/partials/ballot_box/index.html',
+                controller  :   'BallotBoxCtrl'
+            }
+        )
+        .when(
+            '/ballot_paper/:paper_id', 
+            {
+                templateUrl :   'static/partials/polling_booth.html',
+                controller  :   'BallotPaperCtrl'
+            }
+        )
+        .when(
+            '/evaluate/:box_id',
+            {
+                templateUrl :   'static/partials/evalation.html',
+                controller  :   'EvaluationCtrl'
+            }
+        )
+        .otherwise({
+            redirectTo: '/ballot_box/1'
+        })
+    }
+])
+
+
 schulzeDoodle.service(
     'Ballot',
     [
@@ -16,6 +48,7 @@ schulzeDoodle.service(
                                             //dummy:
                                             return  {
                                                         id      :   1,
+                                                        subject :   "Beispiel",
                                                         options :   [this.getOption("A"), this.getOption("B"), this.getOption("C")], 
                                                         papers  :   [this.getBallotPaper(1), this.getBallotPaper(2)]
                                                     }
@@ -58,33 +91,5 @@ schulzeDoodle.service(
     ]
 )
 
-schulzeDoodle.config([
-    '$routeProvider',
-    function($routeProvider) {
-        $routeProvider
-        .when(
-            '/ballot_box/:box_id',
-            {
-                templateUrl :   'static/partials/ballot_box.html',
-                controller  :   'BallotBoxCtrl'
-            }
-        )
-        .when(
-            '/ballot_paper/:paper_id', 
-            {
-                templateUrl :   'static/partials/ballot_paper.html',
-                controller  :   'BallotPaperCtrl'
-            }
-        )
-        .when(
-            '/evaluate/:box_id',
-            {
-                templateUrl :   'static/partials/evalation.html',
-                controller  :   'EvaluationCtrl'
-            }
-        )
-        .otherwise({
-            redirectTo: '/ballot_box/1'
-        })
-    }
-])
+
+
