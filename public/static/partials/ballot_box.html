@@ -1,0 +1,39 @@
+<section>		
+	<ballotbox ballot-box-id = "{{box_id}}">
+		<h3>{{ballotbox.subject}} ({{id}})</h3>
+
+		<ballotpaper ng-repeat = "paper in ballotbox.papers">
+
+			<participant ng-switch = "quick_edit">				
+				<input 
+					ng-switch-when = "true"
+					ng-model = "paper.participant"
+				/>
+				<span ng-switch-when = "false"> {{paper.participant}} </span>
+			</participant>
+
+			<br/>
+
+			<div class = "controls">
+				<button ng-click="quickEdit()">	edit </button>
+
+				<button ng-click="removeBallotPaper(paper.id)">	del	</button>
+
+				<a href="#/polling_booth/{{paper.id}}"> details	</a>
+			</div>
+
+			<ranking>
+				<rank ng-repeat	= "rank in paper.ranking">
+					<option ng-repeat = "option in rank"> {{option}} </option>
+				</rank>
+			</ranking>
+
+		</ballotpaper>	
+
+	</ballotbox>
+
+	<button ballot-box-add = "{{box_id}}"> Add Ballot </button>
+
+	<a href="#/evaluate/{{box_id}}"> Auswertung </a>
+
+</section>	

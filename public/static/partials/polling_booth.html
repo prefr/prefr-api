@@ -1,0 +1,25 @@
+<section>
+	<ballotpaper
+		ballot-paper-id = "{{paper_id}}"
+	>
+		<participant>				
+			<input ng-model = "paper.participant"/>		
+		</participant>
+
+		<div class = "controls">
+			<button	ng-click="updateBallotPaper()"> update </button>		
+		</div>
+
+		<ranking>
+			<rank ng-repeat	= "rank in paper.ranking"	>
+				<ballotoption	ng-repeat = "option_id in rank">
+					<div>
+						{{options[option_id].title}}
+					</div>
+					{{options[option_id].details}}
+				</ballotoption>
+			</rank>
+		</ranking>
+
+	</ballotpaper>
+</section>
