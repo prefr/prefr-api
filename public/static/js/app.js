@@ -18,13 +18,6 @@ schulzeDoodle.config([
             }
         )
         .when(
-            '/polling_booth/:paper_id', 
-            {
-                templateUrl :   'static/partials/polling_booth.html',
-                controller  :   'BallotPaperCtrl'
-            }
-        )
-        .when(
             '/evaluate/:box_id',
             {
                 templateUrl :   'static/partials/evalation.html',
@@ -37,13 +30,10 @@ schulzeDoodle.config([
     }
 ])
 
+schulzeDoodle.directive('singleSelect',         HTMLsingleSelect)
+schulzeDoodle.directive('selectAs',             HTMLselectAs)
 
-schulzeDoodle.service('Ballot', ['$http', '$q', '$rootScope', Ballot])
-
-schulzeDoodle.directive('Ballot', 'ballotbox',     HTMLballotbox)
-schulzeDoodle.directive('Ballot', 'ballotpaper',   HTMLballotpaper)
-
-schulzeDoodle.directive('ranking',          HTMLranking)
-schulzeDoodle.directive('rank',             HTMLrank)
-schulzeDoodle.directive('ballotoption',     HTMLballotoption)
+schulzeDoodle.directive('preferenceRanking',    HTMLpreferenceRanking)
+schulzeDoodle.directive('preferenceRank',       HTMLpreferenceRank)
+schulzeDoodle.directive('preferenceOption',     HTMLpreferenceOption)
 

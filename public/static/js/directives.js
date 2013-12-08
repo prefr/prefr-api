@@ -1,125 +1,75 @@
-function HTMLballotbox() {
+function HTMLsingleSelect() {
 	return	{
-				restrict	:	'E',
+				restrict	:	'A',
+
 				link		:	function(scope, element, attrs, controller) {
-									scope.getData(attrs.ballotBoxId)
-
-									$(document).on('click', '[ballot-box-add="'+attrs.ballotBoxId+'"]', function () {
-										scope.$apply(scope.addBallotPaper)
-									})
-
-									scope.$on('quick_edit', function(event, origin) {										
-										if(scope != event.targetScope) scope.$broadcast('quick_edit', origin)
-									})
 
 								},
 
-				controller	:	function($scope, Ballot) {
-									$scope.ballotbox = {}
-
-									$scope.getData = function(box_id) {
-										Ballot.getBallotBox(box_id)
-										.then(function(ballotbox){
-											$scope.ballotbox = ballotbox
-										})
-									}											
-
-									$scope.addBallotPaper = function() {
-										proposed_paper	=	{
-																participant	:	"unnamed",
-																ranking		:	[["A", "C"], ["B"]]
-															}
-
-										$scope.ballotbox.papers = $scope.ballotbox.papers || []
-
-										Ballot
-										.addBallotPaper(proposed_paper)
-										.then(function(paper){
-											$scope.ballotbox.papers.push(paper)	
-										})
-										
-									}
-
-									$scope.removeBallotPaper = function(paper_id) {																											
-										$scope.ballotbox.papers = $scope.ballotbox.papers || []
-
-										$.each($scope.ballotbox.papers, function(index, paper){
-											if(paper.id == paper_id){
-												Ballot
-												.removeBallotPaper(paper.id)
-												.then(function(){
-													$scope.ballotbox.papers.splice(index,1)
-													//remove further ballot papers (although there should be none left)
-													$scope.removeBallotPaper(paper_id)
-												})
-												return(false)
-											}
-										})													
-									}								
-								}
-			}		
-}
-
-
-
-function HTMLballotpaper() {
-	return	{
-				restrict	:	'E',
-
-				link		:	function(scope, element, attrs, controller) {
-									scope.$on('quick_edit_echo', function(event, origin){
-										if(scope != origin) scope.unsetQuickEdit()
+				controller	:	function($scope) {					
+									$scope.$on('select', function(event, origin){																	
+										if(event.targetScope != $scope) {											
+											$scope.selected = origin
+											$scope.select($scope.selected)	
+										}
 									})
 
-									if(!scope.paper) scope.getData(attrs.ballotPaperId)
-								},
+									$scope.$on('deselect', function(event, origin){																	
+										if(event.targetScope != $scope) {
+											$scope.selected = undefined
+											$scope.select($scope.selected)
+										}
+									})
 
-				controller	:	function($scope, Ballot) {
-									$scope.quick_edit = false									
-
-									$scope.getData = function(paper_id) {														
-										Ballot.getBallotPaper(paper_id)
-										.then(function(paper){
-											$scope.paper = paper
-											Ballot.getBallotBoxOptions(paper.box_id)
-											.then(function(options){
-												$scope.options = options
-											})
-										})
-									}	
-
-									$scope.setQuickEdit = function() {
-										$scope.quick_edit = true										
-									}
-
-									$scope.unsetQuickEdit = function() {
-										$scope.quick_edit = false										
-									}
-
-									$scope.quickEdit = function() {			
-										$scope.setQuickEdit()																	
-										$scope.$emit('quick_edit', $scope)
-									}
-
-									$scope.updateBallotPaper = function() {
-										$scope.$emit('paper_update', $scope)
+									$scope.select = function(target) {										
+										$scope.$broadcast('select', target)
 									}
 								}
 
-			}		
+			}
+
 }
 
-function HTMLranking() {
+function HTMLselectAs() {
+	return	{
+				restrict	:	'A',
+
+				link		:	function(scope, element, attrs, controller) {
+
+								},
+
+				controller	:	function($scope, $element, $attrs) {																		
+									$scope.selected = false
+
+									$scope.$on('select', function(event, origin) {										
+										$scope.selected =  (origin == $attrs.selectAs)
+									})
+
+									$scope.select = function() {
+										$scope.$emit('select', $attrs.selectAs)
+									}
+
+									$scope.deselect = function() {
+										$scope.$emit('deselect', $attrs.selectAs)
+									}
+
+								}
+
+			}
+}
+
+
+function HTMLpreferenceRanking() {
 	return	{
 				restrict	:	'E',
 
-				link		:	function(scope, element, attr, controller){
+				link		:	function(scope, element, attr, controller) {
 									element.css({
 										'position'		:	'relative'
 									})
 
 									
-									element.on('mousemove', function(event){
+									$(document).on('mousemove', element, function(event) {
 										if(scope.dragged_element){											
 											scope.dragged_element.css({
 												'top'	:	event.pageY-element.offset().top-scope.dragged_element.outerHeight()/2
@@ -131,16 +81,19 @@ function HTMLranking() {
 				controller	:	function($scope){
 
 									this.addRank = function(rank) {																		
-										rank.on('mouseenter', function(){
+										rank.on('mouseenter', function() {
 											if($scope.dummy){
 												$scope.dummy.appendTo(rank)
 											}
 										})
 									}
 
-									this.startDragging = function(element){
+									this.startDragging = function(element) {
 										$scope.dragged_element = element
-										if($scope.dummy) $scope.dummy.remove()
+										if($scope.dummy){
+											$scope.dummy.remove()
+											delete $scope.dummy
+										}
 										$scope.dummy	=	element
 															.clone()
 															.removeClass('dragged')
@@ -149,17 +102,21 @@ function HTMLranking() {
 									}
 
 									this.drop = function(element){
-										$scope.dragged_element = undefined
-										if($scope.dummy) $scope.dummy.remove()
+										$scope.dummy.replaceWith($scope.dragged_element)
+										delete $scope.dragged_element
+										if($scope.dummy) {
+											$scope.dummy.remove()
+											delete $scope.dummy
+										}
 									}
 								}
 			}
 }
 
-function HTMLrank() {
+function HTMLpreferenceRank() {
 	return	{
 				restrict	:	'E',
-				require		:	'^ranking',
+				require		:	'^preferenceRanking',
 
 				link		:	function(scope, element, attrs, rankingCtrl) {				
 									rankingCtrl.addRank(element)				
@@ -168,51 +125,41 @@ function HTMLrank() {
 }
 
 
-function HTMLballotoption() {
+function HTMLpreferenceOption() {
 	return	{
 				restrict	:	'E',
-				require		:	'^ranking',
+				require		:	'^preferenceRanking',
 
 				link		:	function(scope, element, attrs, rankingCtrl){
 
 									function startDragging() {
 										window.getSelection().removeAllRanges()
-										element.css({
-											
-										})	
 
 										element.addClass('dragged')										
 										rankingCtrl.startDragging(element)
 									}
 
-									function drag(event) {
-										
-									}
-
 									function drop() {
 										window.clearTimeout(scope.wait_for_it)
+										delete scope.wait_for_it
 
-										element.css({
-										})	
-
-										element.removeClass('dragged')
-										rankingCtrl.drop(element)
+										if(scope.dragging){
+											scope.dragging = false
+											element.removeClass('dragged')
+											rankingCtrl.drop()
+										}
 									}
 
-									element.on('mousedown', function(){
-										if(scope.wait_For_it) return(false)
-
+									element.on('mousedown', function(event) {
 										scope.wait_for_it	=	window.setTimeout(function() {
-																	//scope.dragging = true
+																	scope.dragging = true
 																	startDragging()
-																	
-																	
-																}, 500);
+																}, 400);
+										event.preventDefault()
+										event.stopImmediatePropagation()										
 									})
 									
-									$(document).on('mouseup click', function(){										
-										drop()
-									})
+									$(document).on('mouseup click', drop)
 								},
 
 				controller	:	function($scope){

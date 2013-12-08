@@ -1,38 +1,38 @@
-<section>		
-	<ballotbox ballot-box-id = "{{box_id}}">
-		<h3>{{ballotbox.subject}} ({{id}})</h3>
+<section>			
+	<div
+		class			=	"ballot-box {{selected ? 'selected' : ''}}"
+		single-select	=	"true"		
+	>
+		<h3>{{ballot_box.subject}} ({{ballot_box.id}})</h3>
 
-		<ballotpaper ng-repeat = "paper in ballotbox.papers">
-
-			<participant ng-switch = "quick_edit">				
+		<div
+			class		=	"ballot-paper {{selected ? 'selected' : ''}}" 
+			ng-repeat	=	"paper in ballot_box.papers"
+			select-as	=	"{{paper.id}}"						
+		>
+			<div class="participant">				
 				<input 
-					ng-switch-when = "true"
-					ng-model = "paper.participant"
+					ng-model 		= "paper.participant"
 				/>
-				<span ng-switch-when = "false"> {{paper.participant}} </span>
-			</participant>
-
-			<br/>
-
+				<span> {{paper.participant}} </span>				
+			</div>
 			<div class = "controls">
-				<button ng-click="quickEdit()">	edit </button>
-
-				<button ng-click="removeBallotPaper(paper.id)">	del	</button>
-
-				<a href="#/polling_booth/{{paper.id}}"> details	</a>
+				<button ng-click = "select()"> 	select	</button>
+				<button ng-click = "deselect()"> 	deselect	</button>
+				<button ng-click = "removeBallotPaper(paper.id)"> 	del		</button>
 			</div>
 
-			<ranking>
-				<rank ng-repeat	= "rank in paper.ranking">
-					<option ng-repeat = "option in rank"> {{option}} </option>
-				</rank>
-			</ranking>
+			<preference-ranking >
+				<preference-rank ng-repeat	= "rank in paper.ranking">
+					<preference-option ng-repeat = "option in rank"> {{option}} </preference-option>
+				</preference-rank>
+			</preference-ranking>
 
-		</ballotpaper>	
+		</div>	
 
-	</ballotbox>
+	</div>
 
-	<button ballot-box-add = "{{box_id}}"> Add Ballot </button>
+	<button ng-click = "addBallotPaper()"> Add Ballot </button>
 
 	<a href="#/evaluate/{{box_id}}"> Auswertung </a>
 

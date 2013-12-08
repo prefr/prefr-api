@@ -11,114 +11,95 @@ body {
 
 /* Ballot Box */
 
-ballotbox {
+.ballot-box {
 	display:				block;
-	box-shadow: 			0 0.1em 0.2em rgba(0,0,0,0.3);
 	margin: 				1em 10%;
-	border-radius: 			0.5em;
 	padding:				0em;
+	white-space: 			nowrap;
 }
 
-ballotbox ballotpaper {
-	display:				block;
+.ballot-box .ballot-paper {
+	display:				inline-block;
 	position: 				relative;
+	width: 					8em;
 	margin:					0;
 	padding: 				0.5em;
 	overflow: 				hidden;
+	text-align: 			center;
+	white-space: 			normal;
+	transition-property:	font-size;
+	transition-duration:	100ms;
 }
 
-ballotbox ballotpaper participant {
+.ballot-box.selected .ballot-paper {
+	font-size: 				0.5em;
+	opacity:				0.5;
+	vertical-align: 		top;
+}
+
+.ballot-box.selected .ballot-paper.selected {
+	font-size: 				2em;
+	opacity: 				1;
+}
+
+.ballot-box .ballot-paper participant {
 	display: 				block;
-	width: 					7.5em;
-	float: 					left;
 }
 
-ballotbox ballotpaper participant input,
-ballotbox ballotpaper participant span {
+.ballot-box .ballot-paper participant input,
+.ballot-box .ballot-paper participant span {
 	display:				block;
-	width: 					100%;
 	font-size:				1em;	
 	border:					none;
 	padding	:				0;
 	margin:					0;
 }
 
-ballotbox ballotpaper .controls {
+.ballot-box .ballot-paper .controls {
 	display: 				block;
-	width: 					10em;
-	float: 					left;
 }
 
 
-ballotbox ballotpaper ranking {
+
+
+
+
+preference-ranking {
 	display: 				inline-block;
+	background: 			#ccc;
 }
 
-ballotbox ballotpaper ranking rank {
+preference-ranking preference-rank {
 	display: 				inline-block;
-	width:					5em;
-	border-radius: 			1em;	
-	box-shadow: 			0 0.1em 0.2em rgba(0,0,0,0.3) inset, 0 0.1em 1px rgba(255, 255, 255, 0.5);
 	background: 			#aaa;
-	margin:					0 0.1em;
+	margin:					0.5em 0em;
 	overflow:				hidden;
 	padding:				0em 0.5em;
-	vertical-align: 		middle;
+	vertical-align: 		middle;	
 }
 
-ballotbox ballotpaper ranking rank ballotoption {
+preference-ranking preference-rank:hover{
+	background: 			#666;
+}
+
+preference-ranking preference-rank preference-option {
 	display:				block;
 	min-height: 			3em;
+	width: 					4em;
 	padding: 				0.5em;
-	border-radius: 			0.3em;
-	margin: 				0.1em 0.2em;
-	box-shadow: 			0 0.1em 0.2em rgba(0,0,0,0.3);
-	background-color:		rgba(200, 255, 155,0.8);
-	background-image: 		-moz-linear-gradient(top, rgba(255,255,255,0.3), rgba(0,0,0,0.1));
+	margin: 				0.1em 0.2em;	
+	background-color:		rgba(200, 255, 155,0.8);	
+	cursor: 				pointer;
 }
 
-
-/* Ballot Paper alone */
-
-ballotpaper {
-	display: 				block;
-	margin: 				1em 10%;
+preference-ranking preference-rank preference-option.dragged {
+	position: 				absolute;
+	opacity: 				0.8;
+	box-shadow: 			0 0 1em rgba(0,0,0,0.6);
+	pointer-events:			none;
 }
 
-ballotpaper ranking {
-	display:				block;
-	max-width:				800px;
-}
-
-ballotpaper ranking rank {
-	display: 				block;
-	margin: 				0.5em 0;
-	border-radius: 			1em;	
-	box-shadow: 			0 0.1em 0.2em rgba(0,0,0,0.3) inset, 0 0.1em 1px rgba(255, 255, 255, 0.5);
-	background: 			#aaa;
-	padding: 				0.5em 0.2em;
-}
-
-ballotpaper ranking rank ballotoption {
-	display:				block;
-	margin: 				0.2em;
-	background-color: 		#9e8;
-	padding:				0.25em;
-	border-radius: 			0.5em;
-	box-shadow: 			0 0.1em 0.2em rgba(0,0,0,0.3);
-}
-
-ballotpaper ranking rank ballotoption div {
-	display: 				block;
-}
-
-
-ranking rank ballotoption.dragged {
-	position:				absolute;
-	opacity:				0.75;
-	pointer-events:			none;	
-}
-
-ranking rank ballotoption.dummy{
+preference-ranking preference-rank preference-option.dummy {
 	background-color: 		#000;
 }
+
