@@ -42,13 +42,13 @@ schulzeDoodleControllers.controller(
 							                                id          :   1,
 							                                box			:	1,
 							                                participant :   "user1",
-							                                ranking     :   [["A"], ["B", "C"]]
+							                                ranking     :   [["A"], ["B", "C"], ["D", "E", "F"]]
 							                            },
 							                            {
 							                                id          :   2,
 							                                box			:	1,
 							                                participant :   "user2",
-							                                ranking     :   [["B"], ["C", "A"]]
+							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            }
 							                        ]
 									}

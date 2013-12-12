@@ -24,9 +24,9 @@ body {
 	width: 					8em;
 	margin:					0;
 	padding: 				0.5em;
-	overflow: 				hidden;
 	text-align: 			center;
-	white-space: 			normal;
+	white-space: 			normal;	
+	vertical-align: 		top;
 	transition-property:	font-size;
 	transition-duration:	100ms;
 }
@@ -42,17 +42,19 @@ body {
 	opacity: 				1;
 }
 
-.ballot-box .ballot-paper participant {
+.ballot-box .ballot-paper .participant {
 	display: 				block;
 }
 
-.ballot-box .ballot-paper participant input,
-.ballot-box .ballot-paper participant span {
-	display:				block;
+.ballot-box .ballot-paper .participant input,
+.ballot-box .ballot-paper .participant span {
+	display:				inline-block;
+	width: 					100%;
 	font-size:				1em;	
 	border:					none;
 	padding	:				0;
 	margin:					0;
+	text-align: 			center;
 }
 
 .ballot-box .ballot-paper .controls {
@@ -67,16 +69,32 @@ body {
 preference-ranking {
 	display: 				inline-block;
 	background: 			#ccc;
+	padding: 				0.5em;
+	overflow:				visible;	
 }
 
 preference-ranking preference-rank {
 	display: 				inline-block;
 	background: 			#aaa;
-	margin:					0.5em 0em;
-	overflow:				hidden;
+	margin:					1.5em 0em;
 	padding:				0em 0.5em;
-	vertical-align: 		middle;	
+	vertical-align: 		middle;		
+	overflow:				hidden;
+
 }
+
+preference-ranking preference-rank.ng-enter{
+	height: 				0em;
+	min-height:				0em;
+	transition-duration:	200ms;
+}
+
+preference-ranking preference-rank.ng-enter-active{
+	min-height: 			3em;
+}
+
+
+
 
 preference-ranking preference-rank:hover{
 	background: 			#666;
@@ -96,10 +114,9 @@ preference-ranking preference-rank preference-option.dragged {
 	position: 				absolute;
 	opacity: 				0.8;
 	box-shadow: 			0 0 1em rgba(0,0,0,0.6);
-	pointer-events:			none;
+	z-index: 				10;
 }
 
 preference-ranking preference-rank preference-option.dummy {
 	background-color: 		#000;
 }
-

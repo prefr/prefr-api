@@ -17,14 +17,23 @@
 				<span> {{paper.participant}} </span>				
 			</div>
 			<div class = "controls">
-				<button ng-click = "select()"> 	select	</button>
+				<button ng-click = "select()">		select		</button>
 				<button ng-click = "deselect()"> 	deselect	</button>
 				<button ng-click = "removeBallotPaper(paper.id)"> 	del		</button>
 			</div>
 
-			<preference-ranking >
-				<preference-rank ng-repeat	= "rank in paper.ranking">
-					<preference-option ng-repeat = "option in rank"> {{option}} </preference-option>
+			<preference-ranking
+				ranking-data		=	"paper.ranking"
+				ranking-orientation	=	"horizontal"
+			>
+				<preference-rank ng-repeat	= "rank in rankingData">
+					Rank
+					<preference-option 
+						ng-repeat	=	"option_id in rank"
+						value		=	"{{option_id}}"
+					>
+						{{ballot_box.options[option_id].title}}
+					</preference-option>
 				</preference-rank>
 			</preference-ranking>
 
