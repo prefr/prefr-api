@@ -26,15 +26,15 @@
 				ranking-data		=	"paper.ranking"
 				ranking-orientation	=	"horizontal"
 			>
-				<preference-rank ng-repeat	= "rank in rankingData">
-					Rank
+				
 					<preference-option 
 						ng-repeat	=	"option_id in rank"
 						value		=	"{{option_id}}"
 					>
-						{{ballot_box.options[option_id].title}}
-					</preference-option>
-				</preference-rank>
+						<header> {{ballot_box.options[option_id].title}} </header>
+						<p>{{ballot_box.options[option_id].details}}</p>
+					</preference-option>	
+				
 			</preference-ranking>
 
 		</div>	

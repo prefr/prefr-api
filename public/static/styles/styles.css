@@ -64,6 +64,8 @@ body {
 
 
 
+/**prefernce ranking directive**/
+
 
 
 preference-ranking {
@@ -73,50 +75,92 @@ preference-ranking {
 	overflow:				visible;	
 }
 
-preference-ranking preference-rank {
+preference-rank {	
 	display: 				inline-block;
 	background: 			#aaa;
-	margin:					1.5em 0em;
-	padding:				0em 0.5em;
-	vertical-align: 		middle;		
-	overflow:				hidden;
-
+	margin:					0em;
+	padding:				0;
+	vertical-align: 		middle;
+	text-align:				center;	
+	width: 					6em;
+	transition-duration:	600ms;
 }
 
-preference-ranking preference-rank.ng-enter{
-	height: 				0em;
-	min-height:				0em;
-	transition-duration:	200ms;
+preference-rank.shadow {		
+	min-height:				2em;	
+	opacity: 				0;
 }
 
-preference-ranking preference-rank.ng-enter-active{
-	min-height: 			3em;
+preference-rank.shadow.active{	
+	background: 			rgba(100, 150, 200, 1);
+	opacity: 				1;
+	margin:					0.8em 0;
 }
 
 
-
-
-preference-ranking preference-rank:hover{
-	background: 			#666;
-}
-
-preference-ranking preference-rank preference-option {
-	display:				block;
-	min-height: 			3em;
+preference-option {
+	display:				block;	
 	width: 					4em;
+	min-height: 			4em;
 	padding: 				0.5em;
-	margin: 				0.1em 0.2em;	
+	margin: 				0.2em auto;	
 	background-color:		rgba(200, 255, 155,0.8);	
-	cursor: 				pointer;
+	cursor:					hand;
+	cursor:					grab;
+	cursor:					-moz-grab;
+	cursor:					-webkit-grab;
+	overflow: 				hidden;
 }
 
-preference-ranking preference-rank preference-option.dragged {
+preference-option.dragged {
 	position: 				absolute;
-	opacity: 				0.8;
 	box-shadow: 			0 0 1em rgba(0,0,0,0.6);
 	z-index: 				10;
+	cursor:					grabbing;
+	cursor:					-moz-grabbing;
+	cursor:					-webkit-grabbing;
 }
 
-preference-ranking preference-rank preference-option.dummy {
-	background-color: 		#000;
+.dummy {		
+	position: 				relative;
+	min-height: 			0em;
+	height: 				0em;	
+	width: 					4em;	
+	padding:				0;
+	margin:					0 auto; 		
+	background: 			rgba(200, 200, 200, 0.5);
+	overflow:				visible !important;	
+	opacity: 				0;
+	transition-property:	height padding margin;
+	transition-duration:	600ms;
+}
+
+
+.active .dummy {
+	height: 				2em;
+	padding: 				0.5em;
+	margin: 				0.2em auto;	
+	opacity: 				1;
+	transition-duration:	200ms;	
+}
+
+.dummy:before {
+	content:				'';
+	position: 				absolute;	
+	left: 					-4.5em;
+	top: 					50%;
+	width:					0em; 
+	height:					0em; 
+	border-top:				0.75em solid transparent;
+	border-bottom:			0.75em solid transparent;	
+	border-left:			0.75em solid #000;
+	margin-top:				-0.75em;
+	margin-left: 			-0.75em;
+	opacity: 				0;
+	transition-duration:	400ms;
+}
+
+.active .dummy:before {
+	left:					0;
+	opacity: 				1;	
 }

@@ -64,21 +64,22 @@ function HTMLselectAs() {
 function HTMLpreferenceRanking($parse, $animate) {
 	return	{
 				restrict	:	'E',
-
+				transclude	:	true,
+				templateUrl	:	'static/partials/directives/preference-ranking.html',
 
 				link		:	function(scope, element, attrs, controller) {								
 									element.css({
 										'position'		:	'relative'
 									})
 
-									scope.trackMousemovement = function(event) {
-										if(!scope.next_update){		
-											var	x		=	event.pageX-element.offset().left,
-												y		=	event.pageY-element.offset().top,
+									scope.trackMouseMovement = function(event) {
+										if(!scope.next_update){													
+											var	x		=	event.pageX - element.offset().left,
+												y		=	event.pageY - element.offset().top,
 												width	=	element.innerWidth(),
 												height	=	element.innerHeight(),
-												fx		=	attrs.rankingOrientation == 'horizontal' ? 0.5 : 1,
-												fy		=	attrs.rankingOrientation == 'vertical' ? 0.5 : 1
+												fx		=	scope.rankingOrientation == 'horizontal' ? 0.5 : 1,
+												fy		=	scope.rankingOrientation == 'vertical' ? 0.5 : 1
 
 
 											if(x < width*(1-fx))	x = width*(1-fx)	- Math.pow(width*(1-fx)-x, 0.5)
@@ -89,58 +90,108 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 											var pos	=	{x:x, y:y}
 
-											scope.$broadcast('dragging-position-update',pos)									
+											scope.$broadcast('dragging-position-update', pos)
 
 											//wait 20 milliseconds
 											scope.next_update = window.setTimeout(function() {
 																	window.clearInterval(scope.next_update)
 																	delete scope.next_update																	
-																}, 20)
+																}, 30)
+										}										
+									}
+
+									scope.startDragging = function(event, last_mousemove, option) {
+										scope.dragged_element	= option.clone().addClass('dragged').appendTo(element)										
+
+										option.remove()
+
+										controller.removeOption(option.attr('value'))
+										
+										scope.trackMouseMovement(last_mousemove)
+										
+										$(document).on('mousemove',				scope.trackMouseMovement)							
+										$(document).on('mouseup mouseleave',	scope.drop)
+									}
+
+
+									//adjust position of the dragged option (keep it attached to the cursor)
+									scope.drag = function(event, pos) {								
+
+										if(pos.x != undefined) scope.dragged_element.css('left',	pos.x - scope.dragged_element.outerWidth(true)/2)
+										if(pos.y != undefined) scope.dragged_element.css('top', 	pos.y - scope.dragged_element.outerHeight(true)/2)											
+									}
+
+									scope.updateRanks = function(event, rank){
+										if(scope.current_rank != rank) {
+											if(scope.current_rank) scope.current_rank.removeClass('active')
+											scope.current_rank = rank.addClass('active')											
 										}
 									}
 
-									scope.$on('dragging-started', function(){										
-										$(document).on('mousemove',		scope.trackMousemovement)
-										$(document).trigger('mousemove')
-										scope.$apply(function(){
-											//?
-										})										
-									})
+									scope.drop = function(event) {
+										$(document).off('mousemove',			scope.trackMousemovement)
+										$(document).off('mouseup mouseleave',	scope.drop)
 
-									scope.$on('dragging-done', function() {
-										$(document).off('mousemove', scope.trackMousemovement)
-									})
+										var	index 		= scope.current_rank ? scope.current_rank.attr('index') : 0
+											shadow_rank	= scope.current_rank ? scope.current_rank.attr('shadow-rank') != undefined : false
+											option_id	= scope.dragged_element.attr('value')
+
+										controller.addOption(index, option_id, shadow_rank)
+
+										if(scope.current_rank) scope.current_rank.removeClass('active')									
+
+										scope.dragged_element.remove()
+										delete scope.dragged_element
+
+										scope.$broadcast('dragging-done')
+									}
+
+
+									scope.$on('dragging-started', 			scope.startDragging)
+
+									scope.$on('dragging-position-update', 	scope.drag)
+
+									scope.$on('dragging-over-rank', 		scope.updateRanks)
 									
 									
 								},
 
 				controller	:	function($scope, $element, $attrs){					
 									
+									$scope.rankingOrientation = $attrs.rankingOrientation || 'vertical'									
 									$scope.rankingData = $parse($attrs.rankingData)($scope)
 
-									this.addRank = function(index, rank){
-										if(!rank){
-											rank = index
-											index = $scope.rankingData.length -1
-										}
-										$scope.$apply(function(){
-											$scope.rankingData.splice(index, 0, rank)
+									this.removeOption = function(id) {						
+										var	rank_index		= null,
+											option_index	= null
+
+										$.each($scope.rankingData, function(i, rank){
+											$.each(rank, function(j, option_id){
+												if(option_id == id) {
+													rank_index		= i
+													option_index	= j
+												}
+											})											
 										})
+
+										if(option_index != null){
+											$scope.rankingData[rank_index].splice(option_index, 1)
+											if($scope.rankingData[rank_index].length == 0) $scope.rankingData.splice(rank_index, 1)
+										}
+
+										$scope.$apply()										
 									}
 
-									this.startDragging = function() {
-										$scope.dragging = true
-										$scope.$broadcast('dragging-started')	
-									}
+									this.addOption = function(index, id, shadow_rank) {
+										index = index || $scope.rankingData.length
 
-									this.stopDragging = function() {
-										$scope.dragging = false
-										$scope.$broadcast('dragging-done')		
+										if(shadow_rank){
+											$scope.rankingData.splice(index, 0, [id])
+										}else{
+											$scope.rankingData[index].push(id)
+										}
+										$scope.$apply()
 									}
-
-									this.requestDraggedElement = function(origin) {
-										$scope.$broadcast('request-dragged-element', origin)
-									}									
 								}
 			}
 }
@@ -149,54 +200,26 @@ function HTMLpreferenceRank() {
 	return	{
 				restrict	:	'E',
 				require		:	'^preferenceRanking',
-				scope		:	{},
 
 				link		:	function(scope, element, attrs, rankingCtrl) {	
 
-									//element.clone().insertBefore(element)
-
-									element.addClass('full')
-
-									element.on('click', function(){
-										scope.$apply(scope.insertNewRank())
-									})
-
-									scope.setup = function() {
-										scope.listenToPositionUpdates()
-										scope.stopWaitingForDrop = scope.$on('dragging-done', scope.cleanup)
-									}
-
-									scope.cleanup = function() {
-										scope.stopWaitingForDrop()
-										scope.stopListeningToUpdates()
-										delete scope.stopListeningToUpdates
-									}
-
-									scope.requestDraggedElement = function() {
-										rankingCtrl.requestDraggedElement(element)
-									}
-
-									scope.insertNewRank = function() {										
-										rankingCtrl.addRank(scope.$index,["A"])
-									}
 
 									scope.listenToPositionUpdates = function() {
 										scope.stopListeningToPositionUpdates = scope.$on('dragging-position-update', scope.evaluatePositionUpdate)																			
 									}
 
-									scope.evaluatePositionUpdate = function(event, pos) {
-										if(_over(element, pos, true) > 1)	scope.requestDraggedElement()										
-									}
+									scope.evaluatePositionUpdate = function(event, pos) {										
+										if(_over(element, pos, true) >= 1)	scope.$emit('dragging-over-rank', element)
+									}																								
 
-									scope.$on('dragging-started', scope.setup) 
+									scope.listenToPositionUpdates()
 									
+
+									if(attrs.shadowRank != undefined) element.addClass('shadow')
 								},
 
-				controller	:	function($scope, $element) {
-									//$compile('<prefrence-rank>XXX<preference-option></preference-option></preference-rank>', $scope).insertBefore($element)
-									this.addOption = function(option) {
+				controller	:	function($scope, $element, $attrs, $compile) {
 
-									}
 								}
 			}
 }
@@ -206,78 +229,54 @@ function HTMLpreferenceOption() {
 	return	{
 				restrict	:	'E',
 				require		:	'^preferenceRanking',
-				scope		:	{},
 
-				link		:	function(scope, element, attrs, rankingCtrl){
+				link		:	function(scope, element, attrs, rankingCtrls){
 
-									scope.waitForDrag = function() {
-										scope.wait_for_it	=	window.setTimeout(scope.startDragging, 400);
-									}
+									//Dragging controls:
 
+									//400 ms of mouse down trigger the drag
+									scope.waitForDrag = function(event) {
+										scope.wait_for_it	=	window.setTimeout(scope.startDragging, 300)
+										scope.trackMouseMovement(event)
+										$(document).on('mousemove)', scope.trackMouseMovement)
+									}							
+
+									scope.trackMouseMovement = function(event){
+										scope.last_mousemove = event
+									}	
+
+									//clear waiting timeout, attribute and event listener
 									scope.stopWaitingForDrag = function() {
-										window.clearTimeout(scope.wait_for_it)
-										delete scope.wait_for_it
-									}
-
-									scope.startDragging = function() {
-										scope.stopWaitingForDrag()
 										$(document).off('mouseup click', scope.stopWaitingForDrag)
+										$(document).off('mousemove', scope.trackMousemovement)
 
+										window.clearTimeout(scope.wait_for_it)
+										delete scope.wait_for_it										
+									}
+
+									//intitiate the dragging:
+									scope.startDragging = function() {										
+										//cancel wait:
+										scope.stopWaitingForDrag()
+
+										//clear selection that might have occured while holding the mouse down
 										window.getSelection().removeAllRanges()
+										
+										scope.$emit('dragging-started', scope.last_mousemove, element)
 
-										scope.dummy = element.clone().addClass('dummy').insertAfter(element)
-										element.addClass('dragged')
-												
-										$(document).one('mouseup click', scope.drop)										
-
-										scope.listenToUpdates()
-										scope.listenToRequests()
-										rankingCtrl.startDragging(element)
+										delete scope.last_mousemove																		
 									}
 
-									scope.listenToUpdates = function() {
-										scope.stopListeningToUpdates = scope.$on('dragging-position-update', scope.drag)
-									}
-
-									scope.listenToRequests = function() {
-										scope.stopListeningToRequests = scope.$on('request-dragged-element', scope.moveToRank)										
-									}
-
-									scope.moveToRank = function(event, rank) {
-										element.appendTo(rank)
-										scope.dummy.appendTo(rank)
-									}
-
-
-									scope.drag = function(event, pos) {
-										if(pos.x) element.css('left',	pos.x-element.outerWidth(true)/2)	//CSS?
-										if(pos.y) element.css('top', 	pos.y-element.outerHeight(true)/2)
-											
-									}
-
-									scope.drop = function() {
-										scope.stopListeningToUpdates()
-										delete scope.stopListeningToUpdates
-
-										scope.stopListeningToRequests()
-										delete scope.stopListeningToRequests
-
-										scope.dummy.remove()
-										delete scope.dummy
-
-										element.removeClass('dragged')										
-
-										rankingCtrl.stopDragging()
-									}
-
+									//listen for a mousedown to get the dragging started
 									element.on('mousedown', function(event) {
-										scope.waitForDrag()	
+										scope.waitForDrag(event)	
 										event.preventDefault()
 										event.stopImmediatePropagation() //ist das nötig?
 
 										$(document).one('mouseup click', scope.stopWaitingForDrag)
 									})
-									
+
+									if(attrs.dummyOption != undefined) element.addClass('dummy')
 									
 								},
 

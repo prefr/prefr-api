@@ -59,9 +59,6 @@ function _over(element, mouse, rel) {
 
 		level	=	0
 
-		//_l(point.x +':' + point.y)
-		
-
 		//check perimeter (with margin, border and padding)
 
 		boundry	=	{
