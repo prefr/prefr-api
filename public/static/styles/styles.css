@@ -75,7 +75,8 @@ preference-ranking {
 	overflow:				visible;	
 }
 
-preference-rank {	
+preference-rank,
+preference-rank.ng-enter.ng-enter-active {	
 	display: 				inline-block;
 	background: 			#aaa;
 	margin:					0em;
@@ -85,6 +86,26 @@ preference-rank {
 	width: 					6em;
 	transition-duration:	600ms;
 }
+
+
+preference-rank.ng-leave, 
+preference-rank.ng-leave preference-option {
+	transition-duration:	10s;
+}
+
+
+preference-rank.ng-enter {
+	transition-duration:	600ms;
+}
+
+
+
+preference-rank.ng-enter {
+	max-height:				0;
+}
+
+
+
 
 preference-rank.shadow {		
 	min-height:				2em;	
@@ -98,19 +119,42 @@ preference-rank.shadow.active{
 }
 
 
-preference-option {
+preference-option,
+preference-option.ng-enter.ng-enter-active {
 	display:				block;	
 	width: 					4em;
-	min-height: 			4em;
+	height: 				4em;
 	padding: 				0.5em;
 	margin: 				0.2em auto;	
-	background-color:		rgba(200, 255, 155,0.8);	
-	cursor:					hand;
+	background-color:		rgba(200, 255, 155,0.8);
 	cursor:					grab;
 	cursor:					-moz-grab;
 	cursor:					-webkit-grab;
 	overflow: 				hidden;
 }
+
+
+preference-option.ng-leave {
+	transition-duration:	600ms;
+}
+
+preference-option.ng-enter {
+	transition-duration:	400ms;
+}
+
+preference-option.ng-enter,
+preference-option.ng-leave.ng-leave-active,
+preference-rank.ng-leave.ng-leave.active preference-option {
+	height: 				0em;
+	padding-top:			0;
+	padding-bottom: 		0;
+	margin-top:				0;
+	margin-bottom: 			0;
+}
+
+
+
+
 
 preference-option.dragged {
 	position: 				absolute;
@@ -157,10 +201,10 @@ preference-option.dragged {
 	margin-top:				-0.75em;
 	margin-left: 			-0.75em;
 	opacity: 				0;
-	transition-duration:	400ms;
 }
 
 .active .dummy:before {
 	left:					0;
-	opacity: 				1;	
+	opacity: 				1;
+	transition-duration:	400ms;
 }

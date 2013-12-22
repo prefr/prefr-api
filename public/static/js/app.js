@@ -58,6 +58,6 @@ schulzeDoodle.directive('singleSelect',         HTMLsingleSelect)
 schulzeDoodle.directive('selectAs',             HTMLselectAs)
 
 schulzeDoodle.directive('preferenceRanking',    ['$parse', '$animate', HTMLpreferenceRanking])
-schulzeDoodle.directive('preferenceRank',       HTMLpreferenceRank)
-schulzeDoodle.directive('preferenceOption',     HTMLpreferenceOption)
+schulzeDoodle.directive('preferenceRank',       ['$animate', HTMLpreferenceRank])
+schulzeDoodle.directive('preferenceOption',     ['$animate', HTMLpreferenceOption])
 

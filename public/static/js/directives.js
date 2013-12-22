@@ -72,6 +72,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 										'position'		:	'relative'
 									})
 
+
 									scope.trackMouseMovement = function(event) {
 										if(!scope.next_update){													
 											var	x		=	event.pageX - element.offset().left,
@@ -96,19 +97,34 @@ function HTMLpreferenceRanking($parse, $animate) {
 											scope.next_update = window.setTimeout(function() {
 																	window.clearInterval(scope.next_update)
 																	delete scope.next_update																	
-																}, 30)
+																}, 20)
 										}										
 									}
 
-									scope.startDragging = function(event, last_mousemove, option) {
-										scope.dragged_element	= option.clone().addClass('dragged').appendTo(element)										
+									scope.setupDraggingData = function(option) {
+										var rank  = option.closest('preference-rank')
+										scope.dragging_data =	{
+																	element		: option.clone().addClass('dragged').appendTo(element),
+																	option_id	: option.attr('value'),
+																	rank		: rank
+																}
+									}
 
-										option.remove()
+									scope.clearDraggingData = function(){
+										scope.dragging_data.element.remove()
+										scope.dragging_data.rank.scope().deactivate()	
+										delete scope.dragging_data										
+									}
+
+									scope.startDragging = function(event, last_mousemove, option) {
+										
+										scope.setupDraggingData(option)
+										scope.dragging_data.rank.scope().activate() 
 
 										controller.removeOption(option.attr('value'))
 										
 										scope.trackMouseMovement(last_mousemove)
-										
+
 										$(document).on('mousemove',				scope.trackMouseMovement)							
 										$(document).on('mouseup mouseleave',	scope.drop)
 									}
@@ -117,33 +133,29 @@ function HTMLpreferenceRanking($parse, $animate) {
 									//adjust position of the dragged option (keep it attached to the cursor)
 									scope.drag = function(event, pos) {								
 
-										if(pos.x != undefined) scope.dragged_element.css('left',	pos.x - scope.dragged_element.outerWidth(true)/2)
-										if(pos.y != undefined) scope.dragged_element.css('top', 	pos.y - scope.dragged_element.outerHeight(true)/2)											
+										if(pos.x != undefined) scope.dragging_data.element.css('left',	pos.x - scope.dragging_data.element.outerWidth(true)/2)
+										if(pos.y != undefined) scope.dragging_data.element.css('top', 	pos.y - scope.dragging_data.element.outerHeight(true)/2)											
 									}
 
-									scope.updateRanks = function(event, rank){
-										if(scope.current_rank != rank) {
-											if(scope.current_rank) scope.current_rank.removeClass('active')
-											scope.current_rank = rank.addClass('active')											
+									scope.updateRanks = function(event, rank) {
+										if(scope.dragging_data.rank.scope()) {
+											scope.dragging_data.rank.scope().deactivate()
 										}
+										scope.dragging_data.rank = rank	
+										scope.dragging_data.rank.scope().activate()	
 									}
 
 									scope.drop = function(event) {
 										$(document).off('mousemove',			scope.trackMousemovement)
 										$(document).off('mouseup mouseleave',	scope.drop)
 
-										var	index 		= scope.current_rank ? scope.current_rank.attr('index') : 0
-											shadow_rank	= scope.current_rank ? scope.current_rank.attr('shadow-rank') != undefined : false
-											option_id	= scope.dragged_element.attr('value')
+										var	index		= scope.dragging_data.rank.attr('index')
+											shadow_rank	= scope.dragging_data.rank.scope().isShadowRank()
+											option_id	= scope.dragging_data.option_id
 
-										controller.addOption(index, option_id, shadow_rank)
+										controller.addOption(index, option_id, shadow_rank)							
 
-										if(scope.current_rank) scope.current_rank.removeClass('active')									
-
-										scope.dragged_element.remove()
-										delete scope.dragged_element
-
-										scope.$broadcast('dragging-done')
+										scope.clearDraggingData()
 									}
 
 
@@ -151,7 +163,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 									scope.$on('dragging-position-update', 	scope.drag)
 
-									scope.$on('dragging-over-rank', 		scope.updateRanks)
+									scope.$on('dragging-into-rank', 		scope.updateRanks)
 									
 									
 								},
@@ -176,10 +188,11 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 										if(option_index != null){
 											$scope.rankingData[rank_index].splice(option_index, 1)
-											if($scope.rankingData[rank_index].length == 0) $scope.rankingData.splice(rank_index, 1)
-										}
 
-										$scope.$apply()										
+											if($scope.rankingData[rank_index].length == 0) $scope.rankingData.splice(rank_index, 1)
+											
+											$scope.$apply()					
+										}					
 									}
 
 									this.addOption = function(index, id, shadow_rank) {
@@ -196,26 +209,40 @@ function HTMLpreferenceRanking($parse, $animate) {
 			}
 }
 
-function HTMLpreferenceRank() {
+function HTMLpreferenceRank($scope, $animate) {
 	return	{
 				restrict	:	'E',
 				require		:	'^preferenceRanking',
 
 				link		:	function(scope, element, attrs, rankingCtrl) {	
 
+									scope.active = false
 
 									scope.listenToPositionUpdates = function() {
 										scope.stopListeningToPositionUpdates = scope.$on('dragging-position-update', scope.evaluatePositionUpdate)																			
 									}
 
-									scope.evaluatePositionUpdate = function(event, pos) {										
-										if(_over(element, pos, true) >= 1)	scope.$emit('dragging-over-rank', element)
-									}																								
+									scope.evaluatePositionUpdate = function(event, pos) {
+										if(!scope.active && _over(element, pos, true) >= 1)	scope.$emit('dragging-into-rank', element)
+									}
 
-									scope.listenToPositionUpdates()
-									
+									scope.isShadowRank = function() {	
+										return(attrs.shadowRank)
+									}
 
-									if(attrs.shadowRank != undefined) element.addClass('shadow')
+									scope.activate = function() {
+										scope.active = true
+										//element.addClass('active')
+									}							
+
+									scope.deactivate = function() {
+										scope.active = false
+										//element.removeClass('active')
+									}																	
+
+									scope.listenToPositionUpdates()									
+
+									if(scope.isShadowRank()) element.addClass('shadow')
 								},
 
 				controller	:	function($scope, $element, $attrs, $compile) {
@@ -225,7 +252,7 @@ function HTMLpreferenceRank() {
 }
 
 
-function HTMLpreferenceOption() {
+function HTMLpreferenceOption($scope, $animate) {
 	return	{
 				restrict	:	'E',
 				require		:	'^preferenceRanking',
