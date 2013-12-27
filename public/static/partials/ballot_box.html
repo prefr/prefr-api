@@ -29,6 +29,7 @@
 			<preference-rank ng-repeat = "rank in rankingData">	
 
 				<preference-option 
+					class		=	"ui-panel"
 					ng-repeat	=	"option_id in rank"
 					value		=	"{{option_id}}"
 				>
@@ -36,7 +37,7 @@
 						<div class="title"> 	{{ballot_box.options[option_id].title}} 	</div>
 						<div class="details">	{{ballot_box.options[option_id].details}}	</div>
 					</div>
-					<div class="ui-panel">
+					<div class="right">
 						{{option_id}}
 					</div>
 				</preference-option>	

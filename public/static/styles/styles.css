@@ -75,8 +75,8 @@ body > header h1 {
 		box-shadow: 			0 0 0.2rem rgba(0,0,0, 0.2);		
 	}
 
-	.ui-panel > header,
-	.ui-panel > footer {
+	.ui-panel > summary {
+		display:				block;
 		font-size:				1.6em;		
 		padding: 				0.5em;		
 		font-weight:			bold;
@@ -84,10 +84,14 @@ body > header h1 {
 		background-color:		rgba(245, 245, 240, 1);		
 	}
 
+	.ui-panel > .right {
+
+	}
 
 
 
-.ui-info {
+
+details {
 	background-color:		rgba(100,125,140,1);
 	color:					#ccc;	
 }
