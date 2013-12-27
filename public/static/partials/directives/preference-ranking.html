@@ -1,20 +1,2 @@
-<preference-rank
-	ng-repeat-start	= "rank in rankingData"
-	index			= "{{$index}}"
-	shadow-rank		= "true"
->								
-	<preference-option dummy-option = "true"></preference-option>
-</preference-rank>
 
-<preference-rank
-	ng-repeat-end	
-	index			= "{{$index}}"	
->
-	<div ng-transclude>
-	</div>
-	<preference-option dummy-option = "true"></preference-option>
-</preference-rank>
 
-<preference-rank shadow-rank = "true">
-	<preference-option dummy-option = "true"></preference-option>
-</preference-rank>

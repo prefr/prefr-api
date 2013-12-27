@@ -35,6 +35,12 @@ schulzeDoodle.config([
     function($routeProvider) {
         $routeProvider
         .when(
+            '/',
+            {
+                templateUrl :   'static/partials/root.html'
+            }
+        )
+        .when(
             '/ballot_box/:box_id',
             {
                 templateUrl :   'static/partials/ballot_box.html',

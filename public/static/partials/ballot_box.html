@@ -1,48 +1,54 @@
-<section>			
+<div
+	class			=	"ballot-box {{selected ? 'selected' : ''}}"
+	single-select	=	"true"		
+>
+	<h3>{{ballot_box.subject}} ({{ballot_box.id}})</h3>
+
 	<div
-		class			=	"ballot-box {{selected ? 'selected' : ''}}"
-		single-select	=	"true"		
+		class		=	"ballot-paper {{selected ? 'selected' : ''}}" 
+		ng-repeat	=	"paper in ballot_box.papers"
+		select-as	=	"{{paper.id}}"						
 	>
-		<h3>{{ballot_box.subject}} ({{ballot_box.id}})</h3>
+		<div class="participant">				
+			<input 
+				ng-model 		= "paper.participant"
+			/>
+			<span> {{paper.participant}} </span>				
+		</div>
+		<div class = "controls">
+			<button ng-click = "select()">		select		</button>
+			<button ng-click = "deselect()"> 	deselect	</button>
+			<button ng-click = "removeBallotPaper(paper.id)"> 	del		</button>
+		</div>
 
-		<div
-			class		=	"ballot-paper {{selected ? 'selected' : ''}}" 
-			ng-repeat	=	"paper in ballot_box.papers"
-			select-as	=	"{{paper.id}}"						
+		<preference-ranking
+			ng-model			=	"paper.ranking"
+			ranking-orientation	=	"horizontal"
+			ng-class			=	"{compact : !selected}"
 		>
-			<div class="participant">				
-				<input 
-					ng-model 		= "paper.participant"
-				/>
-				<span> {{paper.participant}} </span>				
-			</div>
-			<div class = "controls">
-				<button ng-click = "select()">		select		</button>
-				<button ng-click = "deselect()"> 	deselect	</button>
-				<button ng-click = "removeBallotPaper(paper.id)"> 	del		</button>
-			</div>
+			<preference-rank ng-repeat = "rank in rankingData">	
 
-			<preference-ranking
-				ranking-data		=	"paper.ranking"
-				ranking-orientation	=	"horizontal"
-			>
-				
-					<preference-option 
-						ng-repeat	=	"option_id in rank"
-						value		=	"{{option_id}}"
-					>
-						<header> {{ballot_box.options[option_id].title}} </header>
-						<p>{{ballot_box.options[option_id].details}}</p>
-					</preference-option>	
-				
-			</preference-ranking>
+				<preference-option 
+					ng-repeat	=	"option_id in rank"
+					value		=	"{{option_id}}"
+				>
+					<div class="ui-info">
+						<div class="title"> 	{{ballot_box.options[option_id].title}} 	</div>
+						<div class="details">	{{ballot_box.options[option_id].details}}	</div>
+					</div>
+					<div class="ui-panel">
+						{{option_id}}
+					</div>
+				</preference-option>	
 
-		</div>	
+			</preference-rank>
+		</preference-ranking>
 
-	</div>
+	</div>	
 
-	<button ng-click = "addBallotPaper()"> Add Ballot </button>
+</div>
 
-	<a href="#/evaluate/{{box_id}}"> Auswertung </a>
+<button ng-click = "addBallotPaper()"> Add Ballot </button>
 
-</section>	
+<a href="#/evaluate/{{box_id}}"> Auswertung </a>
+
