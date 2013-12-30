@@ -122,33 +122,24 @@ function _over(element, mouse, rel) {
 		}		
 }
 
-function _refactor(coll) {
+function _property2key(arr, prop) {
 
-		if(Object.prototype.toString.call( coll ) === '[object Object]') {						
-			$.each(coll, function(key, value){
-				coll[key] = _refactor(value)
-			})
-		}
-
-		if(Object.prototype.toString.call( coll ) === '[object Array]') {		
+		if(Object.prototype.toString.call( arr )  === '[object Array]') {		
 			var obj = {}				
 
-			$.each(coll, function(index, value){
-				 if(value.id != undefined) {
-				 	obj[value.id] = coll[index]
-				 }
-				 coll[index] = _refactor(coll[index])
+			$.each(arr, function(index, value){
+				 if(value[prop] != undefined) obj[value[prop]] = value
 			})
 
 			var length = Object.keys(obj).length
 
-			if(length == coll.length) {
-				coll = obj
+			if(length == arr.length) {
+				arr = obj
 			}else{
-				if(length !=0) console.warn('refactoring did not work: ', coll)
-			}
-				
-		}		
-
-		return(coll)		
+				if(length !=0) console.warn('refactoring did not work: ', arr)
+			}				
+		}else{		
+			console.warn('_property2key() used on non array.')
+		}
+		return(arr)
 	}

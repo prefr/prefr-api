@@ -2,10 +2,6 @@ function HTMLsingleSelect() {
 	return	{
 				restrict	:	'A',
 
-				link		:	function(scope, element, attrs, controller) {
-
-								},
-
 				controller	:	function($scope) {					
 									$scope.$on('select', function(event, origin){																	
 										if(event.targetScope != $scope) {
@@ -35,10 +31,6 @@ function HTMLsingleSelect() {
 function HTMLselectAs() {
 	return	{
 				restrict	:	'A',
-
-				link		:	function(scope, element, attrs, controller) {
-
-								},
 
 				controller	:	function($scope, $element, $attrs) {																		
 									$scope.selected = false
@@ -77,8 +69,8 @@ function HTMLpreferenceRanking($parse, $animate) {
 												y		=	event.pageY - element.offset().top,
 												width	=	element.innerWidth(),
 												height	=	element.innerHeight(),
-												fx		=	scope.rankingOrientation == 'horizontal' ? 0.7 : 1,
-												fy		=	scope.rankingOrientation == 'vertical' ? 0.7: 1
+												fx		=	scope.rankingOrientation == 'vertical' ? 0.7 : 1,
+												fy		=	scope.rankingOrientation == 'horizonal' ? 0.7: 1
 
 											//movement outside the element counts far less than movement inside the element:
 											if(x < width*(1-fx))	x = width*(1-fx)	- Math.pow(width*(1-fx)-x, 0.5)
@@ -105,7 +97,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 										
 										scope.dragged_element = option.clone().addClass('dragged').appendTo(element)
 
-										controller.replaceOption(option.attr('value'), "")
+										controller.replaceOption(option.attr('value'), "")										
 										
 										scope.trackMouseMovement(last_mousemove)
 
@@ -135,7 +127,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 										controller.commit()
 
 										scope.dragged_element.remove()
-										delete scope.dragged_element	
+										delete scope.dragged_element
 									}
 
 
@@ -149,17 +141,74 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 				controller	:	function($scope, $element, $attrs){	
 
-									//insert empty ranks
+									//make a copy of the original data, inserting empty ranks in between
 									this.processRankingData = function(ranking) {
+										if(!ranking) console.warn('ranking data empty')										
 										var processed_ranking = [[]]
 										
-										$.each(ranking, function(index, rank){																																
-											processed_ranking.push(rank)
-											processed_ranking.push([])
-											
+										ranking.forEach(function(rank, index) {
+											var processed_rank = []
+											rank.forEach(function(option, index) {
+												processed_rank.push(option)
+											})
+											processed_ranking.push(processed_rank)
+											processed_ranking.push([])											
 										})
 
 										return(processed_ranking)
+									}
+
+									//extract the acual value from the rankingData filtering out empty ranks
+									this.updateModel = function() {
+										var	extracted_ranking = []
+
+										$scope.rankingData.forEach(function(rank, index){
+											if(rank.length){
+												var extracted_rank = []											
+												rank.forEach(function(option, index){
+													if(option) {	//leave the dummy out ("")
+														extracted_rank.push(option)
+													}
+												})
+												extracted_ranking.push(extracted_rank)
+											}
+										})
+
+										
+										//carefully change only the neccessary:
+										var i = $scope.raw_rankingData.length
+											j = extracted_ranking.length
+
+										//add new ranks:
+										while(j-- > i){
+											$scope.raw_rankingData.splice(i-1, 0, extracted_ranking[j])
+										}
+
+										while(i--){											
+
+											//update ranks:
+											if(extracted_ranking[i]){
+												
+												var m = $scope.raw_rankingData[i].length
+												
+												while(m--){
+													var n = extracted_ranking[i].indexOf($scope.raw_rankingData[i][m])
+
+													if(n == -1){																												
+														$scope.raw_rankingData[i].splice(m,1)
+													}else{
+														extracted_ranking[i].splice(n,1)
+													}
+													
+												}
+												
+												//add remaining options
+												[].push.apply($scope.raw_rankingData[i], extracted_ranking[i])
+											}else{
+												$scope.raw_rankingData.splice(i,1)
+											}
+											$scope.raw_rankingData
+										}
 									}
 
 									//removes redundant empty ranks and move dummy to the end
@@ -178,12 +227,14 @@ function HTMLpreferenceRanking($parse, $animate) {
 												ranking.splice(i,1)
 												ranking.splice(i-2,1)
 												i -= 2
+												this.stage()
 											}
 
 											//remove double empty, keep the second
 											if(this.isEmpty(ranking[i]) && this.isEmpty(ranking[i-1])){
 												ranking.splice(i,1)
 												i--
+												this.stage()
 											}									
 										}										
 									}
@@ -202,11 +253,14 @@ function HTMLpreferenceRanking($parse, $animate) {
 												&& !this.isDepleted(ranking[i+1])
 											){
 												ranking.splice(i+1, 0, [])
+												this.stage()
 											}
 										}
 
-										if(!this.isEmpty(ranking[0]) && !this.isDepleted(ranking[0])) ranking.unshift([])
-										$scope.$apply()	
+										if(!this.isEmpty(ranking[0]) && !this.isDepleted(ranking[0])){
+											ranking.unshift([])
+											this.stage()
+										} 
 									}
 
 
@@ -263,8 +317,6 @@ function HTMLpreferenceRanking($parse, $animate) {
 									this.moveOption = function(id, rank) {	
 										var	option = this.findOption(id)
 
-										_l('id: '+id+' rank: '+rank)
-
 										if(option.rank) {
 											rank.push(option.rank.splice(option.index, 1)[0])											
 
@@ -280,7 +332,8 @@ function HTMLpreferenceRanking($parse, $animate) {
 										var	option = this.findOption(id_1)
 
 										if(option.rank){
-											option.rank[option.index] = id_2
+											this.addOption(id_2, option.rank)
+											this.removeOption(id_1)
 											this.stage()
 											return(true)
 										}
@@ -295,14 +348,23 @@ function HTMLpreferenceRanking($parse, $animate) {
 										if($scope.staged) {											
 											this.flattenRankingData()
 											this.refreshRankingData()
+											this.updateModel()
 											$scope.$apply()
 											$scope.$broadcast('ranking-update')
+											$scope.staged = false
 										}
 									}
 
+									$scope.noDragging			= $attrs.noDragging != undefined	
 
 									$scope.rankingOrientation 	= $attrs.rankingOrientation || 'vertical'									
 									$scope.raw_rankingData 		= $parse($attrs.ngModel)($scope)
+
+									var self = this
+
+									$scope.$watchCollection($attrs.ngModel, function(new_value){
+										$scope.rankingData = self.processRankingData(new_value)									
+									})
 
 									$scope.rankingData 			= this.processRankingData($scope.raw_rankingData)									
 									this.flattenRankingData()
@@ -318,7 +380,9 @@ function HTMLpreferenceRank($scope, $animate) {
 				link		:	function(scope, element, attrs, rankingCtrl) {	
 									
 									scope.evaluatePositionUpdate = function(event, pos) {
-										if(!scope.hasPlaceholder() && _over(element, pos, true)) rankingCtrl.moveOption("", scope.rank)
+										if(!scope.hasPlaceholder() && _over(element, pos, true)) {
+											rankingCtrl.moveOption("", scope.rank)
+										}
 									}
 
 									scope.isEmpty = function() {
@@ -342,10 +406,6 @@ function HTMLpreferenceRank($scope, $animate) {
 									scope.$on('dragging-position-update', 	scope.evaluatePositionUpdate)
 									scope.$on('ranking-update', 			scope.refresh)
 									scope.refresh()
-								},
-
-				controller	:	function($scope, $element, $attrs, $compile) {
-
 								}
 			}
 }
@@ -394,7 +454,7 @@ function HTMLpreferenceOption($scope, $animate) {
 									}
 
 									//listen for a mousedown to get the dragging started
-									if(attrs.value) {
+									if(attrs.value && !scope.noDragging) {
 										element.on('mousedown', function(event) {
 											scope.waitForDrag(event)	
 											event.preventDefault()
@@ -404,9 +464,6 @@ function HTMLpreferenceOption($scope, $animate) {
 										})
 									}									
 									
-								},
-
-				controller	:	function($scope){
 								}
 			}
 }

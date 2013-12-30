@@ -19,50 +19,88 @@ schulzeDoodleControllers.controller(
 			//dummy:
 			$scope.ballot_box	=	{
 							            id      :   1,
-							            subject :   "Beispiel",
+							            subject :   "example subject",
 							            options :   [
 							            				{
-								            				id		:	"A",
-								                            title   :   "Titel A",
+								            				tag		:	"A",
+								                            title   :   "That government department",
 								                            details :   "Beschreibung"
 								                        }, 
 								                        {
-								            				id		:	"B",
+								            				tag		:	"B",
 								                            title   :   "Titel B",
 								                            details :   "Beschreibung"
 								                        }, 
 								                        {
-								            				id		:	"C",
+								            				tag		:	"C",
 								                            title   :   "Titel C",
+								                            details :   "Beschreibung"
+								                        }, 
+								                        {
+								            				tag		:	"D",
+								                            title   :   "Titel D",
+								                            details :   "Beschreibung"
+								                        }, 
+								                        {
+								            				tag		:	"E",
+								                            title   :   "Titel E",
+								                            details :   "Beschreibung"
+								                        }, 
+								                        {
+								            				tag		:	"F",
+								                            title   :   "Titel F",
 								                            details :   "Beschreibung"
 								                        }
 													], 
 							            papers  :   [
 														{
 							                                id          :   1,
-							                                box			:	1,
 							                                participant :   "user1",
 							                                ranking     :   [["A"], ["B", "C"], ["D", "E", "F"]]
 							                            },
 							                            {
 							                                id          :   2,
-							                                box			:	1,
+							                                participant :   "user2",
+							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
+							                            },
+							                            {
+							                                id          :   3,
+							                                participant :   "user2",
+							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
+							                            },
+							                            {
+							                                id          :   4,
+							                                participant :   "user2",
+							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
+							                            },
+							                            {
+							                                id          :   5,
+							                                participant :   "user2",
+							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
+							                            },
+							                            {
+							                                id          :   6,
+							                                participant :   "user2",
+							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
+							                            },
+							                            {
+							                                id          :   7,
 							                                participant :   "user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            }
 							                        ]
 									}
 
-			_refactor($scope.ballot_box)
+			$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
+			$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')
 
-		    $scope.addBallotPaper = function() {
+		    $scope.addBallotPaper = function(id) {
 		    	var ballot_paper = {
-		    							box			:	$scope.ballot_box.id,
 										participant :   "unnamed",
-										ranking     :   [["C"], ["A"], ["B"]]	
+										ranking     :   [Object.keys($scope.ballot_box.options)]
 		    						}
 		    	
-		        $.extend(ballot_paper, {id: Math.floor(Math.random()*100)})
+		        $.extend(ballot_paper, {id: id !== undefined ? id : Math.floor(Math.random()*100)})
 		        $scope.ballot_box.papers[ballot_paper.id] = ballot_paper
 		    }
 
@@ -71,9 +109,11 @@ schulzeDoodleControllers.controller(
 		    }
 
 		    $scope.getSchulzeRanking = function(box_id) {
-		        return ["A", "C", "B"]
-		    }  
-		    
+		        return ["A", ["C", "D"], ["B", "E", "F"]]
+		    } 
+
+		    $scope.addBallotPaper("")
+		   
 		}
 	]
 )
