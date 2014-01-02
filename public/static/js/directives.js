@@ -56,6 +56,7 @@ function HTMLselectAs() {
 function HTMLpreferenceRanking($parse, $animate) {
 	return	{
 				restrict	:	'E',
+				scope		:	true,
 
 				link		:	function(scope, element, attrs, controller) {								
 									element.css({
@@ -84,7 +85,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 											var pos	=	{x:x, y:y}
 
 											scope.$broadcast('dragging-position-update', pos)
-											controller.commit()
+											
 											//wait 20 milliseconds
 											scope.next_update = window.setTimeout(function() {
 																	window.clearInterval(scope.next_update)
@@ -98,6 +99,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 										scope.dragged_element = option.clone().addClass('dragged').appendTo(element)
 
 										controller.replaceOption(option.attr('value'), "")										
+										scope.$apply()
 										
 										scope.trackMouseMovement(last_mousemove)
 
@@ -123,251 +125,162 @@ function HTMLpreferenceRanking($parse, $animate) {
 										var	option_id = scope.dragged_element.attr('value')
 
 										controller.replaceOption("", option_id) || controller.addOption(option_id)
-
-										controller.commit()
+										controller.save()
 
 										scope.dragged_element.remove()
 										delete scope.dragged_element
 									}
 
-
 									scope.$on('dragging-started', 			scope.startDragging)
-
 									scope.$on('dragging-position-update', 	scope.drag)
-
 									scope.$on('dragging-into-rank', 		scope.updateRanks)									
+
+									element.toggleClass('horizontal',	scope.rankingOrientation == 'horizontal')
+									element.toggleClass('vertical', 	scope.rankingOrientation != 'horizontal')
 									
 								},
 
-				controller	:	function($scope, $element, $attrs){	
+				controller	:	function($scope, $element, $attrs){
 
-									//make a copy of the original data, inserting empty ranks in between
-									this.processRankingData = function(ranking) {
-										if(!ranking) console.warn('ranking data empty')										
-										var processed_ranking = [[]]
-										
-										ranking.forEach(function(rank, index) {
-											var processed_rank = []
-											rank.forEach(function(option, index) {
-												processed_rank.push(option)
-											})
-											processed_ranking.push(processed_rank)
-											processed_ranking.push([])											
-										})
+									//there are to sets of rankingData:
+									// -the model shared with other directives
+									// -an internal set passed to ng-repeat including empty ranks
+									// both sets share some of the ranks
+									// it get's a bit tricky to keep them in sync when it comes to adding or removing ranks in one of the two data sets
 
-										return(processed_ranking)
-									}
-
-									//extract the acual value from the rankingData filtering out empty ranks
-									this.updateModel = function() {
-										var	extracted_ranking = []
-
-										$scope.rankingData.forEach(function(rank, index){
-											if(rank.length){
-												var extracted_rank = []											
-												rank.forEach(function(option, index){
-													if(option) {	//leave the dummy out ("")
-														extracted_rank.push(option)
-													}
-												})
-												extracted_ranking.push(extracted_rank)
-											}
-										})
-
-										
-										//carefully change only the neccessary:
-										var i = $scope.raw_rankingData.length
-											j = extracted_ranking.length
-
-										//add new ranks:
-										while(j-- > i){
-											$scope.raw_rankingData.splice(i-1, 0, extracted_ranking[j])
-										}
-
-										while(i--){											
-
-											//update ranks:
-											if(extracted_ranking[i]){
-												
-												var m = $scope.raw_rankingData[i].length
-												
-												while(m--){
-													var n = extracted_ranking[i].indexOf($scope.raw_rankingData[i][m])
-
-													if(n == -1){																												
-														$scope.raw_rankingData[i].splice(m,1)
-													}else{
-														extracted_ranking[i].splice(n,1)
-													}
-													
-												}
-												
-												//add remaining options
-												[].push.apply($scope.raw_rankingData[i], extracted_ranking[i])
-											}else{
-												$scope.raw_rankingData.splice(i,1)
-											}
-											$scope.raw_rankingData
-										}
-									}
-
-									//removes redundant empty ranks and move dummy to the end
-									this.flattenRankingData = function(ranking){
-										ranking = ranking || $scope.rankingData
-
-										var	i = ranking.length
-
-										while(i--) {
-											//remove empty ranks around a depleted one
-											if(
-													this.isEmpty(ranking[i]) 
-												&&	this.isDepleted(ranking[i-1])
-												&&	this.isEmpty(ranking[i-2])
-											){
-												ranking.splice(i,1)
-												ranking.splice(i-2,1)
-												i -= 2
-												this.stage()
-											}
-
-											//remove double empty, keep the second
-											if(this.isEmpty(ranking[i]) && this.isEmpty(ranking[i-1])){
-												ranking.splice(i,1)
-												i--
-												this.stage()
-											}									
-										}										
-									}
-
-									//insert empty Ranks in between
-									this.refreshRankingData = function(ranking) {
-										ranking = ranking || $scope.rankingData
-
-										var	i = ranking.length
-
-										while(i--) {
-											if(
-												   !this.isEmpty(ranking[i]) 
-												&& !this.isDepleted(ranking[i])
-												&& !this.isEmpty(ranking[i+1])
-												&& !this.isDepleted(ranking[i+1])
-											){
-												ranking.splice(i+1, 0, [])
-												this.stage()
-											}
-										}
-
-										if(!this.isEmpty(ranking[0]) && !this.isDepleted(ranking[0])){
-											ranking.unshift([])
-											this.stage()
-										} 
-									}
-
-
-									//check if a rank is empty
-									this.isEmpty = function(rank) {
-										return(rank && rank.length == 0 )
-									}
-
-									//check if rank has no options but the placeholder
-									this.isDepleted = function(rank) {
-										return(rank && rank.length == 1 && rank[0] == "")
-									}
-
-									this.hasPlaceholder = function(rank) {
-										return($.inArray("", rank) != -1)
-									}
-
-									//find Option
-									this.findOption = function(id){
-										var	option_rank		= null,
-											option_index	= null
-
-										$.each($scope.rankingData, function(i, rank){
-											$.each(rank, function(j, option_id){
-												if(option_id == id) {
-													option_rank		= rank
-													option_index	= j
-												}
-											})											
-										})
-
-										return({rank:option_rank, index: option_index})
-									}
 									
-									this.removeOption = function(id) {
-										var	option = this.findOption(id)
+									var	self			= this
 
-										if(option.rank){
-											option.rank.splice(option.index,1)
+									$scope.rankingData		= []
+									$scope.raw_rankingData	= $scope.$eval($attrs.rankingModel)
 
-											this.stage()
+
+									this.addRank			=	function(rank, after) {																		
+																	var pos 	= typeof after =='number' ? after : $scope.rankingData.indexOf(after),
+																		length	= $scope.rankingData.length																	
+																	
+																	if(pos < 0) 				$scope.rankingData.unshift(rank)
+																	if(pos >= 0 && pos <length)	$scope.rankingData.splice(pos+1,0, rank)
+																	if(pos >= length)			$scope.rankingData.push(rank)
+																	
+																}
+
+									this.removeRank			=	function(rank) {
+																	var pos = typeof rank =='number'  ? rank : $scope.rankingData.indexOf(rank)
+																	if(pos != -1) $scope.rankingData.splice(pos,1)
+																}
+
+									this.isEmpty			=	function(rank) {
+																	return(rank && rank.length == 0)
+																}
+
+									this.isDepleted			=	function(rank) {
+																	return(rank && rank.length ==1 && rank[0] == "")
+																}
+
+									this.hasPlaceholder		=	function(rank) {
+																	return(rank && rank.indexOf("") != -1)
+																}							
+
+									this.processRankingData	=	function() {
+																	var options 		= {}
+																	$scope.rankingData	= []
+
+																	this.addRank([])			
+
+																	$scope.raw_rankingData.forEach(function(rank, index) {
+																		var copy = []
+																		self.addRank(copy, $scope.rankingData.length-1)
+
+																		rank.forEach(function(option, index){
+																			if(!options[option]) copy.push(option) 
+																			options[option] = true	//prevent dublicates
+																		})
+																		self.addRank([], copy)																		
+																	})
+																}
+
+									this.exportRankingData	=	function() {
+																	$scope.raw_rankingData.splice(0, $scope.raw_rankingData.length)
+																	$scope.rankingData.forEach(function(rank, index) {
+																		if(!self.isEmpty(rank)) $scope.raw_rankingData.push(rank)
+																	})
+																}
+
+									this.promoteRank		=	function(rank) {
+																	var pos 	= typeof rank == "number" ? rank : $scope.rankingData.indexOf(rank)
+
+																	this.addRank([], pos)
+																	this.addRank([], pos-1)
+																}
+
+									this.demoteRank			=	function(rank) {
+																	var pos 	= typeof rank == "number" ? rank : $scope.rankingData.indexOf(rank),
+																		prev	= $scope.rankingData[pos-1],
+																		next	= $scope.rankingData[pos+1]
+
+																	if(this.isEmpty(next)) this.removeRank(pos+1)
+																	if(this.isEmpty(prev)) this.removeRank(pos-1)
+																}
+
+									this.removeOption		=	function(option) {																															
+																	var last_rank = undefined
+																	$scope.rankingData.forEach(function(rank, index){
+																		var pos = rank.indexOf(option)
+																		if(pos != -1) {
+																			last_rank = rank																																							
+																			rank.splice(pos, 1)
+																			if(self.isEmpty(rank)) self.demoteRank(rank) //there must not be any dublicates of option for this to work properly
+																		}
+																	})
+
+																	return(last_rank)																			
+																}
+
+									this.addOption			=	function(option, rank) {
+																	rank = rank || $scope.rankingData.length-1
+																	if(this.isEmpty(rank) && option !="") this.promoteRank(rank)
+																	rank.push(option)
+																	
+																	return(this.commit())
+																}
+
+									this.replaceOption		=	function(option1, option2) {																	
+																	return(this.addOption(option2, this.removeOption(option1)) && this.commit())
+																}
+
+									this.moveOption			=	function(option, rank) {
+																	return(this.removeOption(option) && this.addOption(option, rank) && this.commit())
+																}
+
+									this.commit				=	function() {
+																	$scope.$apply()
+																	$scope.$broadcast('ranking-update')
+																	return(true)
+																}
+
+									this.save				=	function() {
+																	$scope.saved = true
+																	this.exportRankingData()
+																	$scope.$apply()															
+																}											
+
+									this.processRankingData()
+
+									$scope.$watchCollection($attrs.rankingModel, function(new_value){																														
+										_l(new_value)										
+										if(!$scope.saved){
+											$scope.raw_rankingData	= new_value											
+											self.processRankingData()											
 										}
-									}
+										delete $scope.saved
+									}, true)
 
-									this.addOption = function(id, rank) {
-										if(rank){
-											rank.push(id)
-										}else{
-											$scope.rankingData.push([id])
-										}
-										this.stage()
-									}
-
-									this.moveOption = function(id, rank) {	
-										var	option = this.findOption(id)
-
-										if(option.rank) {
-											rank.push(option.rank.splice(option.index, 1)[0])											
-
-											this.stage()
-
-											return(true)
-										}
-
-										return(false)
-									}
-
-									this.replaceOption = function(id_1, id_2){
-										var	option = this.findOption(id_1)
-
-										if(option.rank){
-											this.addOption(id_2, option.rank)
-											this.removeOption(id_1)
-											this.stage()
-											return(true)
-										}
-										return(false)
-									}
-
-									this.stage = function() {
-										$scope.staged = true
-									}
-
-									this.commit = function() {
-										if($scope.staged) {											
-											this.flattenRankingData()
-											this.refreshRankingData()
-											this.updateModel()
-											$scope.$apply()
-											$scope.$broadcast('ranking-update')
-											$scope.staged = false
-										}
-									}
 
 									$scope.noDragging			= $attrs.noDragging != undefined	
 
-									$scope.rankingOrientation 	= $attrs.rankingOrientation || 'vertical'									
-									$scope.raw_rankingData 		= $parse($attrs.ngModel)($scope)
-
-									var self = this
-
-									$scope.$watchCollection($attrs.ngModel, function(new_value){
-										$scope.rankingData = self.processRankingData(new_value)									
-									})
-
-									$scope.rankingData 			= this.processRankingData($scope.raw_rankingData)									
-									this.flattenRankingData()
+									$scope.rankingOrientation 	= $attrs.rankingOrientation || 'vertical'																		
+									
 								}
 			}
 }
@@ -382,6 +295,7 @@ function HTMLpreferenceRank($scope, $animate) {
 									scope.evaluatePositionUpdate = function(event, pos) {
 										if(!scope.hasPlaceholder() && _over(element, pos, true)) {
 											rankingCtrl.moveOption("", scope.rank)
+											scope.$apply()
 										}
 									}
 

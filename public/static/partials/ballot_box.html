@@ -8,9 +8,10 @@
 
 	<div id="edit-paper">
 		<preference-ranking
-			ng-model			=	"ballot_box.papers[selected||''].ranking"
+			ranking-model		=	"ballot_box.papers[selected||''].ranking"
 			ranking-orientation	=	"vertical"
-		>			
+		>	
+			{{selected}}		
 			<preference-rank
 				ng-repeat 	=	"rank in rankingData"
 				class		=	"ui-panel left vertical ui-borders ui-corners-all"
@@ -40,13 +41,17 @@
 
 
 
+
+
 	<!-- list of all ballot papers -->
 
-	<ul id="ballot-papers">
+
+
+	<ul class="ballot-papers ui-corners-left">
 		<li
 			class		=	"ballot-paper {{selected ? 'selected' : ''}}" 
 			ng-repeat	=	"paper in ballot_box.papers"
-			select-as	=	"{{$index}}"						
+			select-as	=	"{{paper.id}}"						
 		>
 					
 			<div class = "controls">
@@ -66,7 +71,7 @@
 			</div>
 
 			<preference-ranking
-				ng-model			=	"paper.ranking"
+				ranking-model		=	"paper.ranking"
 				ranking-orientation	=	"horizontal"
 				no-dragging			=	"true"
 				class				=	"compact"
@@ -76,7 +81,9 @@
 					class		=	"ui-panel left horizontal ui-borders ui-corners-all"
 				>
 					<summary>
+
 						<!-- CSS will put the counter here-->
+
 					</summary>
 
 					<preference-option 

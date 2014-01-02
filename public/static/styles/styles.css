@@ -108,8 +108,8 @@ body > header h1 {
 
 body > article {
 	background-color:		#A7C7DC;
-	/*box-shadow:				0 0 20em rgba(0, 0, 0, 0.5) inset;*/
-	/*background-image:		url("images/shadow.png");*/
+	/*box-shadow:			0 0 20em rgba(0, 0, 0, 0.5) inset;*/
+	/*background-image:		url("images/background.png");*/
 	background-size:		cover;
 	padding:				6em 10%;
 	text-align:				center;
@@ -360,47 +360,6 @@ button.ui-icon-delete {
 			padding: 				0.5em;
 		}
 
-		/*
-
-		.ui-panel > summary > a:after {
-			content:				'';
-
-			display:				block;
-			position:				absolute;
-
-			height:					0;
-			width:					0;
-			top:					auto;
-			bottom:					0;		
-			left:					50%;
-			margin-left:			0em;
-
-			border-width:			0;
-			border-style:			solid;
-
-			border-color: 			transparent transparent rgba(100,125,140,1) transparent;			
-
-			transition-duration:	100ms;
-			
-		}
-
-		.ui-panel > details + summary > a:after {
-			top:					0;
-			bottom:					auto;
-			border-color: 			rgba(100,125,140,1) transparent transparent transparent;			
-		}
-
-		.ui-panel:hover > summary > a:after {
-			border-width: 			0 1.2em 0.5em 1.2em;				
-			margin-left:			-1.2em;
-		}
-		.ui-panel:hover > details + summary > a:after {	
-			border-width: 			0.5em 1.2em 0 1.2em;				
-			margin-left:			-1.2em;
-		}
-
-		*/
-
 
 	/* details */	
 
@@ -446,25 +405,42 @@ button.ui-icon-delete {
 	white-space: 			nowrap;
 }
 
+.ballot-box .ballot-papers {
+	display:				inline-block;
+	vertical-align:			top;	
+	padding:				1em 0;
+
+	background-color:		rgba(0, 0, 0, 0.3);
+	/*box-shadow:				0 0 0.2rem rgba(0, 0, 0, 0.5) inset;*/
+	
+
+}
+
 .ballot-box .ballot-paper {
 	display:				block;
 	position: 				relative;
 
-	margin:					0;
-	padding: 				0.5em;	
+	margin:					0 1em;
+	padding: 				0.5em;
+	border-radius:			0.5em;
+
 	text-align: 			left;
-	white-space: 			normal;	
-	vertical-align: 		middle;
+	white-space: 			nowrap;	
+	vertical-align: 		middle;	
 	transition-property:	font-size;
 	transition-duration:	400ms;
+}
+
+.ballot-box .ballot-paper:hover {	
 }
 
 
 .ballot-box .ballot-paper.selected {
 	font-size:				1em;
 	opacity: 				1;
-	background:				rgba(255, 255, 255, 1);
+	background:				rgba(255, 255, 255, 0.5);
 }
+
 
 .ballot-box .ballot-paper .participant {
 	display:				block;
@@ -480,10 +456,7 @@ button.ui-icon-delete {
 	width:					10em;
 }
 
-#ballot-papers {
-	display:				inline-block;
-	vertical-align:			top;	
-}
+
 
 #edit-paper {
 	display:				inline-block;
@@ -519,29 +492,33 @@ preference-ranking.compact {
 	font-size:				0.75em;
 }
 
-preference-ranking preference-rank,
-preference-ranking preference-rank.ng-enter.ng-enter-active {	
-	display:				block;
+
+preference-ranking preference-rank {	
 	position:				relative;
 
-	min-height:				1.8em;
-	min-width:				1.8em;
+	min-width:				2em;
 	margin:					0;
 	padding:				0;	
-	padding-left:			3em;
-	vertical-align: 		middle;
-	text-align:				center;			
+	padding-left:			3em;	
 	font-size:				1em;
 
+	vertical-align: 		middle;
+	text-align:				center;			
 	background:				#444;
-
-	overflow:				hidden;
 }
 
-preference-ranking[ranking-orientation="horizontal"] preference-rank {
-	display:				inline-block;
-	min-height:				4.2em;				/* option height + option margin */
+preference-ranking.vertical preference-rank {
+	display:				block;
+	min-height:				2em;
+	white-space:			normal;
 }
+
+preference-ranking.horizontal preference-rank {
+	display:				inline-block;	
+	line-height:			4.2em;
+	white-space: 			nowrap;
+}
+
 
 preference-rank > summary {
 	text-align:				left;	
@@ -558,23 +535,23 @@ preference-rank.nonempty > summary:before{
 }
 
 
-preference-rank.empty {		
-	opacity: 				0;
+preference-ranking preference-rank.empty {		
+	opacity: 				0 !important;
 	overflow:				hidden;
 	padding-top:			0;
 	padding-bottom:			0;
 }
 
-preference-ranking[ranking-orientation="horizontal"] preference-rank.empty {
+preference-ranking.horizontal preference-rank.empty {
 	padding-left:			0
 	padding-right:			0;
 }
 
-preference-rank.depleted {
+preference-ranking.vertical preference-rank.depleted {
 	margin:					2em 0;
 }		
 
-preference-ranking[ranking-orientation="horizontal"] preference-rank.depleted {
+preference-ranking.horizontal preference-rank.depleted {
 	margin:					0 2em;
 }		
 
@@ -586,25 +563,21 @@ preference-ranking[ranking-orientation="horizontal"] preference-rank.depleted {
 
 
 
-preference-option,
-preference-option.ng-enter.ng-enter-active,
-preference-option.ng-leave,
-preference-rank.ng-enter.ng-enter-active preference-option,
-preference-rank.ng-leave preference-option {
+preference-option {
 	display:				inline-block;
 	position:				relative;
 
-	font-size:				1em;	
-	line-height:			4em;
-	height:					4em;
+	line-height:			3.6em;
 	width:					8em;
+	margin:					0.5em;
+
 	text-align:				center;
-	opacity:				1;
 
 	cursor:					grab;
 	cursor:					-moz-grab;
 	cursor:					-webkit-grab;	
 }
+
 
 preference-ranking[no-dragging] preference-option {
 	cursor:					auto !important;
@@ -619,6 +592,7 @@ preference-option .title {
 	display:				inline-block;
 	padding:				0.2em 0.4em;
 	line-height:			1.2em;
+	vertical-align:			middle;
 	white-space: 			normal;	
 }
 
@@ -666,14 +640,11 @@ preference-option[value=""] * {
 
 
 
-preference-option[value=""]:after,
-preference-option[value=""].ng-enter.ng-enter-active:after,
-preference-option[value=""].ng-move.ng-move-active:after {
+preference-option[value=""]:after {
 	content:				'';
 
 	display:				block;
-	position: 				absolute;	
-	right: 					0em;
+	position: 				absolute;		
 	top: 					50%;
 	width:					0em; 
 	height:					0em; 
@@ -683,57 +654,75 @@ preference-option[value=""].ng-move.ng-move-active:after {
 	border-top:				1em solid transparent;
 	border-bottom:			1em solid transparent;	
 	border-right:			1em solid rgba(100,125,140,1);
-	opacity:				1;
 }
 
 
-preference-option[value=""].ng-enter:after,
-preference-option[value=""].ng-move:after {
-	right:					-8em;
-	opacity:				0;
+preference-option[value=""]:after,
+preference-option[value=""].ng-enter.ng-enter-active:after,
+preference-rank.ng-enter.ng-enter-active preference-option[value=""]:after {
+	right: 					0em !important;	
+	opacity:				1 !important;
 }
+
+
+preference-rank.ng-enter preference-option[value=""]:after,
+preference-option[value=""].ng-enter:after {
+	right:					-8em !important;
+	opacity:				0 !important;
+}
+
+
+
+
 
 preference-option[value=""] ~ preference-option[value=""] {
-	display: none;
+	display: none !important;
 }
 
 /* looks */
 
 
 
-
-
 /* transition mechanics:*/
 
-preference-option.ng-enter, 
-preference-option.ng-leave.ng-leave-active,
-preference-rank.ng-enter preference-option,
-preference-rank.ng-leave.ng-leave-active preference-option,
-preference-rank.ng-enter,
-preference-rank.ng-leave.ng-leave-active {
-	height:					0;
-	min-height: 			0;
-	padding-top:			0;
-	padding-bottom:			0;
-	margin-top:				0;
-	margin-bottom:			0;
-	border-width:			0;	
+
+
+preference-ranking.vertical 	preference-rank.ng-enter.ng-enter-active,
+preference-ranking.vertical 	preference-rank.ng-leave,
+preference-ranking.vertical 	preference-option.ng-enter.ng-enter-active,
+preference-ranking.vertical 	preference-option.ng-leave
+{
+	font-size:				1em;
+	opacity:				1;	
 }
 
 
-preference-ranking[ranking-orientation="horizontal"] preference-option.ng-enter, 
-preference-ranking[ranking-orientation="horizontal"] preference-option.ng-leave.ng-leave-active,
-preference-ranking[ranking-orientation="horizontal"] preference-rank.ng-leave.ng-leave-active preference-option,
-preference-ranking[ranking-orientation="horizontal"] preference-rank.ng-enter preference-option,
-preference-ranking[ranking-orientation="horizontal"].ng-enter,
-preference-ranking[ranking-orientation="horizontal"].ng-leave.ng-leave-active {
-	width:					0;
-	min-width: 				0;
-	padding-left:			0;
-	padding-right:			0;
-	margin-left:			0;
-	margin-right:			0;
-	border-width:			0;	
+preference-ranking.vertical 	preference-rank.ng-leave.ng-leave-active,
+preference-ranking.vertical 	preference-rank.ng-enter,
+preference-ranking.vertical 	preference-option.ng-leave.ng-leave-active,
+preference-ranking.vertical 	preference-option.ng-enter
+{
+	font-size:				0;
+	opacity:				0;	
+}
+
+preference-ranking.horizontal 	preference-rank.ng-enter.ng-enter-active,
+preference-ranking.horizontal 	preference-rank.ng-leave,
+preference-ranking.horizontal 	preference-option.ng-enter.ng-enter-active,
+preference-ranking.horizontal 	preference-option.ng-leave
+{
+	font-size:				1em;
+	opacity:				1;	
+}
+
+
+preference-ranking.horizontal 	preference-rank.ng-leave.ng-leave-active,
+preference-ranking.horizontal 	preference-rank.ng-enter,
+preference-ranking.horizontal 	preference-option.ng-leave.ng-leave-active,
+preference-ranking.horizontal 	preference-option.ng-enter
+{
+	font-size:				0;
+	opacity:				0;	
 }
 
 
@@ -743,21 +732,22 @@ preference-ranking[ranking-orientation="horizontal"].ng-leave.ng-leave-active {
 
 preference-rank,
 preference-option{	
-	transition-duration:	600ms;
+	/*transition-duration:	10600ms;*/
 }
 
 preference-rank.ng-enter,
-preference-option.ng-enter,
-preference-option[value=""].ng-enter:after,
-preference-option[value=""].ng-move:after{
-	transition-duration:	600ms !important;
+preference-rank.ng-enter	preference-option,
+preference-rank				preference-option.ng-enter.ng-enter-active,
+preference-rank				preference-option[value=""].ng-enter:after{
+	transition-duration:	100600ms;
 }
 
 
 preference-rank.ng-leave,
-preference-option.ng-leave,
-preference-rank.ng-leave preference-option {
-	transition-duration:	600ms !important;	
+preference-rank.ng-leave	preference-option,
+preference-rank 			preference-option.ng-leave.ng-leave-active,
+preference-rank				preference-option[value=""].ng-leave.ng-leave-active:after {
+	transition-duration:	100600ms;	
 }
 
 preference-option.dragged{

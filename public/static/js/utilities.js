@@ -6,7 +6,7 @@ function _l(obj){
 	}
 
 	if(typeof obj == "object"){
-		console.groupCollapsed(obj.toString())
+		console.groupCollapsed(obj)
 			console.dir(obj)
 		console.groupEnd()
 	}else{

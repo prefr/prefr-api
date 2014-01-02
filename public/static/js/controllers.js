@@ -14,8 +14,6 @@ schulzeDoodleControllers.controller(
 										papers	:	[]
 									}
 
-			$scope.edit			=	undefined
-
 			//dummy:
 			$scope.ballot_box	=	{
 							            id      :   1,
@@ -96,11 +94,10 @@ schulzeDoodleControllers.controller(
 
 		    $scope.addBallotPaper = function(id) {
 		    	var ballot_paper = {
+		    							id			:	id !== undefined ? id : Math.floor(Math.random()*100),
 										participant :   "unnamed",
 										ranking     :   [Object.keys($scope.ballot_box.options)]
 		    						}
-		    	
-		        $.extend(ballot_paper, {id: id !== undefined ? id : Math.floor(Math.random()*100)})
 		        $scope.ballot_box.papers[ballot_paper.id] = ballot_paper
 		    }
 
