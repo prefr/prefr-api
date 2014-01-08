@@ -52,6 +52,46 @@ function HTMLselectAs() {
 			}
 }
 
+function HTMLrankingSource() {
+	return	{
+				restrict	:	'E',
+				replace		:	true,
+				template	:	'<div contenteditable="true" class="ranking-source"></div>',
+				
+				scope		:	{
+									rankingData		:	"="
+								},
+
+				link		:	function(scope, element, attrs) {
+
+									scope.parseData = function(ranking_data) {
+										var	html = '[\n'
+										scope.rankingData.forEach(function(rank, index){
+											html += '[\t'
+											rank.forEach(function(option, index){
+												html += '<span class="">"'+option+'</span>", '
+											})
+											html+= '\n'
+										})
+										html +=']'
+										element.html(html)
+									}
+
+									scope.update = function() {
+										//var buf = eval(textarea.val())
+										//scope.rankingData = buf
+
+										element.html(textarea.val()+' ')
+									}
+
+									scope.rankingData = scope.rankingData || []
+									scope.parseData()
+									scope.update()
+								}
+
+			}
+}
+
 
 function HTMLpreferenceRanking($parse, $animate) {
 	return	{
@@ -238,7 +278,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 																}
 
 									this.addOption			=	function(option, rank) {
-																	rank = rank || $scope.rankingData.length-1
+																	rank = rank // ?? || $scope.rankingData.length-1
 																	if(this.isEmpty(rank) && option !="") this.promoteRank(rank)
 																	rank.push(option)
 																	
@@ -255,20 +295,19 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 									this.commit				=	function() {
 																	$scope.$apply()
-																	$scope.$broadcast('ranking-update')
+																	$scope.$broadcast('ranking-update')																	
 																	return(true)
 																}
 
 									this.save				=	function() {
 																	$scope.saved = true
 																	this.exportRankingData()
-																	$scope.$apply()															
+																	$scope.$apply()																											
 																}											
 
 									this.processRankingData()
 
-									$scope.$watchCollection($attrs.rankingModel, function(new_value){																														
-										_l(new_value)										
+									$scope.$watchCollection($attrs.rankingModel, function(new_value){							
 										if(!$scope.saved){
 											$scope.raw_rankingData	= new_value											
 											self.processRankingData()											
@@ -293,7 +332,7 @@ function HTMLpreferenceRank($scope, $animate) {
 				link		:	function(scope, element, attrs, rankingCtrl) {	
 									
 									scope.evaluatePositionUpdate = function(event, pos) {
-										if(!scope.hasPlaceholder() && _over(element, pos, true)) {
+										if(!scope.hasPlaceholder() && _over(element, pos, true)>1) {
 											rankingCtrl.moveOption("", scope.rank)
 											scope.$apply()
 										}

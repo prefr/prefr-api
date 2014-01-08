@@ -90,10 +90,9 @@ body > header a.current:after {
 
 body > header h1 {
 	display:				inline-block;
+	float:					left;
 
-	
-	margin:					0;
-	margin-right:			2em;
+	margin:					0 2em;
 	font-size:				2.5em;
 	line-height:			3.2rem;	
 
@@ -107,9 +106,11 @@ body > header h1 {
 
 
 body > article {
-	background-color:		#A7C7DC;
+	background-color:		#444;
 	/*box-shadow:			0 0 20em rgba(0, 0, 0, 0.5) inset;*/
 	/*background-image:		url("images/background.png");*/
+	color:					#ccc;
+
 	background-size:		cover;
 	padding:				6em 10%;
 	text-align:				center;
@@ -408,27 +409,23 @@ button.ui-icon-delete {
 .ballot-box .ballot-papers {
 	display:				inline-block;
 	vertical-align:			top;	
-	padding:				1em 0;
-
-	background-color:		rgba(0, 0, 0, 0.3);
-	/*box-shadow:				0 0 0.2rem rgba(0, 0, 0, 0.5) inset;*/
-	
-
+	padding:				1.9em 0;
 }
 
 .ballot-box .ballot-paper {
 	display:				block;
 	position: 				relative;
 
-	margin:					0 1em;
-	padding: 				0.5em;
-	border-radius:			0.5em;
+	margin:					0.5em 2.5em;
+	line-height:			4.2em;
+
+	background-color:		#aaa;
 
 	text-align: 			left;
 	white-space: 			nowrap;	
 	vertical-align: 		middle;	
-	transition-property:	font-size;
-	transition-duration:	400ms;
+
+	cursor:					pointer;
 }
 
 .ballot-box .ballot-paper:hover {	
@@ -438,24 +435,66 @@ button.ui-icon-delete {
 .ballot-box .ballot-paper.selected {
 	font-size:				1em;
 	opacity: 				1;
-	background:				rgba(255, 255, 255, 0.5);
 }
+
 
 
 .ballot-box .ballot-paper .participant {
-	display:				block;
-	font-size:				1em;	
-	border:					none;
-	padding	:				0;
+	display:				inline-block;
+	position:				relative;
+
 	margin:					0;
-	text-align: 			left;	
-}
-
-.ballot-box .ballot-paper .controls {
-	display: 				inline-block;
+	padding	:				0;
+	font-size:				1.4em;
+	padding-left:			1em;
 	width:					10em;
+
+	background-color:		#647D8C;
+	color:					rgba(255,255,255,0.9);
+	border:					none;
+	text-align: 			left;	
+	white-space: 			nowrap;
+	vertical-align: 		top;
 }
 
+.ballot-box .ballot-paper .participant:before,
+.ballot-box .ballot-paper .participant:after {
+	content:				'';
+
+	display:				block;
+	position:				absolute;
+
+	top:					50%;
+	margin-top:				-1.5em;
+
+	width:					0;
+	height:					0;
+
+
+	border-top:				1.5em solid transparent;
+	border-bottom:			1.5em solid transparent;
+	border-right:			none;
+	border-left:			none;
+
+	transition:				border-width 200ms;
+}
+
+.ballot-box .ballot-paper.selected .participant:before {
+	right:					100%;
+	border-right:			1.05em solid #647D8C;
+}
+
+.ballot-box .ballot-paper.selected .participant:after {
+	right:					0;
+	border-right:			1.05em solid #aaa;
+}
+
+
+
+
+.ballot-box .ballot-paper preference-ranking {
+	vertical-align:			top;
+}
 
 
 #edit-paper {
@@ -542,18 +581,21 @@ preference-ranking preference-rank.empty {
 	padding-bottom:			0;
 }
 
+preference-ranking.vertical preference-rank.empty,
 preference-ranking.horizontal preference-rank.empty {
-	padding-left:			0
+	padding-left:			0;
 	padding-right:			0;
+	margin:					0;
 }
 
 preference-ranking.vertical preference-rank.depleted {
-	margin:					2em 0;
+	margin:					2.4em 0;
 }		
 
 preference-ranking.horizontal preference-rank.depleted {
-	margin:					0 2em;
-}		
+	margin:					0 2.4em;
+}
+
 
 
 
@@ -676,7 +718,7 @@ preference-option[value=""].ng-enter:after {
 
 
 preference-option[value=""] ~ preference-option[value=""] {
-	display: none !important;
+	/*display: none !important;*/
 }
 
 /* looks */
@@ -685,73 +727,67 @@ preference-option[value=""] ~ preference-option[value=""] {
 
 /* transition mechanics:*/
 
-
-
-preference-ranking.vertical 	preference-rank.ng-enter.ng-enter-active,
-preference-ranking.vertical 	preference-rank.ng-leave,
-preference-ranking.vertical 	preference-option.ng-enter.ng-enter-active,
-preference-ranking.vertical 	preference-option.ng-leave
-{
-	font-size:				1em;
-	opacity:				1;	
+preference-rank {
+	transition-property:				margin, opacity;
+	transition-duration:				500ms;
 }
-
-
-preference-ranking.vertical 	preference-rank.ng-leave.ng-leave-active,
-preference-ranking.vertical 	preference-rank.ng-enter,
-preference-ranking.vertical 	preference-option.ng-leave.ng-leave-active,
-preference-ranking.vertical 	preference-option.ng-enter
-{
-	font-size:				0;
-	opacity:				0;	
-}
-
-preference-ranking.horizontal 	preference-rank.ng-enter.ng-enter-active,
-preference-ranking.horizontal 	preference-rank.ng-leave,
-preference-ranking.horizontal 	preference-option.ng-enter.ng-enter-active,
-preference-ranking.horizontal 	preference-option.ng-leave
-{
-	font-size:				1em;
-	opacity:				1;	
-}
-
-
-preference-ranking.horizontal 	preference-rank.ng-leave.ng-leave-active,
-preference-ranking.horizontal 	preference-rank.ng-enter,
-preference-ranking.horizontal 	preference-option.ng-leave.ng-leave-active,
-preference-ranking.horizontal 	preference-option.ng-enter
-{
-	font-size:				0;
-	opacity:				0;	
-}
-
-
-
-
-
-
-preference-rank,
-preference-option{	
-	/*transition-duration:	10600ms;*/
-}
-
-preference-rank.ng-enter,
-preference-rank.ng-enter	preference-option,
-preference-rank				preference-option.ng-enter.ng-enter-active,
-preference-rank				preference-option[value=""].ng-enter:after{
-	transition-duration:	100600ms;
-}
-
 
 preference-rank.ng-leave,
-preference-rank.ng-leave	preference-option,
-preference-rank 			preference-option.ng-leave.ng-leave-active,
-preference-rank				preference-option[value=""].ng-leave.ng-leave-active:after {
-	transition-duration:	100600ms;	
-}
-
-preference-option.dragged{
-	transition-duration:	0ms;
+preference-option.ng-leave,
+preference-option[value=""].ng-leave:after {
+	-webkit-animation:		enter_animation 500ms reverse ease-in-out;
+	animation:				enter_animation 500ms reverse ease-in-out;
 }
 
 
+preference-rank.ng-enter,
+preference-option.ng-enter,
+preference-option[value=""].ng-enter:after{
+	-webkit-animation:		enter_animation 500ms ease-in-out;
+	animation:				enter_animation 500ms ease-in-out;
+}
+
+
+ 
+ @keyframes enter_animation {
+	from { 
+		font-size:				0em;
+		opacity:				0; 
+	}
+	to {
+		font-size:				1em;
+		opacity:				1; 
+	}
+}
+ 
+
+@-webkit-keyframes enter_animation {
+	from { 
+		font-size:				0em;
+		opacity:				0; 
+	}
+	to {
+		font-size:				1em;
+		opacity:				1; 
+	}
+}
+
+
+
+/* ranking-source */
+
+.ranking-source {
+	display: 					block;
+	position:					relative;
+
+	min-height:					1em;
+	width:						100%;
+	margin:						0;
+	padding:					0;
+
+	border:						none;
+	font-size:					1em;
+	font-family: 				monospace;
+	text-align:					left;
+	color:						rgba(245, 245, 240, 1);
+}

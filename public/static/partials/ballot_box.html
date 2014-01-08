@@ -10,8 +10,7 @@
 		<preference-ranking
 			ranking-model		=	"ballot_box.papers[selected||''].ranking"
 			ranking-orientation	=	"vertical"
-		>	
-			{{selected}}		
+		>			
 			<preference-rank
 				ng-repeat 	=	"rank in rankingData"
 				class		=	"ui-panel left vertical ui-borders ui-corners-all"
@@ -51,11 +50,12 @@
 		<li
 			class		=	"ballot-paper {{selected ? 'selected' : ''}}" 
 			ng-repeat	=	"paper in ballot_box.papers"
-			select-as	=	"{{paper.id}}"						
+			select-as	=	"{{paper.id}}"	
+			ng-click	= "select()"					
 		>
 					
-			<div class = "controls">
-				<span class="participant"> {{paper.participant}} </span>							
+			<div class="participant"> {{paper.participant}} 	
+				<!--						
 				<button 
 					ng-click	= "select()"
 					class		= "ui-icon-edit"
@@ -68,6 +68,7 @@
 				> 	
 					delete
 				</button>
+				-->
 			</div>
 
 			<preference-ranking
@@ -107,6 +108,9 @@
 	<!-- list of all ballot papers -->
 
 </div>
+
+<ranking-source>
+</ranking-source>
 
 <button ng-click = "addBallotPaper()"> Add Ballot </button>
 
