@@ -64,28 +64,35 @@ function HTMLrankingSource() {
 
 				link		:	function(scope, element, attrs) {
 
-									scope.parseData = function(ranking_data) {
-										var	html = '[\n'
-										scope.rankingData.forEach(function(rank, index){
-											html += '[\t'
-											rank.forEach(function(option, index){
-												html += '<span class="">"'+option+'</span>", '
-											})
-											html+= '\n'
+									scope.highlight = function(text){
+										var	html	= text || ""										
+
+										html.match(/\[[^\[\]]*\]/gi).forEach(function(match, index){											
+											html = html.replace(_l(match), '<div>'+match+'</div>')
 										})
-										html +=']'
-										element.html(html)
+										
+										return(html)
 									}
 
-									scope.update = function() {
-										//var buf = eval(textarea.val())
-										//scope.rankingData = buf
+									scope.update	=	function(){
+										var text	= element.text(),
+											data	= undefined
+										
+										try{
+											data = JSON.parse(text)
+										}catch(e){
 
-										element.html(textarea.val()+' ')
+										}	
+
+										//if(data) scope.rankingData = data
+
+										element.html(scope.highlight(text))
 									}
+
+									element.on('keyup', scope.update)
 
 									scope.rankingData = scope.rankingData || []
-									scope.parseData()
+									element.html(JSON.stringify(scope.rankingData))
 									scope.update()
 								}
 
@@ -332,9 +339,10 @@ function HTMLpreferenceRank($scope, $animate) {
 				link		:	function(scope, element, attrs, rankingCtrl) {	
 									
 									scope.evaluatePositionUpdate = function(event, pos) {
-										if(!scope.hasPlaceholder() && _over(element, pos, true)>1) {
+										if(!scope.pause && !scope.hasPlaceholder() && _over(element, pos, true)>1) {
 											rankingCtrl.moveOption("", scope.rank)
 											scope.$apply()
+											scope.pause = window.setTimeout(function(){ delete scope.pause }, 400)
 										}
 									}
 

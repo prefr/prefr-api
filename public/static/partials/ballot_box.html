@@ -107,10 +107,12 @@
 
 	<!-- list of all ballot papers -->
 
+	<ranking-source ranking-data = "ballot_box.papers[selected||''].ranking">
+	</ranking-source>
+
 </div>
 
-<ranking-source>
-</ranking-source>
+
 
 <button ng-click = "addBallotPaper()"> Add Ballot </button>
 
