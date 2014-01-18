@@ -27,6 +27,7 @@ import play.api.libs.json._
  */
 case class BallotBox(
                       id: String,
+                      date: Date,
                       ballots: Seq[Ballot],
                       title: Option[String]
                       )

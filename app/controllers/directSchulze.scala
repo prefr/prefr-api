@@ -19,9 +19,9 @@ object directSchulze extends Controller {
       val jsBody: JsValue = request.body
 
       jsBody.validate[BallotBox].fold (
-            invalid = e => BadRequest(JsError.toFlatJson(e)),
+            invalid = {e => BadRequest(JsError.toFlatJson(e))},
             valid = b => {
-              //val ranking = Schulze.getRanking(b.ballots.toList)
+              val ranking = Schulze.getRanking(b.ballots.toList)
 
               Ok(Json.toJson(b))
             }
