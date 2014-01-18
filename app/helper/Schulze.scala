@@ -1,6 +1,6 @@
 package helper
 
-import model.Ballot
+import model.Paper
 import play.api.Logger
 
 /**
@@ -13,7 +13,7 @@ object Schulze {
 
   // cretes matrix defining the number of voters who prefer candidate i to candidate j
 
-  def createCandidateMatrix(ballots: List[Ballot], candidates: List[String]): List[List[Int]] = {
+  def createCandidateMatrix(ballots: List[Paper], candidates: List[String]): List[List[Int]] = {
     // get preference matrix for each ballot
     val list = ballots.map(getPreferences(_, candidates))
 
@@ -24,7 +24,7 @@ object Schulze {
   }
 
   // get matrix for single ballot
-  def getPreferences(ballot: Ballot, candidates: List[String]): List[List[Int]] = {
+  def getPreferences(ballot: Paper, candidates: List[String]): List[List[Int]] = {
 
     def findPosition(candidate: String): Int = {
 
@@ -60,7 +60,7 @@ object Schulze {
     })
   }
 
-  def getRanking(ballots: List[Ballot]): List[String] = {
+  def getRanking(ballots: List[Paper]): List[String] = {
 
     // get all available candidates
     val candidates = getCandidates(ballots)
@@ -73,9 +73,9 @@ object Schulze {
   }
 
   // parses List of ballots for all available options
-  def getCandidates(ballots: List[Ballot]): List[String] = {
+  def getCandidates(ballots: List[Paper]): List[String] = {
 
-    def getUniqueElements(existingOptions: List[String], ballot: Ballot): List[String] = {
+    def getUniqueElements(existingOptions: List[String], ballot: Paper): List[String] = {
       ballot.ranking.flatten.foldLeft(existingOptions)((options, option) =>
         if (options.contains(option)) {
           options

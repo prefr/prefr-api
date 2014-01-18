@@ -15,6 +15,6 @@ object IdHelper {
   }
 
   def generateBallotId(): String = {
-    randomString(30)
+    randomString(16)
   }
 }
