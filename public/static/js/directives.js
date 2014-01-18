@@ -1,17 +1,20 @@
 function HTMLsingleSelect() {
 	return	{
 				restrict	:	'A',
+				scope		:	true,
 
-				controller	:	function($scope) {					
-									$scope.$on('select', function(event, origin){																	
+				controller	:	function($scope, $element, $attrs) {									
+									var key = $.camelCase($attrs.singleSelect)
+
+									$scope.$on($attrs.singleSelect+'-select', function(event, origin){																	
 										if(event.targetScope != $scope) {
 											event.stopPropagation()											
-											$scope.selected = origin
-											$scope.select($scope.selected)	
+											$scope[key].selected = origin
+											$scope.select($scope[key].selected)
 										}
 									})
 
-									$scope.$on('deselect', function(event, origin){																	
+									$scope.$on($attrs.singleSelect+'-deselect', function(event, origin){																	
 										if(event.targetScope != $scope) {
 											event.stopPropagation()
 											$scope.selected = undefined
@@ -20,10 +23,11 @@ function HTMLsingleSelect() {
 									})
 
 									$scope.select = function(target) {										
-										$scope.$broadcast('select', target)
+										$scope.$broadcast($attrs.singleSelect+'-select', target)
 									}
+									
+									$scope[key] = {}
 								}
-
 			}
 
 }
@@ -31,22 +35,26 @@ function HTMLsingleSelect() {
 function HTMLselectAs() {
 	return	{
 				restrict	:	'A',
+				scope		:	true,				
+
+				link		:	function(scope, element, attrs) {
+									if(scope.$eval(attrs.selectInitial)) scope.select()
+								},
 
 				controller	:	function($scope, $element, $attrs) {																		
 									$scope.selected = false
 
-									$scope.$on('select', function(event, origin) {										
-										$scope.selected =  (origin == $attrs.selectAs)
+									$scope.$on($attrs.selectAs+'-select', function(event, origin) {										
+										$scope.selected =  (origin == $attrs.selectBy)
 									})
 
 									$scope.select = function() {
-										$scope.$emit('select', $attrs.selectAs)
+										$scope.$emit($attrs.selectAs+'-select', $attrs.selectBy)
 									}
 
 									$scope.deselect = function() {
-										$scope.$emit('deselect', $attrs.selectAs)
-									}
-
+										$scope.$emit($attrs.selectAs+'-deselect', $attrs.selectBy)
+									}									
 								}
 
 			}
@@ -56,19 +64,17 @@ function HTMLrankingSource() {
 	return	{
 				restrict	:	'E',
 				replace		:	true,
-				template	:	'<div contenteditable="true" class="ranking-source"></div>',
+				template	:	'<code contenteditable="true" class="ranking-source"></code>',
 				
-				scope		:	{
-									rankingData		:	"="
-								},
+				scope		:	true,
 
 				link		:	function(scope, element, attrs) {
 
 									scope.highlight = function(text){
 										var	html	= text || ""										
 
-										html.match(/\[[^\[\]]*\]/gi).forEach(function(match, index){											
-											html = html.replace(_l(match), '<div>'+match+'</div>')
+										html.match(/\[[^\[\]]*\]\,*/gi).forEach(function(match, index){											
+											html = html.replace(match, '<div><span class="tab">'+match+'</div>')
 										})
 										
 										return(html)
@@ -84,16 +90,44 @@ function HTMLrankingSource() {
 
 										}	
 
-										//if(data) scope.rankingData = data
+										if(data) {
+											scope.rankingData.slice(0, scope.rankingData.length) 
+											_l(data)
+											Array.prototype.push.apply(scope.rankingData, data)
+												
+										} 
 
-										element.html(scope.highlight(text))
+										//element.html(scope.highlight(text))
 									}
 
-									element.on('keyup', scope.update)
+
+									element.on('keydown', function(event){
+										if(event.which == 9){
+											var span	= document.createElement('span'),
+												sel		= window.getSelection(),
+												range	= sel.getRangeAt(0)
+
+											range.insertNode(span)
+											$(span).addClass("tab")
+
+											range.setStartAfter(span)
+											
+											event.preventDefault()
+											event.target.focus()
+											return(false)
+										}
+										scope.update()
+									})
 
 									scope.rankingData = scope.rankingData || []
-									element.html(JSON.stringify(scope.rankingData))
+									element.html(JSON.stringify(scope.rankingData))									
 									scope.update()
+
+									scope.$watchCollection(attrs.rankingData, function(new_ranking, old_ranking){										
+										//scope.rankingData = new_ranking
+										element.html(JSON.stringify(_l(new_ranking)))
+										scope.update()
+									})
 								}
 
 			}
@@ -117,17 +151,18 @@ function HTMLpreferenceRanking($parse, $animate) {
 												y		=	event.pageY - element.offset().top,
 												width	=	element.innerWidth(),
 												height	=	element.innerHeight(),
-												fx		=	scope.rankingOrientation == 'vertical' ? 0.7 : 1,
-												fy		=	scope.rankingOrientation == 'horizonal' ? 0.7: 1
+												// fx, and fy determine from which pint dragging gets harder fy = 0.3 means: 
+												// if the cursor is within 30% width of the border horizontal dragging gets harder
+												fx		=	scope.rankingOrientation == 'vertical' ? 0.3 : 0,
+												fy		=	scope.rankingOrientation == 'horizonal' ? 0.3: 0
 
 											//movement outside the element counts far less than movement inside the element:
-											if(x < width*(1-fx))	x = width*(1-fx)	- Math.pow(width*(1-fx)-x, 0.5)
-											if(x > width*fx)		x = width*fx 		+ Math.pow(x-width*fx, 0.5)
+											if(x < width*fx)		x = width*fx		- Math.pow(width*fx-x, 0.5)
+											if(x > width*(1-fx))	x = width*(1-fx) 	+ Math.pow(x-width*(1-fx), 0.5)
 
-											if(y < height*(1-fy))	y = height*(1-fy)	- Math.pow(height*(1-fy)-y, 0.5)
-											if(y > height*fy)		y = height*fy 		+ Math.pow(y-height*fy, 0.5)	
-
-											//	
+											if(y < height*fy)		y = height*fy		- Math.pow(height*fy-y, 0.5)
+											if(y > height*(1-fy))	y = height*(1-fy) 	+ Math.pow(y-height*(1-fy), 0.5)	
+										
 
 											var pos	=	{x:x, y:y}
 
@@ -250,7 +285,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 									this.exportRankingData	=	function() {
 																	$scope.raw_rankingData.splice(0, $scope.raw_rankingData.length)
 																	$scope.rankingData.forEach(function(rank, index) {
-																		if(!self.isEmpty(rank)) $scope.raw_rankingData.push(rank)
+																		if(!self.isEmpty(rank)) $scope.raw_rankingData.push(rank.slice(0))
 																	})
 																}
 
@@ -314,7 +349,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 									this.processRankingData()
 
-									$scope.$watchCollection($attrs.rankingModel, function(new_value){							
+									$scope.$watchCollection($attrs.rankingModel, function(new_value){
 										if(!$scope.saved){
 											$scope.raw_rankingData	= new_value											
 											self.processRankingData()											
@@ -342,7 +377,7 @@ function HTMLpreferenceRank($scope, $animate) {
 										if(!scope.pause && !scope.hasPlaceholder() && _over(element, pos, true)>1) {
 											rankingCtrl.moveOption("", scope.rank)
 											scope.$apply()
-											scope.pause = window.setTimeout(function(){ delete scope.pause }, 400)
+											scope.pause = window.setTimeout(function(){ delete scope.pause }, 1500)											
 										}
 									}
 

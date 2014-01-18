@@ -1,120 +1,167 @@
 <div
 	class			=	"ballot-box"
-	single-select	=	"true"		
+	single-select	=	"ballot-paper"		
 >
-	<h3>{{ballot_box.subject}} ({{ballot_box.id}})</h3>
 
-	<!-- selected ballot paper to edit start -->
+    <table> 
+        <tr>
 
-	<div id="edit-paper">
-		<preference-ranking
-			ranking-model		=	"ballot_box.papers[selected||''].ranking"
-			ranking-orientation	=	"vertical"
-		>			
-			<preference-rank
-				ng-repeat 	=	"rank in rankingData"
-				class		=	"ui-panel left vertical ui-borders ui-corners-all"
-			>
-				<summary>
-					<!-- CSS will put the counter here-->
-				</summary>
+        	<!-- selected ballot paper to edit start -->
 
-				<preference-option 
-					class		=	"ui-panel right ui-corners-left"
-					ng-repeat	=	"option in rank"
-					value		=	"{{option}}"
-				>
-					<details>						
-						<div class="title"> 	{{ballot_box.options[option].title}} 	</div>						
-					</details>
-					<summary>
-						{{option}}
-					</summary>
-				</preference-option>	
+        	<td
+                class           = "edit-paper ui-deep-shadow"
+                single-select   = "edit-menu"
+            >
+                 <nav>                    
+                    <div
+                        select-as       = "edit-menu"
+                        select-by       = "source"
+                        ng-click        = "select()"
+                        class           = "{{selected ? 'selected' : ''}} ui-borders ui-corners-bottom"
+                    >
+                        Source
+                    </div>
 
-			</preference-rank>
-		</preference-ranking>
-	</div>
+                    <div
+                        select-as       = "edit-menu"
+                        select-by       = "ranking"
+                        select-initial  = "true"
+                        ng-click        = "select()"
+                        class           = "{{selected ? 'selected' : ''}} ui-borders ui-corners-bottom"
+                    >
+                        Ranking
+                    </div>                        
+                </nav>
+                
+        		<preference-ranking
+        			ranking-model		=	"ballot_box.papers[ballotPaper.selected||''].ranking"
+        			ranking-orientation	=	"vertical"
+                    ng-show             =   "editMenu.selected == 'ranking'"
+        		>			         
+        			<preference-rank
+        				ng-repeat 	=	"rank in rankingData"
+        				class		=	"ui-panel left vertical ui-borders ui-corners-all"
+        			>
+        				<summary>
+        					<!-- CSS will put the counter here-->
+        				</summary>
 
-	<!-- selected ballot paper to end -->
+        				<preference-option 
+        					class		=	"ui-panel right ui-corners-left"
+        					ng-repeat	=	"option in rank"
+        					value		=	"{{option}}"
+        				>
+        					<details>						
+        						<div class="title"> 	{{ballot_box.options[option].title}} 	</div>						
+        					</details>
+        					<summary>
+        						{{option}}
+        					</summary>
+        				</preference-option>	
+
+        			</preference-rank>
+        		</preference-ranking>
+
+                <div
+                    ng-show     = "editMenu.selected == 'source'" 
+                    class       = "ui-panel ui-borders ui-corners-all"
+                >
+                    <summary>
+                        {{ballot_box.papers[ballotPaper.selected || ''].participant}}
+                    </summary>                    
+                    <ranking-source ranking-data = "ballot_box.papers[ballotPaper.selected || ''].ranking" >
+                    </ranking-source>
+                </div>
+        	</td>
+
+        	<!-- selected ballot paper to end -->
 
 
 
 
 
-	<!-- list of all ballot papers -->
+        	
 
+            <td class="ballot-overview">
+        		<div class="details">
+                	<h2>{{ballot_box.subject}} ({{ballot_box.id}})</h2>
+        			<p>
+        				Example text. Put further details here. sgfjh ,jhsd f,jhsdf ewjhgf wje,a gfewhf g
+        			</p>
+        			<small>
+        				Instructions go here.
+        			</small>
+        		</div>
 
+                <!-- list of all ballot papers -->
 
-	<ul class="ballot-papers ui-corners-left">
-		<li
-			class		=	"ballot-paper {{selected ? 'selected' : ''}}" 
-			ng-repeat	=	"paper in ballot_box.papers"
-			select-as	=	"{{paper.id}}"	
-			ng-click	= "select()"					
-		>
-					
-			<div class="participant"> {{paper.participant}} 	
-				<!--						
-				<button 
-					ng-click	= "select()"
-					class		= "ui-icon-edit"
-				>	
-					edit		
-				</button>
-				<button 
-					ng-click	= "removeBallotPaper($index)"
-					class		= "ui-icon-delete"
-				> 	
-					delete
-				</button>
-				-->
-			</div>
+                <ul class="ballot-papers">
+                    <li
+                        class           = "ballot-paper {{selected ? 'selected' : ''}}"
+                        ng-repeat       = "paper in ballot_box.papers"
+                        select-as       = "ballot-paper"
+                        select-by       = "{{paper.id}}"
+                        select-initial  = "$first"
+                        ng-click        = "select()"
+                    >
 
-			<preference-ranking
-				ranking-model		=	"paper.ranking"
-				ranking-orientation	=	"horizontal"
-				no-dragging			=	"true"
-				class				=	"compact"
-			>			
-				<preference-rank
-					ng-repeat 	=	"rank in rankingData"
-					class		=	"ui-panel left horizontal ui-borders ui-corners-all"
-				>
-					<summary>
+                        <div class="participant"> 
 
-						<!-- CSS will put the counter here-->
+                            <span ng-hide="selected">{{paper.participant}}</span>
+                            <input ng-show="selected" type="text" value="{{paper.participant}}">
+                            <!--
+                            <button
+                                ng-click	= "select()"
+                                class		= "ui-icon-edit"
+                            >
+                                edit
+                            </button>
+                            <button
+                                ng-click	= "removeBallotPaper($index)"
+                                class		= "ui-icon-delete"
+                            >
+                                delete
+                            </button>
+                            -->
+                        </div>
 
-					</summary>
+                        <preference-ranking
+                            ranking-model		=	"paper.ranking"
+                            ranking-orientation	=	"horizontal"
+                            class				=	"compact"
+                        >
+                            <preference-rank
+                                ng-repeat 	=	"rank in rankingData"
+                                class		=	"ui-panel left horizontal ui-borders ui-corners-all"
+                            >
+                                <summary>
 
-					<preference-option 
-						class		=	"ui-panel right horizontal ui-corners-left"
-						ng-repeat	=	"option in rank"
-						value		=	"{{option}}"
-					>
-						<details>						
-							<div class="title"> 	{{ballot_box.options[option].title}} 	</div>						
-						</details>
-						<summary>
-							{{option}}
-						</summary>
-					</preference-option>	
+                                    <!-- CSS will put the counter here-->
 
-				</preference-rank>
-			</preference-ranking>
-		</li>	
-	</ul>
+                                </summary>
 
-	<!-- list of all ballot papers -->
+                                <preference-option
+                                    class		=	"ui-panel right horizontal ui-corners-left"
+                                    ng-repeat	=	"option in rank"
+                                    value		=	"{{option}}"
+                                >
+                                    <details>
+                                        <div class="title"> 	{{ballot_box.options[option].title}} 	</div>
+                                    </details>
+                                    <summary>
+                                        {{option}}
+                                    </summary>
+                                </preference-option>
 
-	<ranking-source ranking-data = "ballot_box.papers[selected||''].ranking">
-	</ranking-source>
+                            </preference-rank>
+                        </preference-ranking>
+                    </li>
+                </ul>
+                <!-- list of all ballot papers -->
 
+            </td>
+        	
+
+        </tr>
+    </table>
 </div>
-
-
-
-<button ng-click = "addBallotPaper()"> Add Ballot </button>
-
-<a href="#/evaluate/{{box_id}}"> Auswertung </a>
-
