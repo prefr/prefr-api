@@ -88,6 +88,7 @@ schulzeDoodleControllers.controller(
 							                            }
 							                        ]
 									}
+								
 
 			$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
 			$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')

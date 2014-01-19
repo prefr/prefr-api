@@ -4,34 +4,35 @@
 >
 
     <table> 
-        <tr>
+        <tr single-select   = "edit-menu">
 
         	<!-- selected ballot paper to edit start -->
 
-        	<td
-                class           = "edit-paper ui-deep-shadow"
-                single-select   = "edit-menu"
-            >
-                 <nav>                    
-                    <div
+            <td class="options">
+                <nav class="vertical">                    
+                    <a
                         select-as       = "edit-menu"
                         select-by       = "source"
                         ng-click        = "select()"
-                        class           = "{{selected ? 'selected' : ''}} ui-borders ui-corners-bottom"
+                        class           = "{{selected ? 'current' : ''}}"
                     >
-                        Source
-                    </div>
+                        JSON-Source
+                    </a>
 
-                    <div
+                    <a
                         select-as       = "edit-menu"
                         select-by       = "ranking"
                         select-initial  = "true"
                         ng-click        = "select()"
-                        class           = "{{selected ? 'selected' : ''}} ui-borders ui-corners-bottom"
+                        class           = "{{selected ? 'current' : ''}} "
                     >
-                        Ranking
-                    </div>                        
+                        Ranking UI
+                    </a>                        
                 </nav>
+            </td>
+
+        	<td class = "edit-paper ui-deep-shadow" >
+                
                 
         		<preference-ranking
         			ranking-model		=	"ballot_box.papers[ballotPaper.selected||''].ranking"
@@ -66,8 +67,12 @@
                     ng-show     = "editMenu.selected == 'source'" 
                     class       = "ui-panel ui-borders ui-corners-all"
                 >
-                    <summary>
-                        {{ballot_box.papers[ballotPaper.selected || ''].participant}}
+                    <summary class="">
+                        <h3>{{ballot_box.papers[ballotPaper.selected || ''].participant}}</h3>
+                        <nav>
+                            <a>pref-tools syntax</a>
+                            <a>prefr syntax</a>
+                        </nav>
                     </summary>                    
                     <ranking-source ranking-data = "ballot_box.papers[ballotPaper.selected || ''].ranking" >
                     </ranking-source>
@@ -108,7 +113,7 @@
                         <div class="participant"> 
 
                             <span ng-hide="selected">{{paper.participant}}</span>
-                            <input ng-show="selected" type="text" value="{{paper.participant}}">
+                            <input ng-show="selected" type="text" ng-model="paper.participant"/>
                             <!--
                             <button
                                 ng-click	= "select()"
