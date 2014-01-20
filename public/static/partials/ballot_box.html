@@ -8,22 +8,20 @@
 
         	<!-- selected ballot paper to edit start -->
 
-            <td class="options">
+            <td class="edit-options">
                 <nav class="vertical">                    
                     <a
                         select-as       = "edit-menu"
                         select-by       = "source"
-                        ng-click        = "select()"
                         class           = "{{selected ? 'current' : ''}}"
                     >
-                        JSON-Source
+                        JSON-source
                     </a>
 
                     <a
                         select-as       = "edit-menu"
                         select-by       = "ranking"
                         select-initial  = "true"
-                        ng-click        = "select()"
                         class           = "{{selected ? 'current' : ''}} "
                     >
                         Ranking UI
@@ -87,8 +85,11 @@
 
         	
 
-            <td class="ballot-overview">
-        		<div class="details">
+            <td
+                class           = "ballot-overview"
+                single-select   = "overview-menu"   
+            >
+        		<div class="ui-content">
                 	<h2>{{ballot_box.subject}} ({{ballot_box.id}})</h2>
         			<p>
         				Example text. Put further details here. sgfjh ,jhsd f,jhsdf ewjhgf wje,a gfewhf g
@@ -97,17 +98,37 @@
         				Instructions go here.
         			</small>
         		</div>
+                <nav>
+                    <a
+                        select-as       = "overview-menu"
+                        select-by       = "papers"
+                        select-initial  = "true"                        
+                        class           = "{{selected ? 'current' : ''}} "
+                    >
+                        Ballot papers
+                    </a>                    
+                    <a
+                        select-as   = "overview-menu"
+                        select-by   = "options"
+                        class       = "{{selected ? 'current' : ''}} "
+                    >
+                        Ballot options
+                    </a> 
+                </nav>
+                <hr>
 
                 <!-- list of all ballot papers -->
 
-                <ul class="ballot-papers">
+                <ul
+                    class   =   "ballot-papers"
+                    ng-show =   "overviewMenu.selected == 'papers'"
+                >
                     <li
                         class           = "ballot-paper {{selected ? 'selected' : ''}}"
                         ng-repeat       = "paper in ballot_box.papers"
                         select-as       = "ballot-paper"
                         select-by       = "{{paper.id}}"
                         select-initial  = "$first"
-                        ng-click        = "select()"
                     >
 
                         <div class="participant"> 
@@ -162,7 +183,26 @@
                         </preference-ranking>
                     </li>
                 </ul>
-                <!-- list of all ballot papers -->
+                <!-- list of all ballot papers end-->
+
+
+
+                <!-- list of all ballot options start -->
+
+                <ul
+                    class   =   "ballot-options"
+                    ng-show =   "overviewMenu.selected == 'options'"
+                >
+                    <li
+                        ng-repeat   = "option in ballot_box.options"
+                        class       = "ui-content"
+                    >
+                        <h3>{{option.tag}} {{option.title}} </h3>
+                        <p>
+                            {{option.details}}
+                        </p>
+                    </li>
+                </ul>
 
             </td>
         	

@@ -6,7 +6,8 @@ function HTMLsingleSelect() {
 				controller	:	function($scope, $element, $attrs) {									
 									var key = $.camelCase($attrs.singleSelect)
 
-									$scope.$on($attrs.singleSelect+'-select', function(event, origin){																	
+									$scope.$on($attrs.singleSelect+'-select', function(event, origin){											
+
 										if(event.targetScope != $scope) {
 											event.stopPropagation()											
 											$scope[key].selected = origin
@@ -22,7 +23,7 @@ function HTMLsingleSelect() {
 										}
 									})
 
-									$scope.select = function(target) {										
+									$scope.select = function(target) {															
 										$scope.$broadcast($attrs.singleSelect+'-select', target)
 									}
 									
@@ -39,12 +40,16 @@ function HTMLselectAs() {
 
 				link		:	function(scope, element, attrs) {
 									if(scope.$eval(attrs.selectInitial)) scope.select()
+									element.on('click', function(){
+										scope.select()
+										scope.$apply()
+									})
 								},
 
 				controller	:	function($scope, $element, $attrs) {																		
 									$scope.selected = false
 
-									$scope.$on($attrs.selectAs+'-select', function(event, origin) {										
+									$scope.$on($attrs.selectAs+'-select', function(event, origin) {																													
 										$scope.selected =  (origin == $attrs.selectBy)
 									})
 
@@ -92,7 +97,6 @@ function HTMLrankingSource() {
 
 										if(data) {
 											scope.rankingData.slice(0, scope.rankingData.length) 
-											_l(data)
 											Array.prototype.push.apply(scope.rankingData, data)
 												
 										} 

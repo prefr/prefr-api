@@ -62,7 +62,7 @@ nav a {
 	display:				inline-block;
 	text-decoration: 		none;
 	color:					#666;
-	padding:				0 0.5em;
+	padding:				0;
 	margin:					0 1em;
 	cursor:					pointer;
 }
@@ -70,22 +70,23 @@ nav a {
 nav a:after {
 	content:				'';
 	position:				absolute;
+
+
 	height:					0em;
-	width:					100%;
 	bottom:					0;
-	left:					0;
+	left:					-0.5em;
+	right:					-0.5em;
+
 	box-shadow:				0 -0.05rem 0.01em #000000;
-	transition-duration:	height  100ms;
+	background-color: 		#666;
+	outline: 				0;
+	transition:				height 100ms ease-out;
 }
 
 nav a:hover:after,
 nav a:active:after,
 nav a.current:after {
 	height:					0.5em;
-}
-
-nav a:hover:after {
-	background-color: 		#666;
 }
 
 nav a:active:after,
@@ -226,10 +227,26 @@ button.ui-icon-delete {
 	background-image:		url('icons/ic_delete.png');
 }
 
+hr {
+	display:				block;
+	position:				absolute;
+
+	margin: 				0;
+	padding:				0;
+	height:					0.2em;
+	width:					100%;
+
+	border:					none;
+	box-shadow:				0 0.2em 0.2rem -0.2em rgba(0, 0, 0, 0.5) inset;
+}
+
+li {
+	list-style: none;
+}
 
 
 .ui-content {
-	padding:				0.5em;
+	padding:				1em;
 }
 
 .ui-content p {
@@ -314,6 +331,10 @@ button.ui-icon-delete {
 
 .ui-inline {
 	display:				inline-block;
+}
+
+.ui-shadow {
+	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);
 }
 
 .ui-deep-shadow {	
@@ -494,7 +515,7 @@ button.ui-icon-delete {
  
 }
 
-.ballot-box .options{
+.ballot-box .edit-options{
 	background: 			#fff;
 	min-width:				3.5em;	
 }
@@ -503,9 +524,13 @@ button.ui-icon-delete {
 	padding:1em;
 }
 
-.ballot-box .ballot-papers {
+.ballot-box .ballot-papers,
+.ballot-box .ballot-options {
 	display:				block;
+
 	vertical-align:			top;
+
+	background-color:		rgba(245, 245, 240, 1);
 	padding:				1.9em 0;
 }
 
