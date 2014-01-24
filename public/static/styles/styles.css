@@ -187,6 +187,15 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight:			normal;
 }
 
+h2{
+	font-size:				1.5em;	
+}
+
+h3{
+	display:				inline;
+	font-size:				1.4em;		
+}
+
 table {
 	border-spacing:			0;
 	border-collpase:		collapse;	
@@ -273,19 +282,19 @@ li {
 }
 
 
-.ui-medium_width {
+.ui-medium-width {
 	width:					6.5em;
 }
 
-.ui-medium_height{
+.ui-medium-height{
 	height:					2em;
 }
 
-.ui-extensive_width {
+.ui-extensive-width {
 	width: 					21em;
 }
 
-.ui-extensive_height {
+.ui-extensive-height {
 	height: 				25em;
 }
 
@@ -321,6 +330,7 @@ li {
 .ui-borders {
 	border-width: 			0.2em;
 	border-style:			solid;	
+	border-color:			rgba(245, 245, 240, 1);
 	box-shadow: 			0 0 0.2rem rgba(0,0,0, 0.4);
 	overflow:				visible;
 }
@@ -341,6 +351,17 @@ li {
 	box-shadow:				0 0 1em rgba(0, 0, 0, 0.6) inset;
 }
 
+.ui-box {
+	display:				inline-block;
+
+	width:					1.6em;
+	padding:				0;
+	margin:					0;
+	line-height: 			1.6em;
+	
+	text-align:				center;
+	vertical-align:			baseline;
+}
 
 
 
@@ -561,9 +582,9 @@ li {
 
 	margin:					0;
 	padding	:				0;
+	padding-right:			2em;
 	font-size:				1.4em;
 	padding-left:			1em;
-	width:					10em;
 
 	background-color:		#647D8C;
 	color:					rgba(255,255,255,0.9);
@@ -573,15 +594,17 @@ li {
 	vertical-align: 		top;
 }
 
-.ballot-box .ballot-paper .participant span,
+.ballot-box .ballot-paper .participant span.name,
 .ballot-box .ballot-paper .participant input {
+	display:				inline-block;
 
+	width:					8em;
 	padding:				0;
 	margin:					0;
 	background:				transparent;
 	color:					inherit;
 	border:					none;
-	font-size:				inherit;
+	font-size:				inherit;	
 }
 
 
@@ -777,8 +800,8 @@ preference-option summary {
 
 preference-option .title {
 	display:				inline-block;
-	padding:				0.2em 0.4em;
-	line-height:			1.2em;
+	padding:				0.1em 0.4em;
+	line-height:			1.1em;
 	vertical-align:			middle;
 	white-space: 			normal;
 }

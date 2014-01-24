@@ -1,41 +1,38 @@
 <div
 	class			=	"ballot-box"
-	single-select	=	"ballot-paper"		
+	single-select	=	"{'ballot-paper': ''}"		
 >
 
     <table> 
-        <tr single-select   = "edit-menu">
+        <tr single-select   = "{'edit-menu' : 'ranking'}">
 
         	<!-- selected ballot paper to edit start -->
 
             <td class="edit-options">
                 <nav class="vertical">                    
                     <a
-                        select-as       = "edit-menu"
-                        select-by       = "source"
-                        class           = "{{selected ? 'current' : ''}}"
+                        ng-click        = "select('edit-menu', 'source')"
+                        class           = "{{getSelection('edit-menu') == 'source' ? 'current' : ''}}"
                     >
                         JSON-source
                     </a>
 
                     <a
-                        select-as       = "edit-menu"
-                        select-by       = "ranking"
-                        select-initial  = "true"
-                        class           = "{{selected ? 'current' : ''}} "
+                        ng-click        = "select('edit-menu', 'ranking')"
+                        class           = "{{getSelection('edit-menu') == 'ranking' ? 'current' : ''}} "
                     >
                         Ranking UI
                     </a>                        
                 </nav>
             </td>
 
-        	<td class = "edit-paper ui-deep-shadow" >
-                
-                
+        	<td class = "edit-paper ui-deep-shadow" >               
+                a{{getSelection('ballot-paper')}}
         		<preference-ranking
-        			ranking-model		=	"ballot_box.papers[ballotPaper.selected||''].ranking"
-        			ranking-orientation	=	"vertical"
-                    ng-show             =   "editMenu.selected == 'ranking'"
+        			ranking-model		=	"ballot_box.papers[getSelection('ballot-paper')].ranking"
+        			ranking-orientation =   "vertical"
+                    no-dragging         =   "ballot_box.papers[getSelection('ballot-paper')].locked"
+                    ng-show             =   "getSelection('edit-menu') == 'ranking'"
         		>			         
         			<preference-rank
         				ng-repeat 	=	"rank in rankingData"
@@ -62,17 +59,17 @@
         		</preference-ranking>
 
                 <div
-                    ng-show     = "editMenu.selected == 'source'" 
+                    ng-show     = "getSelection('edit-menu') == 'source'" 
                     class       = "ui-panel ui-borders ui-corners-all"
                 >
                     <summary class="">
-                        <h3>{{ballot_box.papers[ballotPaper.selected || ''].participant}}</h3>
+                        <h3>{{ballot_box.papers[getSelection('ballot-paper')].participant}}</h3>
                         <nav>
                             <a>pref-tools syntax</a>
                             <a>prefr syntax</a>
                         </nav>
                     </summary>                    
-                    <ranking-source ranking-data = "ballot_box.papers[ballotPaper.selected || ''].ranking" >
+                    <ranking-source ranking-data = "ballot_box.papers[getSelection('ballot-paper')].ranking" >
                     </ranking-source>
                 </div>
         	</td>
@@ -87,7 +84,7 @@
 
             <td
                 class           = "ballot-overview"
-                single-select   = "overview-menu"   
+                single-select   = "{'overview-menu': 'papers'}"   
             >
         		<div class="ui-content">
                 	<h2>{{ballot_box.subject}} ({{ballot_box.id}})</h2>
@@ -100,17 +97,15 @@
         		</div>
                 <nav>
                     <a
-                        select-as       = "overview-menu"
-                        select-by       = "papers"
+                        ng-click        = "select('overview-menu', 'papers')"
                         select-initial  = "true"                        
-                        class           = "{{selected ? 'current' : ''}} "
+                        class           = "{{getSelection('overview-menu') == 'papers' ? 'current' : ''}} "
                     >
                         Ballot papers
                     </a>                    
                     <a
-                        select-as   = "overview-menu"
-                        select-by   = "options"
-                        class       = "{{selected ? 'current' : ''}} "
+                        ng-click        = "select('overview-menu', 'options')"                        
+                        class           = "{{getSelection('overview-menu') == 'options' ? 'current' : ''}} "
                     >
                         Ballot options
                     </a> 
@@ -121,20 +116,48 @@
 
                 <ul
                     class   =   "ballot-papers"
-                    ng-show =   "overviewMenu.selected == 'papers'"
+                    ng-show =   "getSelection('overview-menu') == 'papers'"
                 >
                     <li
-                        class           = "ballot-paper {{selected ? 'selected' : ''}}"
-                        ng-repeat       = "paper in ballot_box.papers"
-                        select-as       = "ballot-paper"
-                        select-by       = "{{paper.id}}"
-                        select-initial  = "$first"
+                        class           = "ballot-paper {{ballotPaper.selected == paper.id ? 'selected' : ''}}"
+                        ng-repeat       = "paper in ballot_box.papers"                        
                     >
 
-                        <div class="participant"> 
+                        <div
+                            class           = "participant"
+                            ng-click        = "select('ballot-paper', paper.id)" 
+                            select-initial  = "$first"
+                        > 
 
-                            <span ng-hide="selected">{{paper.participant}}</span>
-                            <input ng-show="selected" type="text" ng-model="paper.participant"/>
+                            <span
+                                class   = "name" 
+                                ng-hide = "getSelection('ballot-paper') == paper.id"
+                            >
+                                {{paper.participant}}
+                            </span>
+
+                            <input
+                                type    = "text" 
+                                ng-show = "getSelection('ballot-paper') == paper.id" 
+                                ng-model= "paper.participant"
+                            />
+
+                            <span
+                                class           = "icons"                                
+                            >
+                                
+                                <i 
+                                    class           = "fa fa-lock"
+                                    ng-show         = "paper.locked"
+                                    ng-click        = "paper.locked = false"
+                                ></i>
+
+                                <i 
+                                    class           = "fa fa-unlock-alt"                                    
+                                    ng-hide         = "paper.locked"
+                                    ng-click        = "paper.locked = true"
+                                ></i>
+                            </span> 
                             <!--
                             <button
                                 ng-click	= "select()"
@@ -154,6 +177,7 @@
                         <preference-ranking
                             ranking-model		=	"paper.ranking"
                             ranking-orientation	=	"horizontal"
+                            no-dragging         =   "true"
                             class				=	"compact"
                         >
                             <preference-rank
@@ -191,7 +215,7 @@
 
                 <ul
                     class   =   "ballot-options"
-                    ng-show =   "overviewMenu.selected == 'options'"
+                    ng-show =   "getSelection('overview-menu') == 'options'"
                 >
                     <li
                         ng-repeat   = "option in ballot_box.options"
