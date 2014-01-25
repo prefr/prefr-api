@@ -1,6 +1,6 @@
 <div
 	class			=	"ballot-box"
-	single-select	=	"{'ballot-paper': '', 'mode' : 'prefr'}"		
+	single-select	=	"{'ballot-paper': ballot_box.papers[0], 'mode' : 'prefr'}"		
 >
 
     <table> 
@@ -26,23 +26,23 @@
                     </a>        
 
                     <i
-                        class       = "fa fa-lock  fa-rotate-90 fa-lg"
-                        ng-show     = "ballot_box.papers[selectionBallotPaper.value].locked"
-                        ng-click    = "ballot_box.papers[selectionBallotPaper.value].locked = false"
+                        class       = "fa fa-lock  fa-rotate-90 fa-lg ui-clickable"
+                        ng-show     = "selectionBallotPaper.value.locked"
+                        ng-click    = "selectionBallotPaper.value.locked = false"
                     ></i>   
                     <i
-                        class       =  "fa fa-unlock-alt  fa-rotate-90 fa-lg"
-                        ng-hide     = "ballot_box.papers[selectionBallotPaper.value].locked"                        
-                        ng-click    = "ballot_box.papers[selectionBallotPaper.value].locked = true"
+                        class       =  "fa fa-unlock-alt  fa-rotate-90 fa-lg ui-clickable"
+                        ng-hide     = "selectionBallotPaper.value.locked"                        
+                        ng-click    = "selectionBallotPaper.value.locked = true"
                     ></i>                
                 </nav>
             </td>
 
         	<td class = "edit-paper ui-deep-shadow" > 
         		<preference-ranking
-        			ranking-model		=	"ballot_box.papers[selectionBallotPaper.value].ranking"
+        			ranking-model		=	"selectionBallotPaper.value.ranking"
         			ranking-orientation =   "vertical"
-                    no-dragging         =   "ballot_box.papers[selectionBallotPaper.value].locked"
+                    no-dragging         =   "selectionBallotPaper.value.locked"
                     ng-show             =   "selectionEditMenu.value == 'ranking'"
         		>			         
         			<preference-rank
@@ -74,7 +74,7 @@
                     class       = "ui-panel ui-borders ui-corners-all"
                 >
                     <summary class="">
-                        <h3>{{ballot_box.papers[selectionBallotPaper.value].participant}}</h3>
+                        <h3>{{selectionBallotPaper.value.participant}}</h3>
                         <nav>
                             <a
                                 ng-click = "select('mode', 'preftools')"
@@ -85,7 +85,7 @@
                         </nav>
                     </summary>                    
                     <ranking-source
-                        ranking-data    = "ballot_box.papers[selectionBallotPaper.value].ranking"
+                        ranking-data    = "selectionBallotPaper.value.ranking"
                         mode            = "selectionMode.value"
                     >
                     </ranking-source>
@@ -143,25 +143,25 @@
                     ng-show =   "selectionOverviewMenu.value == 'papers'"
                 >
                     <li
-                        class           = "ballot-paper {{selectionBallotPaper.value == paper.id ? 'selected' : ''}}"
-                        ng-repeat       = "paper in ballot_box.papers"                        
+                        class           = "ballot-paper {{selectionBallotPaper.value == paper ? 'selected' : ''}}"
+                        ng-repeat       = "paper in (ballot_box.papers | orderBy:'-id':true)"                        
                     >
                         <div
-                            class           = "participant"
-                            ng-click        = "select('ballot-paper', paper.id)" 
+                            class           = "participant {{paper.id == -1 ? 'result' :''}}"
+                            ng-click        = "select('ballot-paper', paper)" 
                             select-initial  = "$first"
                         > 
 
                             <span
                                 class   = "name" 
-                                ng-hide = "selectionBallotPaper.value == paper.id"
+                                ng-hide = "selectionBallotPaper.value == paper"
                             >
                                 {{paper.participant}}
                             </span>
 
                             <input
                                 type    = "text" 
-                                ng-show = "selectionBallotPaper.value == paper.id" 
+                                ng-show = "selectionBallotPaper.value == paper" 
                                 ng-model= "paper.participant"
                             />
 

@@ -8,14 +8,9 @@ schulzeDoodleControllers.controller(
 		'$scope', 
 		'$routeParams',
 		function ($scope, $routeParams) {
-			$scope.box_id		=	$routeParams.box_id
-			$scope.ballot_box	=	{
-										options	:	[],
-										papers	:	[]
-									}
 
 			//dummy:
-			$scope.ballot_box	=	{
+			var dummy	=	{
 							            id      :   "1",
 							            subject :   "example subject",
 							            options :   [
@@ -63,7 +58,7 @@ schulzeDoodleControllers.controller(
 							                            },
 							                            {
 							                                id          :   "3",
-							                                participant :   "user2",
+							                                participant :   "A-user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            },
 							                            {
@@ -90,24 +85,21 @@ schulzeDoodleControllers.controller(
 									}
 								
 
-			$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
-			$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')
 
 		    $scope.addBallotPaper = function(id, ranking) {
-		    	var ballot_paper = {
-		    							id			:	id !== undefined ? id : Math.floor(Math.random()*100),
-										participant :   "unnamed",
-										ranking     :   ranking || [Object.keys($scope.ballot_box.options)]
-		    						}
-		        $scope.ballot_box.papers[ballot_paper.id] = ballot_paper
+		    	$scope.ballot_box.papers.unshift({
+		    		id			:	id !== undefined ? id : Math.floor(Math.random()*100),
+					participant :   "unnamed",
+					ranking     :   ranking || [Object.keys($scope.ballot_box.options)]
+		    	})
 		    }
 
 		    $scope.addResult = function(ranking) {
-		    	$scope.ballot_box.papers[-1] =	{
-		    										id			:	-1,
-		    										participant	:	'result',
-		    										ranking		:	ranking
-		    									}
+		    	$scope.ballot_box.papers.unshift({
+		    		id			:	-1,
+		    		participant	:	'result',
+		    		ranking		:	ranking
+		    	})
 		    }
 
 			$scope.removeBallotPaper = function(paper_id) {
@@ -144,8 +136,31 @@ schulzeDoodleControllers.controller(
 		    	return(papers)
 		    }
 
-		    $scope.addBallotPaper("")
-			$scope.lockPapers($scope.ballot_box.papers)
+
+			$scope.box_id		=	$routeParams.box_id
+
+
+
+			$.ajax({
+				url: 'api/ballotBox/'+$scope.box_id,
+				data: null,
+				async: false
+			})
+			.done(function(data){
+				$scope.ballot_box	= data
+			})
+			.error(function(){
+				$scope.ballot_box	= dummy
+			})
+		    .always(function(data){
+
+				$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
+				//$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')
+
+			    $scope.addBallotPaper("")
+				$scope.lockPapers($scope.ballot_box.papers)
+
+		    })
 
 		}
 	]

@@ -57,19 +57,21 @@ function HTMLrankingSource() {
 				link		:	function(scope, element, attrs) {
 
 									scope.parseAsPreftools = function(){
+										/*
 										var value 	= element.text(),
 											json	= ''
 
 										_l(value)
 
+										value = value.replace(/\n/,'][')
 										value = value.replace(/\s/g, '') //remove white spaces
 										value = value.replace(/\/|;/g, '"]["')
 										value = value.replace(/,/g, '","')
 
-										json += '[["'+value+'"]]'
+										json += '[[["'+value+'"]]]'
 
 										_l(json)
-
+										*/
 									}
 
 									scope.toJSON = function(){
@@ -105,7 +107,7 @@ function HTMLrankingSource() {
 										//element.html(scope.highlight(text))
 									}
 
-
+									/*
 									element.on('keydown', function(event){
 										if(event.which == 9){
 											var span	= document.createElement('span'),
@@ -123,6 +125,7 @@ function HTMLrankingSource() {
 										}
 										scope.update()
 									})
+									*/
 
 									scope.rankingData = scope.rankingData || []
 									element.html(JSON.stringify(scope.rankingData))									

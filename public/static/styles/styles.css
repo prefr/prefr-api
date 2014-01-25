@@ -300,6 +300,10 @@ li {
 	height: 				25em;
 }
 
+.ui-clickable {
+	cursor:					pointer;
+}
+
 
 
 
@@ -596,6 +600,10 @@ li {
 	vertical-align: 		top;
 }
 
+.ballot-box .ballot-paper .participant.result{
+	background-color:		rgba(80, 170, 60, 1);
+}
+
 .ballot-box .ballot-paper .participant > * {
 	vertical-align:			middle;
 }
@@ -644,6 +652,10 @@ li {
 .ballot-box .ballot-paper .participant:before {
 	right:					100%;
 	border-right:			0 solid #647D8C;
+}
+
+.ballot-box .ballot-paper .participant.result:before {
+	border-right:			0 solid rgba(80, 170, 60, 1);
 }
 
 .ballot-box .ballot-paper.selected .participant:before {

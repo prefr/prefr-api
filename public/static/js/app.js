@@ -55,6 +55,13 @@ schulzeDoodle.config([
             }
         )
         .when(
+            'import',
+            {
+                templateURL :   'static/partials/import.html',
+                controller  :   'ImportCtrl'
+            }
+        )
+        .when(
             '/test',
             {
                 templateUrl :   'static/partials/test.html',
