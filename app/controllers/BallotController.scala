@@ -17,7 +17,7 @@ import java.util.Date
  */
 object BallotController extends Controller with MongoController {
 
-  def createBallotBox = Action(parse.tolerantJson) {
+  def createBallotBox = Action(parse.tolerantJson(512*1024)) {
     request => {
 
       request.body.validate[BallotBox](BallotBox.inputReads).map {

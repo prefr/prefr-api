@@ -59,6 +59,8 @@ object PreftoolController extends Controller {
          .replace("/", ";")
          .replace(";;", ";")
          .replace(",,", ",")
+         .replace("\n;", "\n")
+         .replace(";\n", "\n")
 
       val papers = sanitised.split("\n").map {
         ranking =>
