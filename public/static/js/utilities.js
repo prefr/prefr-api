@@ -143,3 +143,9 @@ function _property2key(arr, prop) {
 		}
 		return(arr)
 	}
+
+function _obj2arr(obj) {
+	var arr = []
+	for(key in obj) arr.push(obj[key])
+	return(arr)
+}

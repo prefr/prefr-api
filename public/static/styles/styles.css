@@ -23,7 +23,9 @@ body {
 	background-color:		rgba(245, 245, 240, 1);	
 }
 
-
+input {
+	font-family: 			Liberation Sans, Ubuntu, DejaVu Sans,sans-serif;	
+}
 
 
 
@@ -116,7 +118,7 @@ nav.vertical {
 	top:					0;
 	right:					100%;	
 	z-index:				5;	
-	padding-right:			5em;
+	padding-right:			2em;
 
 	white-space:			nowrap;
 
@@ -140,7 +142,7 @@ body > article {
 	background-color:		#fff;
 	/*box-shadow:			0 0 20em rgba(0, 0, 0, 0.5) inset;*/
 	/*background-image:		url("images/background.png");*/
-	color:					#ccc;
+	color:					#666;
 
 	background-size:		cover;
 
@@ -594,6 +596,10 @@ li {
 	vertical-align: 		top;
 }
 
+.ballot-box .ballot-paper .participant > * {
+	vertical-align:			middle;
+}
+
 .ballot-box .ballot-paper .participant span.name,
 .ballot-box .ballot-paper .participant input {
 	display:				inline-block;
@@ -601,10 +607,17 @@ li {
 	width:					8em;
 	padding:				0;
 	margin:					0;
+
 	background:				transparent;
 	color:					inherit;
+
 	border:					none;
 	font-size:				inherit;	
+	font-weight:			inherit;
+
+	overflow:				hidden;
+	text-overflow:			ellipsis;
+
 }
 
 
@@ -785,7 +798,7 @@ preference-option {
 }
 
 
-preference-ranking[no-dragging] preference-option {
+preference-ranking.no-drag preference-option {
 	cursor:					auto !important;
 }
 

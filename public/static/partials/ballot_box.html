@@ -1,6 +1,6 @@
 <div
 	class			=	"ballot-box"
-	single-select	=	"{'ballot-paper': ''}"		
+	single-select	=	"{'ballot-paper': '', 'mode' : 'prefr'}"		
 >
 
     <table> 
@@ -9,30 +9,41 @@
         	<!-- selected ballot paper to edit start -->
 
             <td class="edit-options">
-                <nav class="vertical">                    
+                <nav class="vertical">
+
                     <a
                         ng-click        = "select('edit-menu', 'source')"
-                        class           = "{{getSelection('edit-menu') == 'source' ? 'current' : ''}}"
+                        class           = "{{selectionEditMenu.value == 'source' ? 'current' : ''}}"
                     >
                         JSON-source
                     </a>
 
                     <a
                         ng-click        = "select('edit-menu', 'ranking')"
-                        class           = "{{getSelection('edit-menu') == 'ranking' ? 'current' : ''}} "
+                        class           = "{{selectionEditMenu.value == 'ranking' ? 'current' : ''}} "
                     >
                         Ranking UI
-                    </a>                        
+                    </a>        
+
+                    <i
+                        class       = "fa fa-lock  fa-rotate-90 fa-lg"
+                        ng-show     = "ballot_box.papers[selectionBallotPaper.value].locked"
+                        ng-click    = "ballot_box.papers[selectionBallotPaper.value].locked = false"
+                    ></i>   
+                    <i
+                        class       =  "fa fa-unlock-alt  fa-rotate-90 fa-lg"
+                        ng-hide     = "ballot_box.papers[selectionBallotPaper.value].locked"                        
+                        ng-click    = "ballot_box.papers[selectionBallotPaper.value].locked = true"
+                    ></i>                
                 </nav>
             </td>
 
-        	<td class = "edit-paper ui-deep-shadow" >               
-                a{{getSelection('ballot-paper')}}
+        	<td class = "edit-paper ui-deep-shadow" > 
         		<preference-ranking
-        			ranking-model		=	"ballot_box.papers[getSelection('ballot-paper')].ranking"
+        			ranking-model		=	"ballot_box.papers[selectionBallotPaper.value].ranking"
         			ranking-orientation =   "vertical"
-                    no-dragging         =   "ballot_box.papers[getSelection('ballot-paper')].locked"
-                    ng-show             =   "getSelection('edit-menu') == 'ranking'"
+                    no-dragging         =   "ballot_box.papers[selectionBallotPaper.value].locked"
+                    ng-show             =   "selectionEditMenu.value == 'ranking'"
         		>			         
         			<preference-rank
         				ng-repeat 	=	"rank in rankingData"
@@ -59,17 +70,24 @@
         		</preference-ranking>
 
                 <div
-                    ng-show     = "getSelection('edit-menu') == 'source'" 
+                    ng-show     = "selectionEditMenu.value == 'source'" 
                     class       = "ui-panel ui-borders ui-corners-all"
                 >
                     <summary class="">
-                        <h3>{{ballot_box.papers[getSelection('ballot-paper')].participant}}</h3>
+                        <h3>{{ballot_box.papers[selectionBallotPaper.value].participant}}</h3>
                         <nav>
-                            <a>pref-tools syntax</a>
-                            <a>prefr syntax</a>
+                            <a
+                                ng-click = "select('mode', 'preftools')"
+                            >pref-tools syntax</a>
+                            <a
+                                ng-click = "select('mode', 'prefr')"
+                            >prefr syntax</a>                            
                         </nav>
                     </summary>                    
-                    <ranking-source ranking-data = "ballot_box.papers[getSelection('ballot-paper')].ranking" >
+                    <ranking-source
+                        ranking-data    = "ballot_box.papers[selectionBallotPaper.value].ranking"
+                        mode            = "selectionMode.value"
+                    >
                     </ranking-source>
                 </div>
         	</td>
@@ -99,16 +117,22 @@
                     <a
                         ng-click        = "select('overview-menu', 'papers')"
                         select-initial  = "true"                        
-                        class           = "{{getSelection('overview-menu') == 'papers' ? 'current' : ''}} "
+                        class           = "{{selectionOverviewMenu.value == 'papers' ? 'current' : ''}} "
                     >
                         Ballot papers
                     </a>                    
                     <a
                         ng-click        = "select('overview-menu', 'options')"                        
-                        class           = "{{getSelection('overview-menu') == 'options' ? 'current' : ''}} "
+                        class           = "{{selectionOverviewMenu.value == 'options' ? 'current' : ''}} "
                     >
                         Ballot options
                     </a> 
+
+                    <a
+                        ng-click = "postBox()"
+                    >
+                        result
+                    <a>
                 </nav>
                 <hr />
 
@@ -116,13 +140,12 @@
 
                 <ul
                     class   =   "ballot-papers"
-                    ng-show =   "getSelection('overview-menu') == 'papers'"
+                    ng-show =   "selectionOverviewMenu.value == 'papers'"
                 >
                     <li
-                        class           = "ballot-paper {{ballotPaper.selected == paper.id ? 'selected' : ''}}"
+                        class           = "ballot-paper {{selectionBallotPaper.value == paper.id ? 'selected' : ''}}"
                         ng-repeat       = "paper in ballot_box.papers"                        
                     >
-
                         <div
                             class           = "participant"
                             ng-click        = "select('ballot-paper', paper.id)" 
@@ -131,14 +154,14 @@
 
                             <span
                                 class   = "name" 
-                                ng-hide = "getSelection('ballot-paper') == paper.id"
+                                ng-hide = "selectionBallotPaper.value == paper.id"
                             >
                                 {{paper.participant}}
                             </span>
 
                             <input
                                 type    = "text" 
-                                ng-show = "getSelection('ballot-paper') == paper.id" 
+                                ng-show = "selectionBallotPaper.value == paper.id" 
                                 ng-model= "paper.participant"
                             />
 
@@ -215,7 +238,7 @@
 
                 <ul
                     class   =   "ballot-options"
-                    ng-show =   "getSelection('overview-menu') == 'options'"
+                    ng-show =   "selectionOverviewMenu.value == 'options'"
                 >
                     <li
                         ng-repeat   = "option in ballot_box.options"
@@ -234,3 +257,6 @@
         </tr>
     </table>
 </div>
+    <tooltip>
+        test tooltip
+    </tooltip>

@@ -54,6 +54,13 @@ schulzeDoodle.config([
                 controller  :   'EvaluationCtrl'
             }
         )
+        .when(
+            '/test',
+            {
+                templateUrl :   'static/partials/test.html',
+                controller  :   'Test'
+            }
+        )
         .otherwise({
             redirectTo: '/ballot_box/1'
         })
@@ -61,6 +68,7 @@ schulzeDoodle.config([
 ])
 
 schulzeDoodle.directive('singleSelect',         HTMLsingleSelect)
+schulzeDoodle.directive('tooltip',              ['$animate', HTMLtooltip])
 
 schulzeDoodle.directive('rankingSource',        HTMLrankingSource)
 

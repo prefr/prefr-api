@@ -11,14 +11,8 @@ function HTMLsingleSelect() {
 										return($.camelCase('selection-'+value))
 									}
 									
-									$scope.select = function(select_as, select_by) {																										
-										$scope[$scope.mask(select_as)] = select_by
-									}
-
-									$scope.getSelection = function(select_as) {
-										_l(select_as+': '+$scope[$scope.mask(select_as)])
-										_l(scope)
-										return($scope[$scope.mask(select_as)])
+									$scope.select = function(select_as, select_by) {														
+										$scope[$scope.mask(select_as)].value = select_by
 									}
 
 
@@ -28,20 +22,24 @@ function HTMLsingleSelect() {
 
 									if($.isArray(params)) {
 										params.forEach(function(value, index){
-											selection_map[$scope.mask(value)] = null
+											selection_map[$scope.mask(value)] = {
+																					default	:	null,
+																					value	:	null
+																				}
 										})
 									}
 
 									if($.isPlainObject(params)) {
 										$.each(params, function(key, value){
-											selection_map[$scope.mask(key)] = value
+											selection_map[$scope.mask(key)] =	{
+																					default	: value,
+																					value	: value
+																				}
 										})
 									} 
 
 									$.extend($scope, selection_map)
 
-									
-									
 								}
 			}
 
@@ -57,6 +55,26 @@ function HTMLrankingSource() {
 				scope		:	true,
 
 				link		:	function(scope, element, attrs) {
+
+									scope.parseAsPreftools = function(){
+										var value 	= element.text(),
+											json	= ''
+
+										_l(value)
+
+										value = value.replace(/\s/g, '') //remove white spaces
+										value = value.replace(/\/|;/g, '"]["')
+										value = value.replace(/,/g, '","')
+
+										json += '[["'+value+'"]]'
+
+										_l(json)
+
+									}
+
+									scope.toJSON = function(){
+
+									}
 
 									scope.highlight = function(text){
 										var	html	= text || ""										
@@ -114,6 +132,10 @@ function HTMLrankingSource() {
 										//scope.rankingData = new_ranking
 										element.html(JSON.stringify(new_ranking))
 										scope.update()
+									})
+
+									scope.$watch(attrs.mode, function(){
+										if(scope.$eval(attrs.mode) == 'preftools') scope.parseAsPreftools()
 									})
 								}
 
@@ -207,12 +229,12 @@ function HTMLpreferenceRanking($parse, $animate) {
 									element.toggleClass('horizontal',	scope.rankingOrientation == 'horizontal')
 									element.toggleClass('vertical', 	scope.rankingOrientation != 'horizontal')
 
-									scope.$watch(attrs.noDragging, function(){
-										if(scope.$eval(attrs.noDragging)){											
-											scope.$broadcast('dragging-off')
-										} else {
-											scope.$broadcast('dragging-on')
-										}
+									element.toggleClass('no-drag', 		scope.$eval(attrs.no_drag))	
+
+									scope.$watch(attrs.noDragging, function(){		
+										var no_drag = scope.$eval(attrs.noDragging)								
+										element.toggleClass('no-drag', no_drag)	
+										scope.$broadcast('dragging-' + (no_drag ? 'off' : 'on'))
 									})										
 									
 								},
@@ -352,9 +374,6 @@ function HTMLpreferenceRanking($parse, $animate) {
 										delete $scope.saved
 									}, true)
 
-
-									$scope.noDragging			= $attrs.noDragging != undefined	
-
 									$scope.rankingOrientation 	= $attrs.rankingOrientation || 'vertical'																		
 									
 								}
@@ -453,7 +472,7 @@ function HTMLpreferenceOption($scope, $animate) {
 									}
 
 									//listen for a mousedown to get the dragging started
-									if(attrs.value && !scope.noDragging) element.on('mousedown', scope.init)
+									if(attrs.value && !scope.$eval(attrs.noDragging)) element.on('mousedown', scope.init)
 
 									
 									scope.$on('dragging-off', function(){
@@ -465,5 +484,33 @@ function HTMLpreferenceOption($scope, $animate) {
 									})
 									
 								}
+			}
+}
+
+function HTMLtooltip($scope, $animate) {
+	return	{
+				restrict	:	'E',
+
+				link		:	function(scope, element, attrs) {
+									var marker = $('<div></div>')
+
+									element.append(marker).addClass(scope.$eval(attrs.class))
+
+									marker.css({
+										"transform"	:	"rotate(-45deg)",
+										"position"	:	"absolute",	
+										"width"		:	"1em",
+										"height"	:	"1em"
+									})
+
+									element.css({
+										"position"	:	"absolute"
+									})
+
+									scope.$watch(attrs.class, function(){
+										marker.class = scope.$eval(attrs.class)
+									})
+								}
+
 			}
 }

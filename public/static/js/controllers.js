@@ -16,7 +16,7 @@ schulzeDoodleControllers.controller(
 
 			//dummy:
 			$scope.ballot_box	=	{
-							            id      :   1,
+							            id      :   "1",
 							            subject :   "example subject",
 							            options :   [
 							            				{
@@ -52,37 +52,37 @@ schulzeDoodleControllers.controller(
 													], 
 							            papers  :   [
 														{
-							                                id          :   1,
+							                                id          :   "1",
 							                                participant :   "user1",
 							                                ranking     :   [["A"], ["B", "C"], ["D", "E", "F"]]
 							                            },
 							                            {
-							                                id          :   2,
+							                                id          :   "2",
 							                                participant :   "user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            },
 							                            {
-							                                id          :   3,
+							                                id          :   "3",
 							                                participant :   "user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            },
 							                            {
-							                                id          :   4,
+							                                id          :   "4",
 							                                participant :   "user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            },
 							                            {
-							                                id          :   5,
+							                                id          :   "5",
 							                                participant :   "user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            },
 							                            {
-							                                id          :   6,
+							                                id          :   "6",
 							                                participant :   "user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            },
 							                            {
-							                                id          :   7,
+							                                id          :   "7",
 							                                participant :   "user2",
 							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
 							                            }
@@ -93,13 +93,21 @@ schulzeDoodleControllers.controller(
 			$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
 			$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')
 
-		    $scope.addBallotPaper = function(id) {
+		    $scope.addBallotPaper = function(id, ranking) {
 		    	var ballot_paper = {
 		    							id			:	id !== undefined ? id : Math.floor(Math.random()*100),
 										participant :   "unnamed",
-										ranking     :   [Object.keys($scope.ballot_box.options)]
+										ranking     :   ranking || [Object.keys($scope.ballot_box.options)]
 		    						}
 		        $scope.ballot_box.papers[ballot_paper.id] = ballot_paper
+		    }
+
+		    $scope.addResult = function(ranking) {
+		    	$scope.ballot_box.papers[-1] =	{
+		    										id			:	-1,
+		    										participant	:	'result',
+		    										ranking		:	ranking
+		    									}
 		    }
 
 			$scope.removeBallotPaper = function(paper_id) {
@@ -110,11 +118,52 @@ schulzeDoodleControllers.controller(
 		        return ["A", ["C", "D"], ["B", "E", "F"]]
 		    } 
 
+		    $scope.getCleanData	= function(){
+		    	var clean_box = JSON.parse(JSON.stringify($scope.ballot_box)) //bah!
+
+		    	delete clean_box[0]
+
+		    	clean_box.papers	= _obj2arr(clean_box.papers)
+		    	clean_box.options	= _obj2arr(clean_box.options)
+
+		    	return(clean_box)
+		    }
+
+		    $scope.postBox = function() {
+		    	$.post('/api/ballotBox', JSON.stringify($scope.getCleanData()))
+		    	.done(function(data){
+		    		$scope.addResult(data.result)
+		    		$scope.$apply()
+		    	})
+		    }
+
+		    $scope.lockPapers = function(papers) {
+		    	$.each(papers, function(key, paper) {
+		    		paper.locked = true
+		    	})
+		    	return(papers)
+		    }
+
 		    $scope.addBallotPaper("")
-		   
+			$scope.lockPapers($scope.ballot_box.papers)
+
 		}
 	]
 )
 
+
+schulzeDoodleControllers.controller(
+
+	'Test', 
+	[
+		'$scope', 
+		'$routeParams',
+		function ($scope, $routeParams) {
+			$scope.evaluate = function(ballot_box) {				
+				return($.post('api/ballotBox', _l($(ballot_box).val())))
+			}
+		}
+	]
+)
 
 
