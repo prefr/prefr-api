@@ -1,0 +1,13 @@
+# Use of comma (equal rank) is discouraged as this needs more random data.
+# Voters should be forced to rank distinctly.
+
+internals; economy
+welfare; environment (group A); environment (group B); food; health; drug policy
+drug policy; welfare; culture; food; health; internals
+environment (group B); welfare; patent law; health; environment (group A); internals
+welfare; foreign affairs; economy; internals
+welfare; environment (group B); environment (group A); drug policy; food; health
+culture; drug policy; welfare
+economy
+copyright; culture; patent law; welfare
+internals; foreign affairs

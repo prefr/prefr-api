@@ -3,7 +3,6 @@ package helper
 import model.Paper
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
-import scala.concurrent.Future
 
 /**
  * User: Björn Reimer
@@ -89,9 +88,9 @@ object Schulze {
     var k = 0
     val p: Array[Array[Int]] = Array.ofDim[Int](C, C)
 
-    for ( i <- 0 to (C-1) ) {
-      for ( j <- 0 to (C-1)) {
-        if ( i != j) {
+    for (i <- 0 to (C - 1)) {
+      for (j <- 0 to (C - 1)) {
+        if (i != j) {
           if (d(i)(j) > d(j)(i)) {
             p(i)(j) = d(i)(j)
           } else {
@@ -101,12 +100,12 @@ object Schulze {
       }
     }
 
-    for ( i <- 0 to (C-1)) {
-      for (j <- 0 to (C-1)) {
-        if ( i != j) {
-          for (k <- 0 to (C-1)) {
-            if( i != k && j != k) {
-              p(j)(k) = Math.max( p(j)(k) , Math.min( p(j)(i), p(i)(k)))
+    for (i <- 0 to (C - 1)) {
+      for (j <- 0 to (C - 1)) {
+        if (i != j) {
+          for (k <- 0 to (C - 1)) {
+            if (i != k && j != k) {
+              p(j)(k) = Math.max(p(j)(k), Math.min(p(j)(i), p(i)(k)))
             }
           }
         }
@@ -122,11 +121,11 @@ object Schulze {
     var j = 0
     val C = p.length
     val r = Array.ofDim[Int](C)
-    
+
 
     // find number of strongest Paths for each candidate
     for (i <- 0 to (C - 1)) {
-      for (j <- 0 to (C -1)) {
+      for (j <- 0 to (C - 1)) {
         Logger.debug("i:" + i + " j:" + j + " r:" + p(i)(j))
         if (i != j) {
           if (p(i)(j) > p(j)(i)) {
@@ -142,33 +141,39 @@ object Schulze {
 
   def getSchulzeRanking(papers: Seq[Paper]): Seq[JsObject] = {
 
-    // get all available candidates
-    val candidates = getCandidates(papers)
+    // check if seq is empty
+    if (papers.length < 1) {
+      Seq()
+    } else {
 
-    // create matrix with preferences
-    val matrix: Seq[Seq[Int]] = createPreferenceMatrix(papers, candidates)
-    
-    // get ranking using the matrix
-    val strongestPaths = determineStrongestPaths(matrix)
+      // get all available candidates
+      val candidates = getCandidates(papers)
 
-    val ranking = determineRanking(strongestPaths)
+      // create matrix with preferences
+      val matrix: Seq[Seq[Int]] = createPreferenceMatrix(papers, candidates)
 
-    val result = ranking.zip(candidates).map {
-      case (r: Int, tag: String) => Json.obj("tag" -> tag, "numberOfStrongestLinks" -> r)
+      // get ranking using the matrix
+      val strongestPaths = determineStrongestPaths(matrix)
+
+      val ranking = determineRanking(strongestPaths)
+
+      val result = ranking.zip(candidates).map {
+        case (r: Int, tag: String) => Json.obj("tag" -> tag, "numberOfStrongestLinks" -> r)
+      }
+
+      val sortedResult = result.sortWith((js1, js2) => {
+        (js1 \ "numberOfStrongestLinks").as[Int] > (js2 \ "numberOfStrongestLinks").as[Int]
+      })
+
+
+      Logger.debug("MATRIX: " + matrix.toString())
+      Logger.debug("CANDIDATES: " + candidates.toString)
+      Logger.debug("PATHS: " + strongestPaths)
+      //    Logger.debug("RESULT: " + result)
+      Logger.debug("SORTED RESULT: " + sortedResult)
+
+      sortedResult
     }
-
-    val sortedResult = result.sortWith( (js1, js2) => {
-      (js1 \ "numberOfStrongestLinks").as[Int] > (js2 \ "numberOfStrongestLinks").as[Int]
-    })
-
-
-    Logger.debug("MATRIX: " + matrix.toString())
-    Logger.debug("CANDIDATES: " + candidates.toString)
-    Logger.debug("PATHS: " + strongestPaths)
-//    Logger.debug("RESULT: " + result)
-    Logger.debug("SORTED RESULT: " + sortedResult)
-
-    sortedResult
   }
 
   // parses a set of papers for all unique options

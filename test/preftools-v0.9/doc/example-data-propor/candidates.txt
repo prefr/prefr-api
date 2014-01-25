@@ -1,0 +1,12 @@
+copyright
+culture
+economy
+environment (group A)
+environment (group B)
+drug policy
+food
+foreign affairs
+health
+internals
+patent law
+welfare

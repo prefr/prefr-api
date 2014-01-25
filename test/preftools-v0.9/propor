@@ -1,0 +1,397 @@
+#!/usr/bin/env lua
+
+
+----------------------
+-- Helper functions --
+----------------------
+
+function message(...)
+  io.stderr:write(...)
+end
+
+function equal_list(a, b)
+  if #a == #b then
+    for i = 1, #a do
+      if a[i] ~= b[i] then return false end
+    end
+    return true
+  else
+    return false
+  end
+end
+
+
+--------------------------------------
+-- Command line argument processing --
+--------------------------------------
+
+settings = {}
+
+do
+  local next_arg
+  do
+    local argv = {...}
+    local i = 0
+    next_arg = function()
+      i = i + 1
+      return argv[i]
+    end
+  end
+  local function command_line_error()
+    message("Get help with -h or --help.\n")
+    os.exit(1)
+  end
+  for option in next_arg do
+    local argument, lower_argument
+    local function require_argument()
+      argument = next_arg()
+      if argument == nil then
+        message('Command line option "', option, '" requires an argument.\n')
+        command_line_error()
+      end
+      lower_argument = string.lower(argument)
+    end
+    local function set_setting_once(key, value)
+      if settings[key] ~= nil then
+        message('Command line option "', option, '" occurred multiple times.\n')
+        command_line_error()
+      end
+      settings[key] = value
+    end
+    if option == "-h" or option == "--help" then
+      io.stdout:write("Usage:\n")
+      io.stdout:write("propool   -c|--candidates <candidates_file>\n")
+      io.stdout:write("          -b|--ballots    <ballots_file>\n")
+      io.stdout:write("          -r|--random     <random_data_file>\n")
+      io.stdout:write("        [ -o|--output     <output_file>      ]\n")
+      os.exit(0)
+    elseif option == "-c" or option == "--candidates" then
+      require_argument()
+      set_setting_once("candidates_filename", argument)
+    elseif option == "-b" or option == "--ballots" then
+      require_argument()
+      set_setting_once("ballots_filename", argument)
+    elseif option == "-r" or option == "--random" then
+      require_argument()
+      set_setting_once("random_filename", argument)
+    elseif option == "-o" or option == "--output" then
+      require_argument()
+      set_setting_once("output_filename", argument)
+    else
+      message('Illegal command line option "', option, '"\n')
+      command_line_error()
+    end
+  end
+  if settings.candidates_filename == nil then
+    message("Use -c or --candidates to specify file containing candidate information.\n")
+    command_line_error()
+  end
+  if settings.ballots_filename == nil then
+    message("Use -b or --ballots to specify file containing all ballot data.\n")
+    command_line_error()
+  end
+  if settings.random_filename == nil then
+    message("Use -r or --random- to specify input file for random data.\n")
+    command_line_error()
+  end
+end
+
+
+--------------------------
+-- I/O helper functions --
+--------------------------
+
+function strip(str)
+  return string.match(str, "^%s*(.-)%s*$")
+end
+
+function stripped_lines(filename)
+  local file, errmsg = io.open(filename, "r")
+  if not file then
+    message(errmsg, "\n")
+    os.exit(2)
+  end
+  local get_next_line = file:lines(filename)
+  return function()
+    if not file then return nil end
+    local line
+    repeat
+      line = get_next_line()
+      if line == nil then
+        file:close()
+        file = nil
+        return nil
+      end
+      line = strip(string.match(line, "^[^#]*"))
+    until line ~= ""
+    return line
+  end
+end
+
+function stripped_gmatch(str, pattern)
+  local next_entry = string.gmatch(str, pattern)
+  return function()
+    local entry
+    repeat
+      entry = next_entry()
+      if entry then entry = strip(entry) end
+    until entry ~= ""
+    return entry
+  end
+end
+
+do
+  local output_file
+  if settings.output_filename == nil then
+    output_file = io.stdout
+  else
+    local errmsg
+    output_file, errmsg = io.open(settings.output_filename, "w")
+    if not output_file then
+      message(errmsg, "\n")
+      os.exit(2)
+    end
+  end
+  function output(...)
+    output_file:write(...)
+  end
+end
+
+function padded_number(number, maximum)
+  local str = tostring(number)
+  local max_digits = 1
+  local tmp = maximum
+  while tmp >= 10 do
+    tmp = math.floor(tmp / 10)
+    max_digits = max_digits + 1
+  end
+  for i = 1, max_digits - #str do
+    str = " " .. str
+  end
+  return str
+end
+
+
+---------------------
+-- Read candidates --
+---------------------
+
+candidates = {}  -- mapping string to candidate number and vice versa
+
+do
+  for line in stripped_lines(settings.candidates_filename) do
+    for candidate in stripped_gmatch(line, "[^;,]+") do
+      if candidates[candidate] then
+        message('Duplicate candidate in "', settings.candidates_filename, '": "', candidate, '".\n')
+        os.exit(2)
+      end
+      candidates[#candidates+1] = candidate
+      candidates[candidate] = #candidates
+    end
+  end
+end
+
+
+------------------------------
+-- Read and process ballots --
+------------------------------
+
+ballots = {}
+
+for line in stripped_lines(settings.ballots_filename) do
+  local ballot = {}
+  local processed = {}
+  for candidate_list in string.gmatch(line, "[^;/]+") do
+    local ballot_entry = {}
+    for candidate in stripped_gmatch(candidate_list, "[^,]+") do
+      local candidate = strip(candidate)
+      if not candidates[candidate] then
+        message('Unknown candidate "', candidate, '" contained in ballot "', line, '".\n')
+        os.exit(2)
+      end
+      if processed[candidate] then
+        message('Duplicate candidate "', candidate, '" in ballot "', line, '".\n')
+        os.exit(2)
+      end
+      ballot_entry[#ballot_entry+1] = candidate
+      processed[candidate] = true
+    end
+    if #ballot_entry > 0 then
+      ballot[#ballot+1] = ballot_entry
+    end
+  end
+  ballots[#ballots+1] = ballot
+end
+
+
+----------------------------------------
+-- Random number input and conversion --
+----------------------------------------
+
+do
+  local next_line
+  if settings.random_filename then
+    next_line = stripped_lines(settings.random_filename)
+  end
+  local random_buffer = 0
+  local random_buffer_max = 1
+  local lower_bound, upper_bound
+  function get_random(max)
+    if max == 1 then
+      output("No random number needed.\n\n")
+      return 1
+    end
+    output("Random number between 1 and ", max, " incl. needed.\n")
+    if random_buffer_max == 1 then
+      output("No random number saved previously (old number := 0).\n")
+    else
+      output("Random number ", random_buffer, " between 0 and ", random_buffer_max, " excl. has previously been saved.\n")
+    end
+    while true do
+      while random_buffer_max < max do
+        if random_buffer_max > 1 then
+          output("Random range too small, need to fetch more random numbers.\n")
+        end
+        local fetched_value, range
+        while true do
+          local line = next_line()
+          if line == nil then
+            output("\n!!! WARNING: Out of random data !!!\n\n")
+            return nil
+          end
+          local lb, ub = string.match(line, "^%s*([0-9]+)%s*%-%s*([0-9]+)%s*$")
+          if lb then
+            lower_bound = tonumber(lb)
+            upper_bound = tonumber(ub)
+          else
+            local v = string.match(line, "^%s*[0-9]+%s*$")
+            if not v then
+              message("Malformed line in random file.\n")
+              os.exit(2)
+            end
+            fetched_value = tonumber(v)
+            output("Fetched random number ", fetched_value, " between ", lower_bound, " and ", upper_bound, " incl.\n")
+            if fetched_value < lower_bound or fetched_value > upper_bound then
+              message("Random number out of range.\n")
+              os.exit(2)
+            end
+            break
+          end
+        end
+        local r = fetched_value - lower_bound
+        local m = 1 + upper_bound - lower_bound
+        output("Use upper boundary ", upper_bound, " - lower boundary ", lower_bound, " + 1 = ", m, " as multiplier.\n")
+        output("Old number ", random_buffer, " * multiplier ", m, " + fetched number ", fetched_value, " - lower boundary ", lower_bound, " = ", random_buffer * m + r, ".\n")
+        output("Upper limit of new number is ", random_buffer_max, " * ", m, " = ", random_buffer_max * m, "\n")
+        random_buffer = random_buffer * m + r
+        random_buffer_max = random_buffer_max * m
+        output("Random number is now ", random_buffer, " between 0 and ", random_buffer_max, " excl.\n")
+      end
+      local p = math.floor(random_buffer_max / max) * max
+      local old = random_buffer
+      if random_buffer < p then
+        output("Random number is within usable range from 0 to ", p, " excl.\n")
+        local rest = random_buffer % max
+        random_buffer = math.floor(random_buffer / max)
+        random_buffer_max = p / max
+        output("Random number ", old, " / ", max, " = ", random_buffer, " with rest ", rest, ".\n")
+        output("Using rest ", rest, " + 1 = ", rest + 1, " as resulting random number between 1 and ", max, " incl.\n")
+        if random_buffer_max == 1 then
+          output("Integer division result does not carry information for next run.\n")
+        else
+          output("Saving integer division result ", random_buffer, " as random number for next run.\n")
+          output("Upper limit of saved number is ", p, " / ", max, " = ", random_buffer_max, ".\n")
+        end
+        output("\n")
+        return rest + 1
+      else
+        output("Random number is NOT within usable range from 0 to ", p, " excl.\n")
+        output("Old number ", random_buffer, " - ", p, " = ", random_buffer - p, ".\n")
+        output("Upper limit of new number is ", random_buffer_max, " - ", p, " = ", random_buffer_max - p, ".\n")
+        random_buffer = random_buffer - p
+        random_buffer_max = random_buffer_max - p
+        output("Random number is now ", random_buffer, " between 0 and ", random_buffer_max, " excl.\n")
+      end
+    end
+  end
+end
+
+
+------------------------
+-- Calculate rankings --
+------------------------
+
+ranking = {}  -- mapping candidate name to ranking number and vice versa
+
+do
+  while true do
+    local choices = {}
+    local max_ballot = 0
+    for i = 1, #ballots do
+      local ballot = ballots[i]
+      local choice
+      for j = 1, #ballot do
+        local candidate_list = ballot[j]
+        for k = 1, #candidate_list do
+          local candidate = candidate_list[k]
+          if ranking[candidate] == nil then
+            if choice == nil then
+              choice = { ballot = i }
+              max_ballot = math.max(max_ballot, i)
+            end
+            choice[#choice+1] = candidate
+          end
+        end
+        if choice then break end
+      end
+      choices[#choices+1] = choice
+    end
+    if #choices == 0 then
+      break
+    end
+    local same = true
+    output("Choices:\n")
+    for i = 1, #choices do
+      local choice = choices[i]
+      if not equal_list(choice, choices[1]) then same = false end
+      output(padded_number(i, #choices), ". Ballot #", padded_number(choice.ballot, max_ballot), ": ", table.concat(choice, ", "), "\n")
+    end
+    output("\n")
+    local choice
+    if same then
+      output("All choices are equal.\n\n")
+      choice = choices[1]
+    else
+      local r = get_random(#choices)
+      if r == nil then break end
+      choice = choices[r]
+    end
+    local winner
+    if #choice == 1 then
+      winner = choice[1]
+    else
+      output("Possible winners from ballot #", choice.ballot, ": ", table.concat(choice, ", "), "\n\n")
+      local r = get_random(#choice)
+      if r == nil then break end
+      winner = choice[r]
+    end
+    ranking[#ranking+1] = winner
+    ranking[winner] = #ranking
+    output("Winner: ", winner, "\n\n")
+  end
+  max_rank = rank
+end
+
+
+------------------
+-- Output ranks --
+------------------
+
+output("Ranking:\n")
+for rank = 1, #ranking do
+  local candidate = ranking[rank]
+  output(padded_number(rank, #ranking), ". ", candidate, "\n")
+end
+output("\n")
+
+

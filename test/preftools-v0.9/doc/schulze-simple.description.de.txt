@@ -1,0 +1,18 @@
+Kandidaten, die bezüglich der Frage der Zustimmung nicht mehr Ja- als Nein-Stimmen auf sich vereinigen können, scheiden aus und finden im nachfolgend beschriebenen Prozess keine Berücksichtigung mehr. Für die übrigen Kandidaten wird auf Basis der abgegebenen Stimmzettel mittels der im Folgenden beschriebenen Schulze-Methode ein Wahlgewinner bzw. eine Reihenfolge von Gewinnern ermittelt:
+
+Jeder Kandidat wird mit jedem anderen Kandidaten verglichen und es wird für jeden Kandidaten ausgezählt, wieviele Wähler den einen Kandidaten dem jeweils anderen Kandidaten vorziehen.
+
+Definition: Ein Kandidat A kann einen anderen Kandidaten B mit einem Gewicht von n schlagen, wenn sich eine Abfolge von insgesamt mindestens zwei Kandidaten konstruieren lässt, die mit Kandidat A beginnt und mit Kandidat B endet, bei der für alle Paare direkt aufeinanderfolgender Kandidaten dieser Abfolge der jeweils eine Kandidat gegenüber seinem Nachfolger von einer einfachen Mehrheit, mindestens jedoch von n Wählern, bevorzugt wird. Eine einfache Mehrheit ist dann gegeben, wenn mehr Wähler den einen Kandidaten gegenüber seinem Nachfolger bevorzugen, als es umgekehrt der Fall ist.
+
+1. Es wird für jedes Kandidatenpaar X und Y ermittelt, wie das größtmögliche Gewicht ist, mit dem ein Kandidat X nach obenstehender Definition den Kandidaten Y schlagen kann. Hierzu müssen alle der obenstehenden Definition genügenden Abfolgen von Kandidaten berücksichtigt werden. Gibt es keine solche Abfolge wird jeweils ein größtmögliches Gewicht von Null (0) angenommen.
+
+2. Ein Kandidat X ist dann Gewinner der Wahl, wenn für jeden anderen Kandidaten Y das größtmögliche Gewicht, mit dem der Kandidat X den Kandidaten Y schlagen kann, größer als das größtmögliche oder gleich dem größtmöglichen Gewicht ist, mit dem der Kandididat Y den Kandidaten X schlagen kann.
+
+3. Gibt es mehrere Gewinner, findet eine Stichwahl statt.
+
+Im Falle der Ermittlung mehrerer Gewinner, die in eine Reihenfolge zu bringen sind, wird Schritt 2 unter Ausnahme der bisherigen Gewinner wiederholt, um die weiteren Plätze zu besetzen. Gleichplatzierte Kandidaten werden im Anschluss an die Auszählung mittels einer Stichwahl untereinander in eine Reihenfolge gebracht.
+
+Stichwahlen werden als Wahl durch Zustimmung durchgeführt. Es werden hierbei nur Zustimmungen gezählt und der Kandidat mit den meisten Stimmen gewinnt bzw. wird erstplatziert. Sind mehrere Kandidaten in eine Reihenfolge zu bringen, entscheidet die Anzahl der Zustimmungen über die Reihenfolge der Kandidaten. Ergibt die Stichwahl einen Gleichstand, dann entscheidet das Los.
+
+Technisch wird die Auszählung mit Ausnahme der Stichwahlen unter Verwendung des folgenden in der Programmiersprache Lua 5.1 geschriebenen Computerprogramms durchgeführt. Die Eingabedaten werden gemäß der Stimmzettel in einem öffentlichen Prozess erfasst. Eingaben und Ausgaben des Programms werden protokolliert und veröffentlicht.
+

@@ -1,0 +1,27 @@
+# Example file for random data to be used by the "propor" command line utility
+
+# Using one 6-sided standard dice
+1-6
+6
+2
+2
+6
+1
+
+# Using two 10-sided dice, marked for decade and unit position (W100)
+0-99
+26
+50
+57
+30
+88
+46
+
+# coin toss, 1 = side with number
+1-2
+2
+2
+2
+1
+2
+

@@ -1,0 +1,27 @@
+# 1st ballot:
+Alice;  Dave  /  Bob, Carol  /  Eve
+
+# 2nd ballot:
+Eve  /  /  Alice, Bob, Carol, Dave     # disapprovals equally ranked
+
+# 3rd ballot:
+Alice, Bob;  Carol  /  Dave, Eve  /    # Alice and Bob equally ranked
+
+# 4th ballot:
+Bob;  Alice;  Dave;  Carol;  Eve  /  /
+
+# 5th ballot:
+Alice, Bob, Carol  /  /  Dave, Eve     # approvals & disapprovals equally ranked
+
+# 6th ballot:
+Bob;  Alice, Carol;  Dave  /  Eve  /   # Alice and Carol equally ranked
+
+# 7th ballot:
+Bob;  Carol;  Alice;  Dave  /  /  Eve
+
+# 8th ballot:
+Dave;  Bob;  Alice  /  Carol  /  Eve
+
+# 9th (last) ballot:
+Eve;  Bob;  Alice;  Dave;  Carol       # approvals only (no slashes)
+
