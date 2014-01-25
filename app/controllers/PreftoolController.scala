@@ -1,11 +1,13 @@
 package controllers
 
 import play.api.mvc.{Controller, Action}
-import model.BallotBox
+import model.{Paper, BallotBox}
 import play.api.libs.json.Json
-import helper.Schulze
+import helper.{IdHelper, Schulze}
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
+import java.util.Date
+import play.api.Logger
 
 object PreftoolController extends Controller {
   def getCandidates(id: String) = Action.async {
@@ -39,11 +41,53 @@ object PreftoolController extends Controller {
       case None => NotFound
       case Some(b) =>
         val result: Seq[String] = b.result.zipWithIndex.map {
-          case (e, i) => e.mkString((i+1) + ". ", "\n" + (i+1) + ". ", "")
+          case (e, i) => e.mkString((i + 1) + ". ", "\n" + (i + 1) + ". ", "")
         }
 
         Ok(result.mkString("\n"))
     }
 
+  }
+
+  def importPapers() = Action(parse.tolerantText) {
+    request =>
+
+      val papers = request.body.split("\n").map {
+        ranking =>
+
+          val js = "[[\"" +
+            ranking
+            .replace(",", "\",\"")
+            .replace("/", "\"],[\"")
+            .replace(";", "\"],[\"") + "\"]]"
+
+          Logger.debug("JSON" + js)
+
+          val jsObject = Json.obj("ranking" -> Json.parse(js))
+
+          jsObject.asOpt[Paper](Paper.inputReads)
+      }.toSeq
+
+      if (papers.forall(_.isDefined)) {
+
+        val p = papers.map {
+          _.get
+        }
+        val res = Schulze.getSchulzeRanking(p)
+
+        val bb = new BallotBox(
+          IdHelper.generateBallotId(),
+          None,
+          None,
+          Some(p),
+          res,
+          new Date(),
+          new Date()
+        )
+        BallotBox.col.insert(bb)
+        Ok(bb.toJson)
+      } else {
+        BadRequest("Could not parse input")
+      }
   }
 }
