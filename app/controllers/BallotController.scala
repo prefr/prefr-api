@@ -7,6 +7,8 @@ import model.BallotBox
 
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
+import helper.Schulze
+
 /**
  * User: Björn Reimer
  * Date: 1/18/14
@@ -18,8 +20,15 @@ object BallotController extends Controller with MongoController {
     request => {
 
       request.body.validate[BallotBox](BallotBox.inputReads).map {
-        ballotBox => BallotBox.col.insert(ballotBox)
-          Ok(ballotBox.toJson)
+        ballotBox => {
+
+          val ranking =  Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
+          val ballotBoxWithResult = ballotBox.copy(result = ranking)
+
+          BallotBox.col.insert(ballotBoxWithResult)
+
+          Ok(ballotBoxWithResult.toJson)
+        }
       }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
     }
   }

@@ -19,7 +19,7 @@ case class BallotBox(
                       subject: Option[String],
                       options: Option[Seq[BallotOption]],
                       papers: Option[Seq[Paper]],
-                      result: Option[Seq[String]],
+                      result: Seq[JsObject],
                       createDate: Date
                       ) {
   def toJson: JsValue = {
@@ -38,7 +38,7 @@ object BallotBox {
       (__ \ 'subject).readNullable[String] and
       (__ \ 'options).readNullable[Seq[BallotOption]] and
       (__ \ 'papers).readNullable[Seq[Paper]] and
-      Reads.pure[Option[Seq[String]]](Some(Seq("A","B","C"))) and
+      Reads.pure[Seq[JsObject]](Seq()) and
       Reads.pure[Date](new Date)
     )(BallotBox.apply _)
 
