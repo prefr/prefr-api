@@ -47,7 +47,7 @@ object BallotController extends Controller with MongoController {
   def addVote(id: String) = Action.async(parse.tolerantJson) {
 
     request =>
-      request.body.validate[Paper].map {
+      request.body.validate[Paper](Paper.inputReads).map {
         paper => {
           // Add paper to ballot
           val query = Json.obj("id" -> id)

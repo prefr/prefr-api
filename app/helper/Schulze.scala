@@ -2,7 +2,7 @@ package helper
 
 import model.Paper
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 
 /**
  * User: Björn Reimer
@@ -139,7 +139,28 @@ object Schulze {
     r.toSeq
   }
 
-  def getSchulzeRanking(papers: Seq[Paper]): Seq[JsObject] = {
+
+  def createResult(ranking: Seq[Int], candidates: Seq[String]): Seq[Seq[String]] = {
+
+    val sorted = ranking.zip(candidates).sortWith((c1, c2) => c1._1 > c2._1)
+
+    // merge entries with the same number of strongest paths
+    val merged = sorted.foldLeft(Seq[Seq[(Int, String)]]())((merged, candidate) => {
+
+      if (merged.lastOption.isDefined && merged.last.last._1 == candidate._1) {
+        merged.init :+ (merged.last :+ candidate)
+      } else {
+        merged :+ Seq(candidate)
+      }
+
+    })
+
+    // remove ints
+    merged.map(c => c.map(c2 => c2._2))
+
+  }
+
+  def getSchulzeRanking(papers: Seq[Paper]): Seq[Seq[String]] = {
 
     // check if seq is empty
     if (papers.length < 1) {
@@ -157,22 +178,15 @@ object Schulze {
 
       val ranking = determineRanking(strongestPaths)
 
-      val result = ranking.zip(candidates).map {
-        case (r: Int, tag: String) => Json.obj("tag" -> tag, "numberOfStrongestLinks" -> r)
-      }
-
-      val sortedResult = result.sortWith((js1, js2) => {
-        (js1 \ "numberOfStrongestLinks").as[Int] > (js2 \ "numberOfStrongestLinks").as[Int]
-      })
-
+      val result = createResult(ranking, candidates)
 
       Logger.debug("MATRIX: " + matrix.toString())
       Logger.debug("CANDIDATES: " + candidates.toString)
       Logger.debug("PATHS: " + strongestPaths)
       //    Logger.debug("RESULT: " + result)
-      Logger.debug("SORTED RESULT: " + sortedResult)
+      Logger.debug("SORTED RESULT: " + result)
 
-      sortedResult
+      result
     }
   }
 

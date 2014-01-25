@@ -19,7 +19,7 @@ case class BallotBox(
                       subject: Option[String],
                       options: Option[Seq[BallotOption]],
                       papers: Option[Seq[Paper]],
-                      result: Seq[JsObject],
+                      result: Seq[Seq[String]],
                       lastResultCalculation: Date,
                       createDate: Date
                       ) {
@@ -38,8 +38,8 @@ object BallotBox {
     Reads.pure[String](IdHelper.generateBallotId()) and
       (__ \ 'subject).readNullable[String] and
       (__ \ 'options).readNullable[Seq[BallotOption]] and
-      (__ \ 'papers).readNullable[Seq[Paper]] and
-      Reads.pure[Seq[JsObject]](Seq()) and
+      (__ \ 'papers).readNullable[Seq[Paper]](Reads.seq(Paper.inputReads)) and
+      Reads.pure[Seq[Seq[String]]](Seq()) and
       Reads.pure[Date](new Date) and
       Reads.pure[Date](new Date)
     )(BallotBox.apply _)

@@ -19,5 +19,29 @@ object PreftoolController extends Controller {
 
   }
 
-  def getBallots(id: String) = play.mvc.Results.TODO
+  def getBallots(id: String) = Action.async {
+
+    BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+      case None => NotFound
+      case Some(b) =>
+
+        val ballots = b.papers.getOrElse(Seq()).map {
+          paper => paper.ranking.map(r => r.mkString(",")).mkString(";")
+        }
+        Ok(ballots.mkString("\n"))
+    }
+
+  }
+
+  def getResult(id: String) = Action.async {
+
+    BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+      case None => NotFound
+      case Some(b) =>
+        val result = b.result.zipWithIndex.foreach{ case (e, i) => println(i + ". " + e) }
+
+        Ok("")
+    }
+
+  }
 }
