@@ -61,8 +61,6 @@ schulzeDoodle.config([
 ])
 
 schulzeDoodle.directive('singleSelect',         HTMLsingleSelect)
-schulzeDoodle.directive('selectAs',             HTMLselectAs)
-
 
 schulzeDoodle.directive('rankingSource',        HTMLrankingSource)
 

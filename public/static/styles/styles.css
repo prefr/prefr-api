@@ -51,40 +51,46 @@ body > header * {
 	height:					3.5rem;
 }
 
-body > header a {
+nav {	
+	display:				inline-block;
+	line-height:			3.5rem;
+	white-space: 			nowrap;
+}
+
+nav a {
 	position:				relative;
+	display:				inline-block;
 	text-decoration: 		none;
 	color:					#666;
-	line-height:			3.5rem;
+	padding:				0;
 	margin:					0 1em;
+	cursor:					pointer;
 }
 
-body > header a:after,
-body > header a:after,
-body > header a:after {
+nav a:after {
 	content:				'';
 	position:				absolute;
+
+
 	height:					0em;
-	width:					100%;
 	bottom:					0;
-	left:					0;
+	left:					-0.5em;
+	right:					-0.5em;
+
 	box-shadow:				0 -0.05rem 0.01em #000000;
-	transition-duration:	100ms;
+	background-color: 		#666;
+	outline: 				0;
+	transition:				height 100ms ease-out;
 }
 
-
-body > header a:hover:after,
-body > header a:active:after,
-body > header a.current:after {
+nav a:hover:after,
+nav a:active:after,
+nav a.current:after {
 	height:					0.5em;
 }
 
-body > header a:hover:after {
-	background-color: 		#666;
-}
-
-body > header a:active:after,
-body > header a.current:after {
+nav a:active:after,
+nav a.current:after {
 	background-color:		rgba(100,125,140,1);
 }
 
@@ -102,6 +108,26 @@ body > header h1 {
 	text-shadow:			0 -0.05rem 0.01rem rgba(0, 0, 0, 0.7), 0 0.05rem 0.01rem rgba(255, 255, 255, 0.7);
 }
 
+
+nav.vertical {
+	position:				absolute;
+	display:				inline-block;
+
+	top:					0;
+	right:					100%;	
+	z-index:				5;	
+	padding-right:			5em;
+
+	white-space:			nowrap;
+
+	transform:				rotate(-90deg);
+	-ms-transform:			rotate(-90deg); /* IE 9 */
+	-webkit-transform:		rotate(-90deg); /* Safari and Chrome */
+
+	transform-origin:			100% 0;
+	-ms-transform-origin:		100% 0;
+	-webkit-transform-origin:	100% 0;
+}
 
 
 /* main content */
@@ -161,6 +187,15 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight:			normal;
 }
 
+h2{
+	font-size:				1.5em;	
+}
+
+h3{
+	display:				inline;
+	font-size:				1.4em;		
+}
+
 table {
 	border-spacing:			0;
 	border-collpase:		collapse;	
@@ -201,10 +236,26 @@ button.ui-icon-delete {
 	background-image:		url('icons/ic_delete.png');
 }
 
+hr {
+	display:				block;
+	position:				absolute;
+
+	margin: 				0;
+	padding:				0;
+	height:					0.2em;
+	width:					100%;
+
+	border:					none;
+	box-shadow:				0 0.2em 0.2rem -0.2em rgba(0, 0, 0, 0.5) inset;
+}
+
+li {
+	list-style: none;
+}
 
 
 .ui-content {
-	padding:				0.5em;
+	padding:				1em;
 }
 
 .ui-content p {
@@ -231,19 +282,19 @@ button.ui-icon-delete {
 }
 
 
-.ui-medium_width {
+.ui-medium-width {
 	width:					6.5em;
 }
 
-.ui-medium_height{
+.ui-medium-height{
 	height:					2em;
 }
 
-.ui-extensive_width {
+.ui-extensive-width {
 	width: 					21em;
 }
 
-.ui-extensive_height {
+.ui-extensive-height {
 	height: 				25em;
 }
 
@@ -279,6 +330,7 @@ button.ui-icon-delete {
 .ui-borders {
 	border-width: 			0.2em;
 	border-style:			solid;	
+	border-color:			rgba(245, 245, 240, 1);
 	box-shadow: 			0 0 0.2rem rgba(0,0,0, 0.4);
 	overflow:				visible;
 }
@@ -291,10 +343,25 @@ button.ui-icon-delete {
 	display:				inline-block;
 }
 
+.ui-shadow {
+	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);
+}
+
 .ui-deep-shadow {	
 	box-shadow:				0 0 1em rgba(0, 0, 0, 0.6) inset;
 }
 
+.ui-box {
+	display:				inline-block;
+
+	width:					1.6em;
+	padding:				0;
+	margin:					0;
+	line-height: 			1.6em;
+	
+	text-align:				center;
+	vertical-align:			baseline;
+}
 
 
 
@@ -353,10 +420,26 @@ button.ui-icon-delete {
 
 	.ui-panel summary {
 		display:				block;
-		font-size:				1.6em;
 		text-align: 			center;
 		color:					#666;
 		background-color:		rgba(245, 245, 240, 1);
+	}
+
+	.ui-panel h1,
+	.ui-panel h2,
+	.ui-panel h3,
+	.ui-panel h4,
+	.ui-panel h5,
+	.ui-panel h6 {
+		font-size:				1.6em;
+	}
+
+	.ui-panel h3,
+	.ui-panel h4,
+	.ui-panel h5,
+	.ui-panel h6 {
+		display:				inline-block;
+		vertical-align:			middle;
 	}
 
 	.ui-panel.left > summary,
@@ -385,13 +468,13 @@ button.ui-icon-delete {
 
 	/* link in summary */
 
-
+		/*
 		.ui-panel summary a {
 			display:				block;
 			position:				relative;
 			padding: 				0.5em;
 		}
-
+		*/
 
 	/* details */
 
@@ -453,13 +536,22 @@ button.ui-icon-delete {
  
 }
 
+.ballot-box .edit-options{
+	background: 			#fff;
+	min-width:				3.5em;	
+}
+
 .ballot-box .ballot-overview .details {
 	padding:1em;
 }
 
-.ballot-box .ballot-papers {
+.ballot-box .ballot-papers,
+.ballot-box .ballot-options {
 	display:				block;
+
 	vertical-align:			top;
+
+	background-color:		rgba(245, 245, 240, 1);
 	padding:				1.9em 0;
 }
 
@@ -490,9 +582,9 @@ button.ui-icon-delete {
 
 	margin:					0;
 	padding	:				0;
+	padding-right:			2em;
 	font-size:				1.4em;
 	padding-left:			1em;
-	width:					10em;
 
 	background-color:		#647D8C;
 	color:					rgba(255,255,255,0.9);
@@ -502,15 +594,17 @@ button.ui-icon-delete {
 	vertical-align: 		top;
 }
 
-.ballot-box .ballot-paper .participant span,
+.ballot-box .ballot-paper .participant span.name,
 .ballot-box .ballot-paper .participant input {
+	display:				inline-block;
 
+	width:					8em;
 	padding:				0;
 	margin:					0;
 	background:				transparent;
 	color:					inherit;
 	border:					none;
-	font-size:				inherit;
+	font-size:				inherit;	
 }
 
 
@@ -576,58 +670,6 @@ button.ui-icon-delete {
 	background-image:		url('images/stripes.png');
 	background-size:		4px 4px;
 }
-
-.ballot-box .edit-paper nav {
-	position:				absolute;
-	display:				inline-block;
-
-	top:					0;
-	right:					100%;	
-	z-index:				5;	
-	padding-right:			5em;
-
-	white-space:			nowrap;
-
-	transform:				rotate(-90deg);
-	-ms-transform:			rotate(-90deg); /* IE 9 */
-	-webkit-transform:		rotate(-90deg); /* Safari and Chrome */
-
-	transform-origin:			100% 0;
-	-ms-transform-origin:		100% 0;
-	-webkit-transform-origin:	100% 0;
-}
-
-.ballot-box .edit-paper nav div {
-	display:				inline-block;
-	position:				relative;
-
-	line-height:			1.4em;
-	padding:				0 1em;		
-	margin-right:			0.5em;
-	margin-top:				-0.2em;
-
-	color:					rgba(255,255,255,1);
-	background-color:		#647D8C;	
-	border-color:			#647D8C;
-
-	vertical-align:			top;
-	cursor:					pointer;
-	transition:				margin 100ms ease-out;
-}
-
-
-.ballot-box .edit-paper nav div.selected {
-	background-color:		rgba(245, 245, 240, 1);
-	color:					#666;
-
-	margin-top:				0em;
-
-	border-color:			rgba(245, 245, 240, 1);
-}
-
-
-
-
 
 
 
@@ -748,14 +790,18 @@ preference-ranking[no-dragging] preference-option {
 }
 
 
-preference details {
+preference-option details {
 	overflow:				hidden;
+}
+
+preference-option summary {
+	font-size:				1.6em;
 }
 
 preference-option .title {
 	display:				inline-block;
-	padding:				0.2em 0.4em;
-	line-height:			1.2em;
+	padding:				0.1em 0.4em;
+	line-height:			1.1em;
 	vertical-align:			middle;
 	white-space: 			normal;
 }

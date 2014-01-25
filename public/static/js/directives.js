@@ -4,61 +4,48 @@ function HTMLsingleSelect() {
 				scope		:	true,
 
 				controller	:	function($scope, $element, $attrs) {									
-									var key = $.camelCase($attrs.singleSelect)
+									var params 			= $scope.$eval($attrs.singleSelect),
+										selection_map	= {}
 
-									$scope.$on($attrs.singleSelect+'-select', function(event, origin){																	
-										if(event.targetScope != $scope) {
-											event.stopPropagation()											
-											$scope[key].selected = origin
-											$scope.select($scope[key].selected)
-										}
-									})
-
-									$scope.$on($attrs.singleSelect+'-deselect', function(event, origin){																	
-										if(event.targetScope != $scope) {
-											event.stopPropagation()
-											$scope.selected = undefined
-											$scope.select($scope.selected)
-										}
-									})
-
-									$scope.select = function(target) {										
-										$scope.$broadcast($attrs.singleSelect+'-select', target)
+									$scope.mask = function(value) {
+										return($.camelCase('selection-'+value))
 									}
 									
-									$scope[key] = {}
-								}
-			}
-
-}
-
-function HTMLselectAs() {
-	return	{
-				restrict	:	'A',
-				scope		:	true,				
-
-				link		:	function(scope, element, attrs) {
-									if(scope.$eval(attrs.selectInitial)) scope.select()
-								},
-
-				controller	:	function($scope, $element, $attrs) {																		
-									$scope.selected = false
-
-									$scope.$on($attrs.selectAs+'-select', function(event, origin) {										
-										$scope.selected =  (origin == $attrs.selectBy)
-									})
-
-									$scope.select = function() {
-										$scope.$emit($attrs.selectAs+'-select', $attrs.selectBy)
+									$scope.select = function(select_as, select_by) {																										
+										$scope[$scope.mask(select_as)] = select_by
 									}
 
-									$scope.deselect = function() {
-										$scope.$emit($attrs.selectAs+'-deselect', $attrs.selectBy)
-									}									
-								}
+									$scope.getSelection = function(select_as) {
+										_l(select_as+': '+$scope[$scope.mask(select_as)])
+										return($scope[$scope.mask(select_as)])
+									}
 
+
+									if(typeof params == 'string'){
+										selection_map[$scope.mask(params)] = null
+									} 
+
+									if($.isArray(params)) {
+										params.forEach(function(value, index){
+											selection_map[$scope.mask(value)] = null
+										})
+									}
+
+									if($.isPlainObject(params)) {
+										$.each(params, function(key, value){
+											selection_map[$scope.mask(key)] = value
+										})
+									} 
+
+									$.extend($scope, selection_map)
+
+									
+									
+								}
 			}
+
 }
+
 
 function HTMLrankingSource() {
 	return	{
@@ -92,7 +79,6 @@ function HTMLrankingSource() {
 
 										if(data) {
 											scope.rankingData.slice(0, scope.rankingData.length) 
-											_l(data)
 											Array.prototype.push.apply(scope.rankingData, data)
 												
 										} 
@@ -125,7 +111,7 @@ function HTMLrankingSource() {
 
 									scope.$watchCollection(attrs.rankingData, function(new_ranking, old_ranking){										
 										//scope.rankingData = new_ranking
-										element.html(JSON.stringify(_l(new_ranking)))
+										element.html(JSON.stringify(new_ranking))
 										scope.update()
 									})
 								}
@@ -219,6 +205,14 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 									element.toggleClass('horizontal',	scope.rankingOrientation == 'horizontal')
 									element.toggleClass('vertical', 	scope.rankingOrientation != 'horizontal')
+
+									scope.$watch(attrs.noDragging, function(){
+										if(scope.$eval(attrs.noDragging)){											
+											scope.$broadcast('dragging-off')
+										} else {
+											scope.$broadcast('dragging-on')
+										}
+									})										
 									
 								},
 
@@ -400,7 +394,7 @@ function HTMLpreferenceRank($scope, $animate) {
 									}
 
 									scope.$on('dragging-position-update', 	scope.evaluatePositionUpdate)
-									scope.$on('ranking-update', 			scope.refresh)
+										scope.$on('ranking-update', 			scope.refresh)
 									scope.refresh()
 								}
 			}
@@ -449,16 +443,25 @@ function HTMLpreferenceOption($scope, $animate) {
 										delete scope.last_mousemove																		
 									}
 
-									//listen for a mousedown to get the dragging started
-									if(attrs.value && !scope.noDragging) {
-										element.on('mousedown', function(event) {
-											scope.waitForDrag(event)	
+									scope.init = function(event) {
+										scope.waitForDrag(event)	
 											event.preventDefault()
-											event.stopImmediatePropagation() //ist das nötig?
+											event.stopImmediatePropagation() //is this necessary
 
 											$(document).one('mouseup click', scope.stopWaitingForDrag)
-										})
-									}									
+									}
+
+									//listen for a mousedown to get the dragging started
+									if(attrs.value && !scope.noDragging) element.on('mousedown', scope.init)
+
+									
+									scope.$on('dragging-off', function(){
+										element.off('mousedown', scope.init)
+									})
+
+									scope.$on('dragging-on', function(){										
+										element.on('mousedown', scope.init)
+									})
 									
 								}
 			}
