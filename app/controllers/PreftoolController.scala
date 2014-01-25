@@ -38,9 +38,11 @@ object PreftoolController extends Controller {
     BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
       case None => NotFound
       case Some(b) =>
-        val result = b.result.zipWithIndex.foreach{ case (e, i) => println(i + ". " + e) }
+        val result: Seq[String] = b.result.zipWithIndex.map {
+          case (e, i) => e.mkString((i+1) + ". ", "\n" + (i+1) + ". ", "")
+        }
 
-        Ok("")
+        Ok(result.mkString("\n"))
     }
 
   }
