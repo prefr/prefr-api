@@ -5,4 +5,3 @@ B;C,A;D;E,F
 B;C,A;D;E,F
 B;C,A;D;E,F
 B;C,A;D;E,F
-A;B,C;D,E,F

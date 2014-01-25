@@ -13,6 +13,7 @@ POST        /api/ballotBox/:id/addVote                   controllers.BallotContr
 # Export in preftools data format
 GET         /api/ballotBox/:id/preftoolCandidates        controllers.PreftoolController.getCandidates(id)
 GET         /api/ballotBox/:id/preftoolBallots           controllers.PreftoolController.getBallots(id)
+GET         /api/ballotBox/:id/preftoolResult            controllers.PreftoolController.getResult(id)
 
 
 # calculation without saving to db
