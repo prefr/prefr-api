@@ -17,6 +17,7 @@ function HTMLsingleSelect() {
 
 									$scope.getSelection = function(select_as) {
 										_l(select_as+': '+$scope[$scope.mask(select_as)])
+										_l(scope)
 										return($scope[$scope.mask(select_as)])
 									}
 
