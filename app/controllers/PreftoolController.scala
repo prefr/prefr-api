@@ -52,16 +52,24 @@ object PreftoolController extends Controller {
   def importPapers() = Action(parse.tolerantText) {
     request =>
 
-      val papers = request.body.split("\n").map {
+       val sanitised = request.body
+         .replace(" ", "")
+         .replace("///", ";")
+         .replace("//", ";")
+         .replace("/", ";")
+         .replace(";;", ";")
+         .replace(",,", ",")
+
+      val papers = sanitised.split("\n").map {
         ranking =>
 
           val js = "[[\"" +
-            ranking
-            .replace(",", "\",\"")
-            .replace("/", "\"],[\"")
-            .replace(";", "\"],[\"") + "\"]]"
+            ranking                      
+              .replace(",", "\",\"")
+              .replace(";", "\"],[\"") + "\"]]"
 
-          Logger.debug("JSON" + js)
+          Logger.debug("ORG " + ranking)
+          Logger.debug("JSON " + js)
 
           val jsObject = Json.obj("ranking" -> Json.parse(js))
 

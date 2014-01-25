@@ -126,11 +126,9 @@ object Schulze {
     // find number of strongest Paths for each candidate
     for (i <- 0 to (C - 1)) {
       for (j <- 0 to (C - 1)) {
-        Logger.debug("i:" + i + " j:" + j + " r:" + p(i)(j))
         if (i != j) {
           if (p(i)(j) > p(j)(i)) {
             r(i) += 1
-            Logger.debug(r(i).toString)
           }
         }
       }
@@ -180,11 +178,11 @@ object Schulze {
 
       val result = createResult(ranking, candidates)
 
-      Logger.debug("MATRIX: " + matrix.toString())
-      Logger.debug("CANDIDATES: " + candidates.toString)
-      Logger.debug("PATHS: " + strongestPaths)
-      //    Logger.debug("RESULT: " + result)
-      Logger.debug("SORTED RESULT: " + result)
+//      Logger.debug("MATRIX: " + matrix.toString())
+//      Logger.debug("CANDIDATES: " + candidates.toString)
+//      Logger.debug("PATHS: " + strongestPaths)
+//      Logger.debug("RESULT: " + result)
+//      Logger.debug("SORTED RESULT: " + result)
 
       result
     }
