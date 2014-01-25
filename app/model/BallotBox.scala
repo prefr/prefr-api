@@ -20,6 +20,7 @@ case class BallotBox(
                       options: Option[Seq[BallotOption]],
                       papers: Option[Seq[Paper]],
                       result: Seq[JsObject],
+                      lastResultCalculation: Date,
                       createDate: Date
                       ) {
   def toJson: JsValue = {
@@ -39,6 +40,7 @@ object BallotBox {
       (__ \ 'options).readNullable[Seq[BallotOption]] and
       (__ \ 'papers).readNullable[Seq[Paper]] and
       Reads.pure[Seq[JsObject]](Seq()) and
+      Reads.pure[Date](new Date) and
       Reads.pure[Date](new Date)
     )(BallotBox.apply _)
 
@@ -46,9 +48,14 @@ object BallotBox {
     b =>
       Json.obj("id" -> b.id) ++
         Json.obj("subject" -> JsString(b.subject.getOrElse(""))) ++
-        Json.obj("options" -> b.options.getOrElse(Seq()).map {_.toJson}) ++
-        Json.obj("papers" -> b.papers.getOrElse(Seq()).map {_.toJson}) ++
+        Json.obj("options" -> b.options.getOrElse(Seq()).map {
+          _.toJson
+        }) ++
+        Json.obj("papers" -> b.papers.getOrElse(Seq()).map {
+          _.toJson
+        }) ++
         Json.obj("result" -> b.result) ++
+    Json.obj("lastResultCalculation" -> b.lastResultCalculation) ++
         Json.obj("createDate" -> b.createDate)
   }
 

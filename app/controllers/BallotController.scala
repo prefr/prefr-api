@@ -3,11 +3,12 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import play.modules.reactivemongo.MongoController
 import play.api.libs.json.{Json, JsError}
-import model.BallotBox
+import model.{Paper, BallotBox}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Future, ExecutionContext}
 import ExecutionContext.Implicits.global
 import helper.Schulze
+import java.util.Date
 
 /**
  * User: Björn Reimer
@@ -22,8 +23,8 @@ object BallotController extends Controller with MongoController {
       request.body.validate[BallotBox](BallotBox.inputReads).map {
         ballotBox => {
 
-          val ranking =  Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
-          val ballotBoxWithResult = ballotBox.copy(result = ranking)
+          val ranking = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
+          val ballotBoxWithResult = ballotBox.copy(result = ranking, lastResultCalculation = new Date)
 
           BallotBox.col.insert(ballotBoxWithResult)
 
@@ -42,5 +43,37 @@ object BallotController extends Controller with MongoController {
     }
 
   }
+
+  def addVote(id: String) = Action.async(parse.tolerantJson) {
+
+    request =>
+      request.body.validate[Paper].map {
+        paper => {
+          // Add paper to ballot
+          val query = Json.obj("id" -> id)
+          val set = Json.obj("$push" -> Json.obj("papers" -> paper))
+
+          BallotBox.col.update(query, set).map {
+            lastError => if (lastError.updatedExisting) {
+
+              // update result
+              BallotBox.col.find(query).one[BallotBox].map {
+                case None => NotFound
+                case Some(ballotBox) => {
+                  val result = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
+                  val set2 = Json.obj("$set" -> Json.obj("result" -> result, "lastResultCalculation" -> new Date))
+                  BallotBox.col.update(query, set2)
+                }
+              }
+              Ok
+            } else {
+              NotFound
+            }
+          }
+        }
+      }.recoverTotal(e => Future(BadRequest(JsError.toFlatJson(e))))
+
+  }
+
 
 }

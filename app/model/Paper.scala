@@ -1,6 +1,7 @@
 package model
 
 import play.api.libs.json._
+import helper.IdHelper
 
 /**
  * User: Björn Reimer
@@ -20,6 +21,13 @@ case class Paper(
 object Paper {
 
   implicit val defaultFormat: Format[Paper] = Json.format[Paper]
+
+//  def inputReads = (
+//    ((__ \ 'id).read[String] or Reads.pure[String](IdHelper.generateBallotId())) and
+//      (__ \ 'ranking).read[Seq[Seq[String]]] and
+//        (__ \ 'name).readNullable[String] and
+//        (__ \ 'email).readNullable[String]
+//    )
 
 
   //  def inputReads = (
