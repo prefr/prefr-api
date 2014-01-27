@@ -192,8 +192,8 @@ function HTMLpreferenceRanking($parse, $animate) {
 										
 										scope.dragged_element = option.clone().addClass('dragged').appendTo(element)
 
-										controller.replaceOption(option.attr('value'), "")										
-										scope.$apply()
+										controller.replaceOption(option.attr('value'), "")
+										controller.commit()		
 										
 										scope.trackMouseMovement(last_mousemove)
 
@@ -210,6 +210,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 									scope.updateRanks = function(event, rank) {
 										controller.moveValue("", rank)
+										controller.commit()
 									}
 
 									scope.drop = function(event) {
@@ -218,7 +219,8 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 										var	option_id = scope.dragged_element.attr('value')
 
-										controller.replaceOption("", option_id) || controller.addOption(option_id)
+										controller.replaceOption("", option_id)
+										controller.commit()
 										controller.save()
 
 										scope.dragged_element.remove()
@@ -325,15 +327,29 @@ function HTMLpreferenceRanking($parse, $animate) {
 																	if(this.isEmpty(prev)) this.removeRank(pos-1)
 																}
 
-									this.removeOption		=	function(option) {																															
-																	var last_rank = undefined
-																	$scope.rankingData.forEach(function(rank, index){
+									this.findOption			=	function(option) {
+																	var matches = []
+
+																	$scope.rankingData.forEach(function(rank){
 																		var pos = rank.indexOf(option)
 																		if(pos != -1) {
-																			last_rank = rank																																							
-																			rank.splice(pos, 1)
-																			if(self.isEmpty(rank)) self.demoteRank(rank) //there must not be any dublicates of option for this to work properly
+																			matches.push({
+																				rank	: rank,
+																				index	: pos
+																			})																			
 																		}
+																	})
+																	return(matches)
+																}		
+
+									this.removeOption		=	function(option) {																															
+																	var last_rank 	= undefined,
+																		matches		= this.findOption(option)
+
+																	matches.forEach(function(match){
+																		last_rank = match.rank
+																		match.rank.splice(match.index, 1)
+																		if(self.isEmpty(match.rank)) self.demoteRank(match.rank) //there must not be any dublicates of option for this to work properly																		
 																	})
 
 																	return(last_rank)																			
@@ -343,21 +359,20 @@ function HTMLpreferenceRanking($parse, $animate) {
 																	rank = rank // ?? || $scope.rankingData.length-1
 																	if(this.isEmpty(rank) && option !="") this.promoteRank(rank)
 																	rank.push(option)
-																	
-																	return(this.commit())
 																}
 
 									this.replaceOption		=	function(option1, option2) {																	
-																	return(this.addOption(option2, this.removeOption(option1)) && this.commit())
+																	this.addOption(option2, this.removeOption(option1))
 																}
 
 									this.moveOption			=	function(option, rank) {
-																	return(this.removeOption(option) && this.addOption(option, rank) && this.commit())
+																	this.removeOption(option)
+																	this.addOption(option, rank)
 																}
 
-									this.commit				=	function() {
+									this.commit				=	function() {																	
+																	$scope.$broadcast('ranking-update')	//must be called before $apply!
 																	$scope.$apply()
-																	$scope.$broadcast('ranking-update')																	
 																	return(true)
 																}
 
@@ -393,7 +408,7 @@ function HTMLpreferenceRank($scope, $animate) {
 									scope.evaluatePositionUpdate = function(event, pos) {
 										if(!scope.pause && !scope.hasPlaceholder() && _over(element, pos, true)>1) {
 											rankingCtrl.moveOption("", scope.rank)
-											scope.$apply()
+											rankingCtrl.commit()
 											scope.pause = window.setTimeout(function(){ delete scope.pause }, 1500)											
 										}
 									}
@@ -410,14 +425,26 @@ function HTMLpreferenceRank($scope, $animate) {
 										return(rankingCtrl.hasPlaceholder(scope.rank))
 									}
 
-									scope.refresh = function() {										
-										element.toggleClass('empty', 	scope.isEmpty())
-										element.toggleClass('nonempty',	!scope.isEmpty())
-										element.toggleClass('depleted',	scope.isDepleted())
+									scope.numberOfRealOptions = function(){
+										return(scope.rank.length - (scope.hasPlaceholder() ? 1 : 0))
+									}
+
+									scope.refresh = function() {
+										element.toggleClass('depleted',		scope.isDepleted())
+										element.toggleClass('empty', 		scope.isEmpty())
+										element.toggleClass('nonempty',		!scope.isEmpty())
+
+										element.toggleClass('started',		_l(scope.isDepleted() 	&& scope.was_empty))
+										element.toggleClass('finished', 	scope.isEmpty() 	&& scope.was_depleted)										
+										element.toggleClass('unchanged', 	scope.numberOfRealOptions() == scope.had_options)
+										
+										scope.was_depleted	= scope.isDepleted()
+										scope.was_empty		= scope.isEmpty()
+										scope.had_options	= scope.numberOfRealOptions()
 									}
 
 									scope.$on('dragging-position-update', 	scope.evaluatePositionUpdate)
-										scope.$on('ranking-update', 			scope.refresh)
+									scope.$on('ranking-update', 			scope.refresh)
 									scope.refresh()
 								}
 			}

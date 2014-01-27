@@ -730,11 +730,12 @@ preference-ranking preference-rank {
 	vertical-align: 		middle;
 	text-align:				center;
 	background:				#444;
+
 }
 
 preference-ranking.vertical preference-rank {
 	display:				block;
-	min-height:				2em;
+	min-height:				2.5em;
 	white-space:			normal;
 }
 
@@ -768,19 +769,28 @@ preference-ranking preference-rank.empty {
 	padding-bottom:			0;
 }
 
-preference-ranking.vertical preference-rank.empty,
+preference-ranking.vertical preference-rank.empty {
+	padding-top:			0;
+	padding-bottom:			0;
+	margin-top:				0;
+	margin-bottom:			0;
+	border:					0;	
+}
+
 preference-ranking.horizontal preference-rank.empty {
 	padding-left:			0;
 	padding-right:			0;
-	margin:					0;
+	margin-left:			0;
+	margin-right:			0;
+	border:					0;
 }
 
 preference-ranking.vertical preference-rank.depleted {
-	margin:					2.4em 0;
+	margin:					2.5em 0;	
 }
 
 preference-ranking.horizontal preference-rank.depleted {
-	margin:					0 2.4em;
+	margin:					0 2.5em;
 }
 
 
@@ -920,29 +930,44 @@ preference-option[value=""] ~ preference-option[value=""] {
 
 /* transition mechanics:*/
 
-preference-rank {
-	transition-property:				margin, opacity;
-	transition-duration:				500ms;
+preference-ranl.nonempty{
+	transition-duration:				0;
+}
+
+preference-rank.started,
+preference-rank.finished {
+	transition-property:				padding border opacity margin;
+	transition-duration:				200ms;
 	transition-timing-function:			linear;
 }
+
+preference-rank.started{	
+	padding-top:						2em !important;
+	padding-bottom: 					2em!important;
+}
+
+
 
 
 /*vertical animation */
 
 
-preference-ranking.vertical preference-option.ng-leave,
+
+preference-ranking.vertical .finished preference-option[value=""],
 preference-ranking.vertical preference-rank.ng-leave preference-option {
-	-webkit-animation:		enter_option_vertical 500ms reverse ease-in-out;
-	animation:				enter_option_vertical 500ms reverse ease-in-out;
+	-webkit-animation:		enter_option_vertical 200ms reverse ease-in-out;
+	animation:				enter_option_vertical 200ms reverse ease-in-out;
 }
 
 
 
-preference-ranking.vertical preference-option.ng-enter,
+preference-ranking.vertical .started preference-option[value=""],
 preference-ranking.vertical preference-rank.ng-enter preference-option {
-	-webkit-animation:		enter_option_vertical 500ms ease-in-out;
-	animation:				enter_option_vertical 500ms ease-in-out;
+	-webkit-animation:		enter_option_vertical 200ms ease-in-out;
+	animation:				enter_option_vertical 200ms ease-in-out;
 }
+
+
 
 
  @keyframes enter_option_vertical {
@@ -973,41 +998,6 @@ preference-ranking.vertical preference-rank.ng-enter preference-option {
 		height:					3.6em;	
 		margin-top:				0.5em;		
 		margin-bottom:			0.5em;
-	}
-}
-
-
-preference-ranking.vertical preference-rank.ng-leave{
-	-webkit-animation:		enter_rank_vertical 500ms reverse linear;
-	animation:				enter_rank_vertical 500ms reverse linear;
-}	
-
-preference-ranking.vertical preference-rank.ng-enter{
-	-webkit-animation:		enter_rank_vertical 500ms linear;
-	animation:				enter_rank_vertical 500ms linear;
-}	
-
-
- @keyframes enter_rank_vertical {
-	from {
-		min-height:				0em;
-		height:					0em;		
-		border-top-width:		0em;
-		border-bottom-width:	0em;
-	}
-	to {	
-	}
-}
-
-
-@-webkit-keyframes enter_rank_vertical {
-	from {
-		min-height:				0em;
-		height:					0em;		
-		border-top-width:		0em;
-		border-bottom-width:	0em;
-	}
-	to {
 	}
 }
 
