@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # get appname
-appName=$(ls | grep -v ".bat")
+appName=$(ls ./target/universal/stage/bin/ | grep -v ".bat")
 
 echo "Starting app: " $appName
 
