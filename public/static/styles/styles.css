@@ -732,6 +732,8 @@ preference-ranking preference-rank {
 	background:				#444;
 
 	opacity:				1;
+
+	transition-duration:	400ms;
 }
 
 preference-ranking.vertical preference-rank {
@@ -762,14 +764,18 @@ preference-rank.nonempty > summary:before{
 	content:				counter(rank);
 }
 
+
 preference-ranking preference-rank.empty {
 	opacity:				0;
+	transition-duration:	1000ms;
+}
 
-	transition-duration:	400ms;
+preference-ranking preference-rank.empty.depleted{
+	transition-duration:	0ms !important;
 }
 
 preference-ranking.dragging preference-rank.empty {
-	opacity:				1;
+	opacity:				0.5;
 }
 
 preference-ranking.vertical.dragging preference-rank.empty {
@@ -781,9 +787,37 @@ preference-ranking.horizontal.dragging preference-rank.empty {
 }
 
 
+preference-ranking.dragging preference-rank.empty.active {
+	opacity:				1;
+}
+
+preference-ranking preference-rank.ng-leave {
+	display:				none;
+} 
 
 
+preference-ranking.dragging preference-rank:after {
+	content:				'jjj';
 
+	position:				absolute;
+	left:					150%;
+	top:					50%;
+
+	border-top:				1em transparent;
+	border-bottom:			1em	transparent;
+	border-right:			1em #fff;
+
+	margin-top:				-0.5em;
+
+}
+
+preference-ranking.dragging preference-rank.active:after {
+	opacity:				1;
+
+	left:					100%;
+
+	transition:				400ms;
+}
 
 
 
@@ -863,21 +897,9 @@ preference-option.dragged {
 
 /* transition mechanics:*/
 
-preference-ranl.nonempty{
-	transition-duration:				0;
-}
 
-preference-rank.started,
-preference-rank.finished {
-	transition-property:				padding border opacity margin;
-	transition-duration:				200ms;
-	transition-timing-function:			linear;
-}
 
-preference-rank.started{	
-	padding-top:						2em !important;
-	padding-bottom: 					2em!important;
-}
+
 
 
 /*

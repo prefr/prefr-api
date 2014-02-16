@@ -168,13 +168,15 @@ function HTMLpreferenceRanking($parse, $animate) {
 												fx		=	scope.rankingOrientation == 'vertical' ? 0.3 : 0,
 												fy		=	scope.rankingOrientation == 'horizonal' ? 0.3: 0
 
+
+											/*
 											//movement outside the element counts far less than movement inside the element:
 											if(x < width*fx)		x = width*fx		- Math.pow(width*fx-x, 0.5)
 											if(x > width*(1-fx))	x = width*(1-fx) 	+ Math.pow(x-width*(1-fx), 0.5)
 
 											if(y < height*fy)		y = height*fy		- Math.pow(height*fy-y, 0.5)
 											if(y > height*(1-fy))	y = height*(1-fy) 	+ Math.pow(y-height*(1-fy), 0.5)	
-										
+											*/
 
 											var pos	=	{x:x, y:y}
 
@@ -386,7 +388,7 @@ function HTMLpreferenceRank($scope, $animate) {
 									
 									scope.evaluatePositionUpdate = function(event, pos) {
 										if(!scope.isActive() && _over(element, pos, true)>1) {
-											rankingCtrl.setActive(scope.rank)											
+											scope.activate()											
 										}
 										scope.refresh()
 									}
@@ -399,16 +401,25 @@ function HTMLpreferenceRank($scope, $animate) {
 										return(rankingCtrl.getActive() == scope.rank)
 									}
 
+									scope.activate = function(){
+										rankingCtrl.setActive(scope.rank)	
+									}
+
 									scope.refresh = function() {										
 										element.toggleClass('empty', 		scope.isEmpty())
 										element.toggleClass('active', 		scope.isActive())
 										element.toggleClass('nonempty',		!scope.isEmpty())
+										element.toggleClass('depleted', 	scope.isEmpty() && !scope.was_empty)
+
+										scope.was_empty = scope.isEmpty()
 									}
 
+									scope.$on('dragging-started',			scope.activate)
 									scope.$on('dragging-position-update', 	scope.evaluatePositionUpdate)
 									scope.$on('dragging-done',				scope.refresh)
 									scope.refresh()
 								}
+
 			}
 }
 
