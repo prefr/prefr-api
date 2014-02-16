@@ -192,8 +192,8 @@ function HTMLpreferenceRanking($parse, $animate) {
 										
 										scope.dragged_element = option.clone().addClass('dragged').appendTo(element)
 
-										controller.replaceOption(option.attr('value'), "")
-										controller.commit()		
+										controller.removeOption(option.attr('value'))
+										scope.$apply()
 										
 										scope.trackMouseMovement(last_mousemove)
 
@@ -208,28 +208,24 @@ function HTMLpreferenceRanking($parse, $animate) {
 										if(pos.y != undefined) scope.dragged_element.css('top', 	pos.y - scope.dragged_element.outerHeight(true)/2)											
 									}
 
-									scope.updateRanks = function(event, rank) {
-										controller.moveValue("", rank)
-										controller.commit()
-									}
-
 									scope.drop = function(event) {
 										$(document).off('mousemove',			scope.trackMousemovement)
 										$(document).off('mouseup mouseleave',	scope.drop)
 
 										var	option_id = scope.dragged_element.attr('value')
 
-										controller.replaceOption("", option_id)
-										controller.commit()
-										controller.save()
+										controller.addOption(option_id, controller.getActive())
+										controller.setActive(null)
+										scope.$apply()
 
 										scope.dragged_element.remove()
 										delete scope.dragged_element
+
+										scope.$broadcast('dragging-done')
 									}
 
 									scope.$on('dragging-started', 			scope.startDragging)
-									scope.$on('dragging-position-update', 	scope.drag)
-									scope.$on('dragging-into-rank', 		scope.updateRanks)									
+									scope.$on('dragging-position-update', 	scope.drag)								
 
 									element.toggleClass('horizontal',	scope.rankingOrientation == 'horizontal')
 									element.toggleClass('vertical', 	scope.rankingOrientation != 'horizontal')
@@ -276,14 +272,6 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 									this.isEmpty			=	function(rank) {
 																	return(rank && rank.length == 0)
-																}
-
-									this.isDepleted			=	function(rank) {
-																	return(rank && rank.length ==1 && rank[0] == "")
-																}
-
-									this.hasPlaceholder		=	function(rank) {
-																	return(rank && rank.indexOf("") != -1)
 																}							
 
 									this.processRankingData	=	function() {
@@ -356,31 +344,18 @@ function HTMLpreferenceRanking($parse, $animate) {
 																}
 
 									this.addOption			=	function(option, rank) {
-																	rank = rank // ?? || $scope.rankingData.length-1
-																	if(this.isEmpty(rank) && option !="") this.promoteRank(rank)
+																	rank = rank  || $scope.rankingData.length-1
+																	if(this.isEmpty(rank)) this.promoteRank(rank)
 																	rank.push(option)
+																}		
+
+									this.setActive			=	function(rank) {
+																	$scope.active = rank
 																}
 
-									this.replaceOption		=	function(option1, option2) {																	
-																	this.addOption(option2, this.removeOption(option1))
+									this.getActive			=	function() {
+																	return($scope.active)
 																}
-
-									this.moveOption			=	function(option, rank) {
-																	this.removeOption(option)
-																	this.addOption(option, rank)
-																}
-
-									this.commit				=	function() {																	
-																	$scope.$broadcast('ranking-update')	//must be called before $apply!
-																	$scope.$apply()
-																	return(true)
-																}
-
-									this.save				=	function() {
-																	$scope.saved = true
-																	this.exportRankingData()
-																	$scope.$apply()																											
-																}											
 
 									this.processRankingData()
 
@@ -406,45 +381,29 @@ function HTMLpreferenceRank($scope, $animate) {
 				link		:	function(scope, element, attrs, rankingCtrl) {	
 									
 									scope.evaluatePositionUpdate = function(event, pos) {
-										if(!scope.pause && !scope.hasPlaceholder() && _over(element, pos, true)>1) {
-											rankingCtrl.moveOption("", scope.rank)
-											rankingCtrl.commit()
-											scope.pause = window.setTimeout(function(){ delete scope.pause }, 1500)											
+										if(!scope.isActive() && _over(element, pos, true)>1) {
+											rankingCtrl.setActive(scope.rank)											
 										}
+										scope.refresh()
 									}
 
 									scope.isEmpty = function() {
 										return(rankingCtrl.isEmpty(scope.rank))
 									}
 
-									scope.isDepleted = function() {
-										return(rankingCtrl.isDepleted(scope.rank))
+									scope.isActive = function(){
+										return(rankingCtrl.getActive() == scope.rank)
 									}
 
-									scope.hasPlaceholder = function() {
-										return(rankingCtrl.hasPlaceholder(scope.rank))
-									}
-
-									scope.numberOfRealOptions = function(){
-										return(scope.rank.length - (scope.hasPlaceholder() ? 1 : 0))
-									}
-
-									scope.refresh = function() {
-										element.toggleClass('depleted',		scope.isDepleted())
-										element.toggleClass('empty', 		scope.isEmpty())
+									scope.refresh = function() {										
+										element.toggleClass('empty', 		scope.isEmpty() && !scope.isActive())
+										element.toggleClass('depleted', 	scope.isEmpty() && scope.isActive())
+										element.toggleClass('active', 		scope.isActive())
 										element.toggleClass('nonempty',		!scope.isEmpty())
-
-										element.toggleClass('started',		_l(scope.isDepleted() 	&& scope.was_empty))
-										element.toggleClass('finished', 	scope.isEmpty() 	&& scope.was_depleted)										
-										element.toggleClass('unchanged', 	scope.numberOfRealOptions() == scope.had_options)
-										
-										scope.was_depleted	= scope.isDepleted()
-										scope.was_empty		= scope.isEmpty()
-										scope.had_options	= scope.numberOfRealOptions()
 									}
 
 									scope.$on('dragging-position-update', 	scope.evaluatePositionUpdate)
-									scope.$on('ranking-update', 			scope.refresh)
+									scope.$on('dragging-done',				scope.refresh)
 									scope.refresh()
 								}
 			}

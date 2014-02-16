@@ -718,7 +718,8 @@ preference-ranking.compact {
 }
 
 
-preference-ranking preference-rank {
+preference-ranking preference-rank,
+preference-ranking preference-rank.depleted {
 	position:				relative;
 
 	min-width:				2em;
@@ -731,15 +732,19 @@ preference-ranking preference-rank {
 	text-align:				center;
 	background:				#444;
 
+	opacity:				1;
+	transition-duration:	400ms;
 }
 
-preference-ranking.vertical preference-rank {
+preference-ranking.vertical preference-rank, 
+preference-ranking.vertical preference-rank.depleted{
 	display:				block;
 	min-height:				2.5em;
 	white-space:			normal;
 }
 
-preference-ranking.horizontal preference-rank {
+preference-ranking.horizontal preference-rank,
+preference-ranking.horizontal preference-rank.depleted {
 	display:				inline-block;
 	line-height:			4.2em;
 	height:					4.2em;
@@ -763,7 +768,7 @@ preference-rank.nonempty > summary:before{
 
 
 preference-ranking preference-rank.empty {
-	opacity: 				0 !important;
+	opacity: 				0;
 	overflow:				hidden;
 	padding-top:			0;
 	padding-bottom:			0;
@@ -946,10 +951,10 @@ preference-rank.started{
 	padding-bottom: 					2em!important;
 }
 
+/*
 
 
-
-/*vertical animation */
+/*vertical animation 
 
 
 
@@ -1003,7 +1008,7 @@ preference-ranking.vertical preference-rank.ng-enter preference-option {
 
 
 
-/* horizontal animation */
+/* horizontal animation 
 
 preference-ranking.horizontal preference-option.ng-leave,
 preference-ranking.horizontal preference-rank.ng-leave preference-option {
@@ -1089,7 +1094,7 @@ preference-ranking.horizontal preference-rank.ng-enter{
 
 
 
-
+*/
 
 
 
