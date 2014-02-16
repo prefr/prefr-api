@@ -18,6 +18,10 @@ case class Paper(
   def toJson: JsValue = {
     Json.toJson(this)
   }
+
+  def check: Boolean = {
+    ranking.flatten.distinct.size == ranking.flatten.size
+  }
 }
 
 object Paper {

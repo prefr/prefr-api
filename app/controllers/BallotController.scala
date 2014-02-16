@@ -53,27 +53,33 @@ object BallotController extends Controller with MongoController {
           {
             Logger.info("Add vote to id: " + id + " pater: " + paper)
 
-            // Add paper to ballot
-            val query = Json.obj("id" -> id)
-            val set = Json.obj("$push" -> Json.obj("papers" -> paper))
+            // check if vote is valid
+            paper.check match {
+              case false => Future(BadRequest("Invalid options"))
+              case true =>
 
-            BallotBox.col.update(query, set).map {
-              lastError =>
-                if (lastError.updatedExisting) {
+                // Add paper to ballot
+                val query = Json.obj("id" -> id)
+                val set = Json.obj("$push" -> Json.obj("papers" -> paper))
 
-                  // update result
-                  BallotBox.col.find(query).one[BallotBox].map {
-                    case None => NotFound
-                    case Some(ballotBox) => {
-                      val result = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
-                      val set2 = Json.obj("$set" -> Json.obj("result" -> result, "lastResultCalculation" -> new Date))
-                      BallotBox.col.update(query, set2)
+                BallotBox.col.update(query, set).map {
+                  lastError =>
+                    if (lastError.updatedExisting) {
+
+                      // update result
+                      BallotBox.col.find(query).one[BallotBox].map {
+                        case None => NotFound
+                        case Some(ballotBox) => {
+                          val result = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
+                          val set2 = Json.obj("$set" -> Json.obj("result" -> result, "lastResultCalculation" -> new Date))
+                          BallotBox.col.update(query, set2)
+                        }
+                      }
+                      Ok
                     }
-                  }
-                  Ok
-                }
-                else {
-                  NotFound
+                    else {
+                      NotFound
+                    }
                 }
             }
           }
