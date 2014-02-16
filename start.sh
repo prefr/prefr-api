@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # get appname
-appName=$(ls | grep -v ".bat")
+appName=$(ls ./target/universal/stage/bin/ | grep -v ".bat")
 
-nohup bash -c "./target/universal/stage/bin/$appName -Dhttp.port=9001" &
+echo "Starting app: " $appName
+
+nohup bash -c "./target/universal/stage/bin/$appName -Dsbt.log.noformat=true -Dhttp.port=9001" & 
