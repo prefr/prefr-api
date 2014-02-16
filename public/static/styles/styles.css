@@ -718,8 +718,7 @@ preference-ranking.compact {
 }
 
 
-preference-ranking preference-rank,
-preference-ranking preference-rank.depleted {
+preference-ranking preference-rank {
 	position:				relative;
 
 	min-width:				2em;
@@ -733,18 +732,15 @@ preference-ranking preference-rank.depleted {
 	background:				#444;
 
 	opacity:				1;
-	transition-duration:	400ms;
 }
 
-preference-ranking.vertical preference-rank, 
-preference-ranking.vertical preference-rank.depleted{
+preference-ranking.vertical preference-rank {
 	display:				block;
 	min-height:				2.5em;
 	white-space:			normal;
 }
 
-preference-ranking.horizontal preference-rank,
-preference-ranking.horizontal preference-rank.depleted {
+preference-ranking.horizontal preference-rank {
 	display:				inline-block;
 	line-height:			4.2em;
 	height:					4.2em;
@@ -766,35 +762,21 @@ preference-rank.nonempty > summary:before{
 	content:				counter(rank);
 }
 
-
 preference-ranking preference-rank.empty {
-	opacity: 				0;
-	overflow:				hidden;
-	padding-top:			0;
-	padding-bottom:			0;
+	opacity:				0;
+
+	transition-duration:	400ms;
 }
 
-preference-ranking.vertical preference-rank.empty {
-	padding-top:			0;
-	padding-bottom:			0;
-	margin-top:				0;
-	margin-bottom:			0;
-	border:					0;	
+preference-ranking.dragging preference-rank.empty {
+	opacity:				1;
 }
 
-preference-ranking.horizontal preference-rank.empty {
-	padding-left:			0;
-	padding-right:			0;
-	margin-left:			0;
-	margin-right:			0;
-	border:					0;
-}
-
-preference-ranking.vertical preference-rank.depleted {
+preference-ranking.vertical.dragging preference-rank.empty {
 	margin:					2.5em 0;	
 }
 
-preference-ranking.horizontal preference-rank.depleted {
+preference-ranking.horizontal.dragging preference-rank.empty {
 	margin:					0 2.5em;
 }
 
@@ -876,60 +858,6 @@ preference-option.dragged {
 	cursor:					-webkit-grabbing;
 }
 
-preference-option[value=""] {
-	background:				transparent!important;
-	overflow:				visible !important;
-}
-
-preference-option[value=""] * {
-	opacity:				0;
-}
-
-
-
-
-
-
-preference-option[value=""]:after {
-	content:				'';
-
-	display:				block;
-	position: 				absolute;
-	top: 					50%;
-	width:					0em;
-	height:					0em;
-	margin-top:				-1em;
-	margin-right: 			-1em;
-
-	border-top:				1em solid transparent;
-	border-bottom:			1em solid transparent;
-	border-right:			1em solid rgba(100,125,140,1);
-}
-
-
-preference-option[value=""]:after,
-preference-option[value=""].ng-enter.ng-enter-active:after,
-preference-rank.ng-enter.ng-enter-active preference-option[value=""]:after {
-	right: 					0em !important;
-	opacity:				1 !important;
-}
-
-
-preference-rank.ng-enter preference-option[value=""]:after,
-preference-option[value=""].ng-enter:after {
-	right:					-8em !important;
-	opacity:				0 !important;
-}
-
-
-
-
-
-preference-option[value=""] ~ preference-option[value=""] {
-	/*display: none !important;*/
-}
-
-/* looks */
 
 
 
@@ -950,6 +878,7 @@ preference-rank.started{
 	padding-top:						2em !important;
 	padding-bottom: 					2em!important;
 }
+
 
 /*
 
@@ -1047,6 +976,7 @@ preference-ranking.horizontal preference-rank.ng-enter preference-option {
 	to {		
 	}
 }
+
 
 
 preference-ranking.horizontal preference-rank.ng-leave{
