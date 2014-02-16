@@ -9,6 +9,7 @@ import scala.concurrent.{ Future, ExecutionContext }
 import ExecutionContext.Implicits.global
 import helper.Schulze
 import java.util.Date
+import play.api.Logger
 
 /**
  * User: Björn Reimer
@@ -20,15 +21,15 @@ object BallotController extends Controller with MongoController {
   def createBallotBox = Action(parse.tolerantJson(512 * 1024)) {
     request =>
       {
-
         request.body.validate[BallotBox](BallotBox.inputReads).map {
           ballotBox =>
             {
-
               val ranking = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
               val ballotBoxWithResult = ballotBox.copy(result = ranking, lastResultCalculation = new Date)
 
               BallotBox.col.insert(ballotBoxWithResult)
+
+              Logger.info("Created Ballot: " + ballotBoxWithResult)
 
               Ok(ballotBoxWithResult.toJson)
             }
@@ -41,9 +42,7 @@ object BallotController extends Controller with MongoController {
     BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
       case None    => NotFound
       case Some(b) => Ok(b.toJson)
-
     }
-
   }
 
   def addVote(id: String) = Action.async(parse.tolerantJson) {
@@ -52,6 +51,8 @@ object BallotController extends Controller with MongoController {
       request.body.validate[Paper](Paper.inputReads).map {
         paper =>
           {
+            Logger.info("Add vote to id: " + id + " pater: " + paper)
+
             // Add paper to ballot
             val query = Json.obj("id" -> id)
             val set = Json.obj("$push" -> Json.obj("papers" -> paper))
