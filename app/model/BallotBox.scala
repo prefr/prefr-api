@@ -1,6 +1,5 @@
 package model
 
-
 import java.util.Date
 import helper.IdHelper
 import play.api.libs.functional.syntax._
@@ -15,14 +14,13 @@ import play.api.Play.current
  * Time: 6:51 PM
  */
 case class BallotBox(
-                      id: String,
-                      subject: Option[String],
-                      options: Option[Seq[BallotOption]],
-                      papers: Option[Seq[Paper]],
-                      result: Seq[Seq[String]],
-                      lastResultCalculation: Date,
-                      createDate: Date
-                      ) {
+    id: String,
+    subject: Option[String],
+    options: Option[Seq[BallotOption]],
+    papers: Option[Seq[Paper]],
+    result: Seq[Seq[String]],
+    lastResultCalculation: Date,
+    createDate: Date) {
   def toJson: JsValue = {
     Json.toJson(this)(BallotBox.outputWrites)
   }
@@ -36,13 +34,13 @@ object BallotBox {
 
   def inputReads = (
     Reads.pure[String](IdHelper.generateBallotId()) and
-      (__ \ 'subject).readNullable[String] and
-      (__ \ 'options).readNullable[Seq[BallotOption]] and
-      (__ \ 'papers).readNullable[Seq[Paper]](Reads.seq(Paper.inputReads)) and
-      Reads.pure[Seq[Seq[String]]](Seq()) and
-      Reads.pure[Date](new Date) and
-      Reads.pure[Date](new Date)
-    )(BallotBox.apply _)
+    (__ \ 'subject).readNullable[String] and
+    (__ \ 'options).readNullable[Seq[BallotOption]] and
+    (__ \ 'papers).readNullable[Seq[Paper]](Reads.seq(Paper.inputReads)) and
+    Reads.pure[Seq[Seq[String]]](Seq()) and
+    Reads.pure[Date](new Date) and
+    Reads.pure[Date](new Date)
+  )(BallotBox.apply _)
 
   def outputWrites = Writes[BallotBox] {
     b =>
@@ -55,7 +53,7 @@ object BallotBox {
           _.toJson
         }) ++
         Json.obj("result" -> b.result) ++
-    Json.obj("lastResultCalculation" -> b.lastResultCalculation) ++
+        Json.obj("lastResultCalculation" -> b.lastResultCalculation) ++
         Json.obj("createDate" -> b.createDate)
   }
 

@@ -1,11 +1,11 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{ Action, Controller }
 import play.modules.reactivemongo.MongoController
-import play.api.libs.json.{Json, JsError}
-import model.{Paper, BallotBox}
+import play.api.libs.json.{ Json, JsError }
+import model.{ Paper, BallotBox }
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ Future, ExecutionContext }
 import ExecutionContext.Implicits.global
 import helper.Schulze
 import java.util.Date
@@ -17,27 +17,29 @@ import java.util.Date
  */
 object BallotController extends Controller with MongoController {
 
-  def createBallotBox = Action(parse.tolerantJson(512*1024)) {
-    request => {
+  def createBallotBox = Action(parse.tolerantJson(512 * 1024)) {
+    request =>
+      {
 
-      request.body.validate[BallotBox](BallotBox.inputReads).map {
-        ballotBox => {
+        request.body.validate[BallotBox](BallotBox.inputReads).map {
+          ballotBox =>
+            {
 
-          val ranking = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
-          val ballotBoxWithResult = ballotBox.copy(result = ranking, lastResultCalculation = new Date)
+              val ranking = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
+              val ballotBoxWithResult = ballotBox.copy(result = ranking, lastResultCalculation = new Date)
 
-          BallotBox.col.insert(ballotBoxWithResult)
+              BallotBox.col.insert(ballotBoxWithResult)
 
-          Ok(ballotBoxWithResult.toJson)
-        }
-      }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
-    }
+              Ok(ballotBoxWithResult.toJson)
+            }
+        }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
+      }
   }
 
   def getBalloxBox(id: String) = Action.async {
 
     BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
-      case None => NotFound
+      case None    => NotFound
       case Some(b) => Ok(b.toJson)
 
     }
@@ -48,32 +50,34 @@ object BallotController extends Controller with MongoController {
 
     request =>
       request.body.validate[Paper](Paper.inputReads).map {
-        paper => {
-          // Add paper to ballot
-          val query = Json.obj("id" -> id)
-          val set = Json.obj("$push" -> Json.obj("papers" -> paper))
+        paper =>
+          {
+            // Add paper to ballot
+            val query = Json.obj("id" -> id)
+            val set = Json.obj("$push" -> Json.obj("papers" -> paper))
 
-          BallotBox.col.update(query, set).map {
-            lastError => if (lastError.updatedExisting) {
+            BallotBox.col.update(query, set).map {
+              lastError =>
+                if (lastError.updatedExisting) {
 
-              // update result
-              BallotBox.col.find(query).one[BallotBox].map {
-                case None => NotFound
-                case Some(ballotBox) => {
-                  val result = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
-                  val set2 = Json.obj("$set" -> Json.obj("result" -> result, "lastResultCalculation" -> new Date))
-                  BallotBox.col.update(query, set2)
+                  // update result
+                  BallotBox.col.find(query).one[BallotBox].map {
+                    case None => NotFound
+                    case Some(ballotBox) => {
+                      val result = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
+                      val set2 = Json.obj("$set" -> Json.obj("result" -> result, "lastResultCalculation" -> new Date))
+                      BallotBox.col.update(query, set2)
+                    }
+                  }
+                  Ok
                 }
-              }
-              Ok
-            } else {
-              NotFound
+                else {
+                  NotFound
+                }
             }
           }
-        }
       }.recoverTotal(e => Future(BadRequest(JsError.toFlatJson(e))))
 
   }
-
 
 }

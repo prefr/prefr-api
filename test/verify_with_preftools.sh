@@ -1,7 +1,7 @@
 #!/bin/bash
 
 id=$1
-hostname=localhost:9000
+hostname=http://prefr.org
 
 curl $hostname/api/ballotBox/$id/preftoolCandidates > candidates.txt 2> /dev/null
 curl $hostname/api/ballotBox/$id/preftoolBallots > ballots.txt 2>/dev/null

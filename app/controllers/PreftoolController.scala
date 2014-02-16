@@ -1,15 +1,16 @@
 package controllers
 
-import play.api.mvc.{Controller, Action}
-import model.{Paper, BallotBox}
+import play.api.mvc.{ Controller, Action }
+import model.{ Paper, BallotBox }
 import play.api.libs.json.Json
-import helper.{IdHelper, Schulze}
+import helper.{ IdHelper, Schulze }
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import java.util.Date
 import play.api.Logger
 
 object PreftoolController extends Controller {
+
   def getCandidates(id: String) = Action.async {
 
     BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
@@ -52,23 +53,23 @@ object PreftoolController extends Controller {
   def importPapers() = Action(parse.tolerantText) {
     request =>
 
-       val sanitised = request.body
-         .replace(" ", "")
-         .replace("///", ";")
-         .replace("//", ";")
-         .replace("/", ";")
-         .replace(";;", ";")
-         .replace(",,", ",")
-         .replace("\n;", "\n")
-         .replace(";\n", "\n")
+      val sanitised = request.body
+        .replace(" ", "")
+        .replace("///", ";")
+        .replace("//", ";")
+        .replace("/", ";")
+        .replace(";;", ";")
+        .replace(",,", ",")
+        .replace("\n;", "\n")
+        .replace(";\n", "\n")
 
       val papers = sanitised.split("\n").map {
         ranking =>
 
           val js = "[[\"" +
-            ranking                      
-              .replace(",", "\",\"")
-              .replace(";", "\"],[\"") + "\"]]"
+            ranking
+            .replace(",", "\",\"")
+            .replace(";", "\"],[\"") + "\"]]"
 
           Logger.debug("ORG " + ranking)
           Logger.debug("JSON " + js)
@@ -96,7 +97,8 @@ object PreftoolController extends Controller {
         )
         BallotBox.col.insert(bb)
         Ok(bb.toJson)
-      } else {
+      }
+      else {
         BadRequest("Could not parse input")
       }
   }

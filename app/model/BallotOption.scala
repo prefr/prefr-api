@@ -1,6 +1,6 @@
 package model
 
-import play.api.libs.json.{JsValue, Format, Json}
+import play.api.libs.json.{ JsValue, Format, Json }
 
 /**
  * User: Björn Reimer
@@ -8,10 +8,9 @@ import play.api.libs.json.{JsValue, Format, Json}
  * Time: 3:24 PM
  */
 case class BallotOption(
-                         tag: String,
-                         title: String,
-                         details: String
-                         )  {
+    tag: String,
+    title: String,
+    details: String) {
   def toJson: JsValue = Json.toJson(this)
 }
 

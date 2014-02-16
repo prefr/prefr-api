@@ -34,11 +34,11 @@ object Schulze {
       if (pos < 0) {
         // when not present return as last
         paper.ranking.size + 1
-      } else {
+      }
+      else {
         pos
       }
     }
-
 
     def singleOption(option: String): Seq[Int] = {
 
@@ -49,7 +49,8 @@ object Schulze {
       candidates.foldLeft(Seq[Int]())((Seq, c) => {
         if (findPosition(c) <= pos) {
           Seq :+ 0
-        } else {
+        }
+        else {
           Seq :+ 1
         }
       })
@@ -93,7 +94,8 @@ object Schulze {
         if (i != j) {
           if (d(i)(j) > d(j)(i)) {
             p(i)(j) = d(i)(j)
-          } else {
+          }
+          else {
             p(i)(j) = 0
           }
         }
@@ -122,7 +124,6 @@ object Schulze {
     val C = p.length
     val r = Array.ofDim[Int](C)
 
-
     // find number of strongest Paths for each candidate
     for (i <- 0 to (C - 1)) {
       for (j <- 0 to (C - 1)) {
@@ -137,7 +138,6 @@ object Schulze {
     r.toSeq
   }
 
-
   def createResult(ranking: Seq[Int], candidates: Seq[String]): Seq[Seq[String]] = {
 
     val sorted = ranking.zip(candidates).sortWith((c1, c2) => c1._1 > c2._1)
@@ -147,7 +147,8 @@ object Schulze {
 
       if (merged.lastOption.isDefined && merged.last.last._1 == candidate._1) {
         merged.init :+ (merged.last :+ candidate)
-      } else {
+      }
+      else {
         merged :+ Seq(candidate)
       }
 
@@ -163,7 +164,8 @@ object Schulze {
     // check if seq is empty
     if (papers.length < 1) {
       Seq()
-    } else {
+    }
+    else {
 
       // get all available candidates
       val candidates = getCandidates(papers)
@@ -178,11 +180,11 @@ object Schulze {
 
       val result = createResult(ranking, candidates)
 
-//      Logger.debug("MATRIX: " + matrix.toString())
-//      Logger.debug("CANDIDATES: " + candidates.toString)
-//      Logger.debug("PATHS: " + strongestPaths)
-//      Logger.debug("RESULT: " + result)
-//      Logger.debug("SORTED RESULT: " + result)
+      //      Logger.debug("MATRIX: " + matrix.toString())
+      //      Logger.debug("CANDIDATES: " + candidates.toString)
+      //      Logger.debug("PATHS: " + strongestPaths)
+      //      Logger.debug("RESULT: " + result)
+      //      Logger.debug("SORTED RESULT: " + result)
 
       result
     }
@@ -204,6 +206,5 @@ object Schulze {
 
     papers.foldLeft[Seq[String]](Seq())(getUniqueOptions)
   }
-
 
 }
