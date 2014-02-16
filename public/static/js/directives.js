@@ -220,7 +220,7 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 										controller.addOption(option_id, controller.getActive())
 										controller.setActive(null)
-										scope.$apply()
+										controller.commit()
 
 										element.removeClass('dragging')
 
@@ -361,6 +361,12 @@ function HTMLpreferenceRanking($parse, $animate) {
 
 									this.getActive			=	function() {
 																	return($scope.active)
+																}
+
+									this.commit				=	function() {										
+																	$scope.saved = true
+																	this.exportRankingData()
+																	$scope.$apply()
 																}
 
 									this.processRankingData()

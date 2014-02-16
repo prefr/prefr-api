@@ -733,7 +733,7 @@ preference-ranking preference-rank {
 
 	opacity:				1;
 
-	transition-duration:	400ms;
+	transition-duration:	1000ms;
 }
 
 preference-ranking.vertical preference-rank {
@@ -767,7 +767,6 @@ preference-rank.nonempty > summary:before{
 
 preference-ranking preference-rank.empty {
 	opacity:				0;
-	transition-duration:	1000ms;
 }
 
 preference-ranking preference-rank.empty.depleted{
@@ -795,28 +794,34 @@ preference-ranking preference-rank.ng-leave {
 	display:				none;
 } 
 
+preference-ranking preference-rank.ng-enter {
+	display:				none;
+} 
+
 
 preference-ranking.dragging preference-rank:after {
-	content:				'jjj';
+	content:				'';
 
 	position:				absolute;
-	left:					150%;
+	right:					-8em;
 	top:					50%;
 
-	border-top:				1em transparent;
-	border-bottom:			1em	transparent;
-	border-right:			1em #fff;
+	border-top:				0.8em solid transparent;
+	border-bottom:			0.8em solid transparent;
+	border-right:			0.8em solid #FFF;
 
-	margin-top:				-0.5em;
+	margin-top:				-0.8em;
+
+	opacity:				0;
 
 }
 
 preference-ranking.dragging preference-rank.active:after {
 	opacity:				1;
 
-	left:					100%;
+	right:					-0.5em;
 
-	transition:				400ms;
+	transition:				200ms ease-in;
 }
 
 
