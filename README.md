@@ -1,9 +1,7 @@
 Prefr
 ==============
 
-Voting tool that uses the Schulze Method.
-
-It is hosted on [prefr.org](http://prefr.org)
+Voting tool that uses the Schulze Method. It is hosted on [prefr.org](http://prefr.org)
 
 Build using [Play Framework](http://playframework.com), [mongoDB](http://mongodb.org) and [AngluarJS](http://angularjs.org)
 

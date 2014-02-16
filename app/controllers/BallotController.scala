@@ -29,7 +29,7 @@ object BallotController extends Controller with MongoController {
 
               BallotBox.col.insert(ballotBoxWithResult)
 
-              Logger.info("Created Ballot: " + ballotBoxWithResult)
+              Logger.info("Created Ballot: " + ballotBoxWithResult.toJson)
 
               Ok(ballotBoxWithResult.toJson)
             }
