@@ -188,12 +188,14 @@ function HTMLpreferenceRanking($parse, $animate) {
 										}										
 									}
 
-									scope.startDragging = function(event, last_mousemove, option) {
-										
+									scope.startDragging = function(event, last_mousemove, option) {										
+
 										scope.dragged_element = option.clone().addClass('dragged').appendTo(element)
 
 										controller.removeOption(option.attr('value'))
 										scope.$apply()
+
+										element.addClass('dragging')
 										
 										scope.trackMouseMovement(last_mousemove)
 
@@ -217,6 +219,8 @@ function HTMLpreferenceRanking($parse, $animate) {
 										controller.addOption(option_id, controller.getActive())
 										controller.setActive(null)
 										scope.$apply()
+
+										element.removeClass('dragging')
 
 										scope.dragged_element.remove()
 										delete scope.dragged_element
@@ -396,8 +400,7 @@ function HTMLpreferenceRank($scope, $animate) {
 									}
 
 									scope.refresh = function() {										
-										element.toggleClass('empty', 		scope.isEmpty() && !scope.isActive())
-										element.toggleClass('depleted', 	scope.isEmpty() && scope.isActive())
+										element.toggleClass('empty', 		scope.isEmpty())
 										element.toggleClass('active', 		scope.isActive())
 										element.toggleClass('nonempty',		!scope.isEmpty())
 									}
