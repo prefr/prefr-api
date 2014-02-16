@@ -10,6 +10,7 @@ POST        /api/ballotBox                               controllers.BallotContr
 POST        /api/ballotBox/:id                           controllers.BallotController.modifyBallotBox(id)
 GET         /api/ballotBox/:id                           controllers.BallotController.getBalloxBox(id)
 POST        /api/ballotBox/:id/addVote                   controllers.BallotController.addVote(id)
+GET         /api/ballotBox/:id/result                    controllers.BallotController.getResult(id)
 
 # Export in preftools data format
 GET         /api/ballotBox/:id/preftoolCandidates        controllers.PreftoolController.getCandidates(id)

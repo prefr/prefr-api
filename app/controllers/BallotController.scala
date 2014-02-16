@@ -24,14 +24,9 @@ object BallotController extends Controller with MongoController {
         request.body.validate[BallotBox](BallotBox.inputReads).map {
           ballotBox =>
             {
-              val ranking = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
-              val ballotBoxWithResult = ballotBox.copy(result = ranking, lastResultCalculation = new Date)
-
-              BallotBox.col.insert(ballotBoxWithResult)
-
-              Logger.info("Created Ballot: " + ballotBoxWithResult.toJson)
-
-              Ok(ballotBoxWithResult.toJson)
+              BallotBox.col.insert(ballotBox)
+              Logger.info("Created Ballot: " + ballotBox.toJson)
+              Ok(ballotBox.toJson ++ Json.obj("adminSecret" -> ballotBox.adminSecret))
             }
         }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
       }
@@ -65,20 +60,10 @@ object BallotController extends Controller with MongoController {
                 BallotBox.col.update(query, set).map {
                   lastError =>
                     if (lastError.updatedExisting) {
-
-                      // update result
-                      BallotBox.col.find(query).one[BallotBox].map {
-                        case None => NotFound
-                        case Some(ballotBox) => {
-                          val result = Schulze.getSchulzeRanking(ballotBox.papers.getOrElse(Seq()))
-                          val set2 = Json.obj("$set" -> Json.obj("result" -> result, "lastResultCalculation" -> new Date))
-                          BallotBox.col.update(query, set2)
-                        }
-                      }
-                      Ok
+                      Ok("vote added")
                     }
                     else {
-                      NotFound
+                      NotFound("ballot not found")
                     }
                 }
             }
@@ -94,17 +79,32 @@ object BallotController extends Controller with MongoController {
         case Some(bb) =>
           request.body.validate[BallotBoxUpdate].map {
             update =>
-              if (update.options.isEmpty && update.subject.isEmpty) {
-                Ok("nothing to update")
-              }
-              else {
-                bb.update(update).map { le =>
-                  Logger.debug("Updated: " + le.message)
-                }
-                Ok("updated")
+              // check secret
+              update.adminSecret.equals(bb.adminSecret) match {
+                case false => Unauthorized("wrong admin secret")
+                case true =>
+                  if (update.options.isEmpty && update.subject.isEmpty) {
+                    Ok("nothing to update")
+                  }
+                  else {
+                    bb.update(update).map { le =>
+                      Logger.debug("Updated: " + le.message)
+                    }
+                    Ok("updated")
+                  }
               }
           }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
+      }
+  }
 
+  def getResult(id: String) = Action.async {
+    request =>
+      BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
+        case None => Future(NotFound("ballot not found"))
+        case Some(bb) => bb.calculateResult.map {
+          case None           => InternalServerError("something went wrong :(")
+          case Some(resultBB) => Ok(resultBB.toResultJson)
+        }
       }
   }
 }

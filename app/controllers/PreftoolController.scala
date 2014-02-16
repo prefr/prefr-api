@@ -92,6 +92,7 @@ object PreftoolController extends Controller {
           None,
           Some(p),
           res,
+        IdHelper.generateAdminSecret(),
           new Date(),
           new Date()
         )
