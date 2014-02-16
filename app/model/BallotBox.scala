@@ -7,6 +7,9 @@ import play.api.libs.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import play.modules.reactivemongo.ReactiveMongoPlugin
 import play.api.Play.current
+import scala.concurrent.{ExecutionContext, Future}
+import reactivemongo.core.commands.LastError
+import ExecutionContext.Implicits.global
 
 /**
  * User: Björn Reimer
@@ -23,6 +26,26 @@ case class BallotBox(
     createDate: Date) {
   def toJson: JsValue = {
     Json.toJson(this)(BallotBox.outputWrites)
+  }
+
+  def update(update: BallotBoxUpdate): Future[LastError] = {
+
+    val subjectJson = if (update.subject.isDefined) {
+      Json.obj("subject" -> update.subject.get)
+    } else {
+      Json.obj()
+    }
+
+    val optionsJson = if (update.options.isDefined) {
+      Json.obj("options" -> update.options.get)
+    } else {
+      Json.obj()
+    }
+
+    val query = Json.obj("id" -> this.id)
+    val set = Json.obj("$set" -> (subjectJson ++ optionsJson) )
+
+    BallotBox.col.update(query, set)
   }
 }
 
@@ -57,5 +80,11 @@ object BallotBox {
         Json.obj("createDate" -> b.createDate)
   }
 
+}
+
+case class BallotBoxUpdate(subject: Option[String], options: Option[Seq[BallotOption]])
+
+object BallotBoxUpdate {
+  implicit val format = Json.format[BallotBoxUpdate]
 }
 

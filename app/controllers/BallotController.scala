@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc.{ Action, Controller }
 import play.modules.reactivemongo.MongoController
 import play.api.libs.json.{ Json, JsError }
-import model.{ Paper, BallotBox }
+import model.{ BallotBoxUpdate, Paper, BallotBox }
 
 import scala.concurrent.{ Future, ExecutionContext }
 import ExecutionContext.Implicits.global
@@ -81,4 +81,24 @@ object BallotController extends Controller with MongoController {
 
   }
 
+  def modifyBallotBox(id: String) = Action.async(parse.tolerantJson) {
+    request =>
+      BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+        case None => NotFound("ballot not found")
+        case Some(bb) =>
+          request.body.validate[BallotBoxUpdate].map {
+            update =>
+              if (update.options.isEmpty && update.subject.isEmpty) {
+                Ok("nothing to update")
+              }
+              else {
+                bb.update(update).map { le =>
+                  Logger.debug("Updated: " + le.message)
+                }
+                Ok("updated")
+              }
+          }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
+
+      }
+  }
 }

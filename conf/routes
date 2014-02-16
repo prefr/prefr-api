@@ -7,6 +7,7 @@ GET         /api/                                        controllers.Application
 
 # BALLOTS
 POST        /api/ballotBox                               controllers.BallotController.createBallotBox
+POST        /api/ballotBox/:id                           controllers.BallotController.modifyBallotBox(id)
 GET         /api/ballotBox/:id                           controllers.BallotController.getBalloxBox(id)
 POST        /api/ballotBox/:id/addVote                   controllers.BallotController.addVote(id)
 
