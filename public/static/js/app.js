@@ -4,6 +4,7 @@ var schulzeDoodle   =   angular.module(
                                 'ng',
                                 'ngRoute',
                                 'ngAnimate',
+                                'ui.bootstrap',
                                 'schulzeDoodleControllers',                               
                             ]
                         )
