@@ -1,15 +1,15 @@
-var schulzeDoodle   =   angular.module(
-                            'schulzeDoodle',
+var prefr   =   angular.module(
+                            'prefr',
                             [
                                 'ng',
                                 'ngRoute',
                                 'ngAnimate',
                                 'ui.bootstrap',
-                                'schulzeDoodleControllers',                               
+                                'prefrControllers',                               
                             ]
                         )
 
-schulzeDoodle.run( function($rootScope) {    
+prefr.run( function($rootScope) {    
     //$reflect broadcast an emitted event right back to its child scopes
     $rootScope.constructor.prototype.$reflect    =   function(eventName, callback) {
                                                         var self            =   this,
@@ -31,7 +31,7 @@ schulzeDoodle.run( function($rootScope) {
 })
 
 
-schulzeDoodle.config([
+prefr.config([
     '$routeProvider',
     function($routeProvider) {
         $routeProvider
@@ -39,6 +39,13 @@ schulzeDoodle.config([
             '/',
             {
                 templateUrl :   'static/partials/root.html'
+            }
+        )
+        .when(
+            '/new_group_decision',
+            {
+                controller:     'NewGroupDecisionCtrl',
+                templateUrl:    'static/partials/new_group_decision.html'
             }
         )
         .when(
@@ -75,12 +82,12 @@ schulzeDoodle.config([
     }
 ])
 
-schulzeDoodle.directive('singleSelect',         HTMLsingleSelect)
-schulzeDoodle.directive('tooltip',              ['$animate', HTMLtooltip])
+prefr.directive('singleSelect',         HTMLsingleSelect)
+prefr.directive('tooltip',              ['$animate', HTMLtooltip])
 
-schulzeDoodle.directive('rankingSource',        HTMLrankingSource)
+prefr.directive('rankingSource',        HTMLrankingSource)
 
-schulzeDoodle.directive('preferenceRanking',    ['$parse', '$animate', HTMLpreferenceRanking])
-schulzeDoodle.directive('preferenceRank',       ['$animate', HTMLpreferenceRank])
-schulzeDoodle.directive('preferenceOption',     ['$animate', HTMLpreferenceOption])
+prefr.directive('preferenceRanking',    ['$parse', '$animate', HTMLpreferenceRanking])
+prefr.directive('preferenceRank',       ['$animate', HTMLpreferenceRank])
+prefr.directive('preferenceOption',     ['$animate', HTMLpreferenceOption])
 

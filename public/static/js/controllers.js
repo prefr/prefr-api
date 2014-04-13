@@ -1,7 +1,7 @@
-var schulzeDoodleControllers = angular.module('schulzeDoodleControllers', []);
+var prefrControllers = angular.module('prefrControllers', []);
  
 
-schulzeDoodleControllers.controller(
+prefrControllers.controller(
 
 	'BallotBoxCtrl', 
 	[
@@ -167,7 +167,7 @@ schulzeDoodleControllers.controller(
 )
 
 
-schulzeDoodleControllers.controller(
+prefrControllers.controller(
 
 	'Test', 
 	[
@@ -181,4 +181,35 @@ schulzeDoodleControllers.controller(
 	]
 )
 
+prefrControllers.controller(
+	'NewGroupDecisionCtrl', 
+	
+	function ($scope, $routeParams) {		
+		$scope.options 		= [{title:'', details:''}]
+		$scope.tags_base 	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+
+		$scope.getTag		= 	function(index){ return (new Array(2+Math.floor(index/26))).join($scope.tags_base.charAt(index%26)) }
+		$scope.addOption 	= 	function()	 { $scope.options.push({title:'', details:''}) }
+		$scope.removeOption = 	function(index){ $scope.options.slice(index,index) }
+
+		$scope.optionUp		= 	function(index){ 
+									if(index == 0) return null
+
+									var x = $scope.options[index-1]
+
+									$scope.options[index-1] = $scope.options[index]
+									$scope.options[index] 	= x
+							 	}
+
+	 	$scope.optionDown	= 	function(index){ 
+		 							if(index == $scope.options.length-1) return null
+
+									var x = $scope.options[index+1]
+
+									$scope.options[index+1] = $scope.options[index]
+									$scope.options[index] 	= x
+	 							}
+	}
+)
 

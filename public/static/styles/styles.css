@@ -137,14 +137,11 @@ nav.vertical {
 
 body > article {
 	display:				block;
-	width:					100%;	
+	width:					100%;
+	min-height:				10em;	
 
-	background-color:		#fff;
-	/*box-shadow:			0 0 20em rgba(0, 0, 0, 0.5) inset;*/
-	/*background-image:		url("images/background.png");*/
 	color:					#666;
 
-	background-size:		cover;
 
 	padding:				0;
 	text-align:				center;
@@ -304,6 +301,9 @@ li {
 	cursor:					pointer;
 }
 
+.ui-white {
+	background: #fff;
+}
 
 
 
@@ -497,6 +497,12 @@ li {
 
 
 
+
+/* New Group Decision */
+
+.option {
+	margin:						2em 0;
+}
 
 
 
