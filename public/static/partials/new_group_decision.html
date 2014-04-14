@@ -1,0 +1,31 @@
+
+<h2> New group decision</h2>
+<div class="ui-content text-left ">
+    <form class="form-inline">         
+        <br>            
+        <div ng-repeat = "option in options" class="option">
+            <h3>
+                Option {{getTag($index)}}  
+                <i class="fa fa-times ui-clickable"      ng-click="removeOption($index)"></i>
+                <i class="fa fa-arrow-up ui-clickable"   ng-click="optionUp($index)"></i>
+                <i class="fa fa-arrow-down ui-clickable" ng-click="optionDown($index)"></i>
+            </h3>
+            <br/>
+            <div class="input-prepend">
+                <span class="add-on">Option title</span>
+                <input class="span8" name="title" type="text">
+            </div>               
+            <br/>
+            <br/>
+             <div class="input-prepend">
+                <span class="add-on">Details</span>
+                <textarea class="span6" placeholder="details" extendable>{{optin.details}}</textarea>                
+            </div>     
+            
+            
+            
+        </div>
+
+        <button class="btn" ng-click="addOption()">Add Option</button>
+    </form>
+</section>

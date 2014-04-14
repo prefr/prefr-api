@@ -45,6 +45,18 @@ function HTMLsingleSelect() {
 
 }
 
+function HTMLextendable(){
+	return{
+		restrict: 'AE',
+		link: function(scope, element){
+			element.on('input keydown keyup change', function() {
+  				element[0].style.height = "";
+  				element[0].style.height = element[0].scrollHeight + "px";
+			})
+		}
+	}
+}
+
 
 function HTMLrankingSource() {
 	return	{

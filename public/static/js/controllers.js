@@ -182,7 +182,7 @@ prefrControllers.controller(
 )
 
 prefrControllers.controller(
-	'NewGroupDecisionCtrl', 
+	'ManageOptions', 
 	
 	function ($scope, $routeParams) {		
 		$scope.options 		= [{title:'', details:''}]

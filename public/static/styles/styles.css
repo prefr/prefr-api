@@ -23,9 +23,12 @@ body {
 	background-color:		rgba(245, 245, 240, 1);	
 }
 
-input {
+input,
+textarea {
 	font-family: 			Liberation Sans, Ubuntu, DejaVu Sans,sans-serif;	
 }
+
+
 
 
 
@@ -187,7 +190,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h2{
-	font-size:				1.5em;	
+	font-size:				1.4em;
+	margin: 				1em 0;
 }
 
 h3{
@@ -376,6 +380,82 @@ li {
 
 
 
+
+
+
+
+/* inputs */
+
+
+.input-prepend {
+	position:				relative;
+	display:				inline-block;
+	background: 			#fff;
+	border: 				none;
+	padding:				0;
+	margin:					0;
+	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);	
+	line-height:			1.6em;
+	border-radius: 			0.3em;
+	overflow:				hidden;
+	white-space:			nowrap;	
+	width:					28em;	
+	overflow:hidden;
+}
+
+.input-prepend .add-on {
+	display:				block;
+	position:				absolute;
+	top:					0;
+	left:					0;
+	width:					8em;
+	height:					1.6em;
+	line-height:			1.6em;
+	text-align:				left;
+	background:				#647D8C;
+	color:					#fff;
+	padding-left: 			0.5em;
+}
+
+.input-prepend input {	
+	font-size:				1em;
+	height:					1.6em;
+	line-height:			1.6em;
+	margin:					0 0.5em 0em 9em;	
+	padding:				0;
+	border:					none;
+	width:					18.5em;	
+}
+
+.input-prepend textarea {
+	display:				block;
+	width:					27em;
+	min-height:				6em;
+	font-size:				1em;	
+	line-height:			1.4em;
+	margin:					0 0.5em 0 0.5em;	
+	padding:				0;
+	padding-top:			1.6em;
+	border:					none;	
+	resize:					none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* panels */
 
 
@@ -498,10 +578,52 @@ li {
 
 
 
-/* New Group Decision */
 
-.option {
-	margin:						2em 0;
+
+
+
+
+
+/* Options */
+
+
+
+li.option {
+	position:					relative;
+	margin:						1em 0;	
+	padding-left:				5em;
+	line-height:				2em;
+}
+
+li.option * {
+	vertical-align:				top;
+}
+
+li.option .tag{
+	position:					absolute;
+	top:						0;	
+	left:						0;
+	width:						1.8em;
+	height:						1.8em;
+	line-height:				1.8em;
+	text-align:					center;
+	font-size:					2em;
+	color:						#fff;
+	background:					#647D8C;	
+}
+
+li.option .controls{
+	position:					absolute;
+	top:						3em;
+	left:						0;
+	font-size:					1.5em;
+	width:						2.4em;
+	text-align:					center;
+	color:						#ccc;
+}
+
+li.option .controls i{
+	display:					block;
 }
 
 
