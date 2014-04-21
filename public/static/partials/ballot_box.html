@@ -246,48 +246,13 @@
                 <!-- list of all ballot papers end-->
 
 
-
                 <!-- list of all ballot options start -->
-
-                <ul
-                    class   =   "ballot-options"
-                    ng-show =   "selectionOverviewMenu.value == 'options'"
-                    ng-controller = "ManageOptions"
+                <div
+                    ng-show       = "selectionOverviewMenu.value == 'options'"
+                    manage-options = "ballot_box.options"
                 >
-                    <li
-                        ng-repeat   = "option in ballot_box.options"
-                        class       = "option"
-                    >
-                        <div class="tag">
-                            {{getTag($index)}}
-                        </div>
-
-                        <div class="controls">
-                            <i class="fa fa-angle-up ui-clickable"   ng-click="optionUp($index)"></i>                            
-                            <i class="fa fa-times ui-clickable"      ng-click="optionUp($index)"></i>                            
-                            <i class="fa fa-angle-down ui-clickable" ng-click="optionDown($index)"></i>
-                        </div>
-
-                        <div ng-if="!isAdmin">
-                            <h3>{{option.tag}} {{option.title}} </h3>
-                            <p>
-                                {{option.details}}
-                            </p>
-                        </div>
-
-                        <div ng-if="isAdmin">                                
-                            <div class="input-prepend">
-                                <span class="add-on">Option title</span>
-                                <input class="span8" name="title" type="text">
-                            </div>  
-                            <div class="input-prepend">
-                                <span class="add-on">Details</span>
-                                <textarea class="span6" placeholder="details" extendable>{{optin.details}}</textarea>                
-                            </div> 
-                        </div>
-
-                    </li>
-                </ul>
+                    
+                </div>
 
             </td>
         	

@@ -535,3 +535,45 @@ function HTMLtooltip($scope, $animate) {
 
 			}
 }
+
+
+function manageOptions(){
+	return {	
+		restrict: 'A',
+		templateUrl: 'static/partials/options.html',
+		scope: {
+			options: "=manageOptions"
+		},
+
+		controller: function ($scope, $element, $attrs) {
+			
+			$scope.tag_base 	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+			$scope.$watch('options', function(x){ console.log(x) })
+
+			console.log($scope.options)
+
+			$scope.getTag		= 	function(index)	{ return (new Array(2+Math.floor(index/26))).join($scope.tag_base.charAt(index%26)) }
+			$scope.addOption 	= 	function()	 	{ $scope.options.push({title:'', details:''});}
+			$scope.removeOption = 	function(index)	{ $scope.options.slice(index,index) }
+
+			$scope.optionUp		= 	function(index){ 
+										if(index == 0) return null
+
+										var x = $scope.options[index-1]
+
+										$scope.options[index-1] = $scope.options[index]
+										$scope.options[index] 	= x
+								 	}
+
+		 	$scope.optionDown	= 	function(index){ 
+			 							if(index == $scope.options.length-1) return null
+
+										var x = $scope.options[index+1]
+
+										$scope.options[index+1] = $scope.options[index]
+										$scope.options[index] 	= x
+		 							}
+		}	
+	}
+}

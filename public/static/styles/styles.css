@@ -7,7 +7,7 @@
 	dark-gray:		#444;
 	shadow:			0 0 0.2rem rgba(0,0,0, 0.5);
 	floating:		0 0 0.5rem rgba(0,0,0,0.6);
-	text-shadow:	0 -0.05rem rgba(0, 0, 0, 0.7), 0 0.05rem rgba(255, 255, 255, 0.7);
+	text-shadow:	0 -0.05rem rgba(0, 0, 0, 0.7), 0 0.05rem rgba(255, 255, 255, 0.7);	
 */
 
 
@@ -25,7 +25,10 @@ body {
 
 input,
 textarea {
-	font-family: 			Liberation Sans, Ubuntu, DejaVu Sans,sans-serif;	
+	font-family: 			Liberation Sans, Ubuntu, DejaVu Sans,sans-serif;
+	border:					none;
+	padding:				0;
+	margin:					0;
 }
 
 
@@ -190,7 +193,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h2{
-	font-size:				1.4em;
+	font-size:				1.5em;
 	margin: 				1em 0;
 }
 
@@ -208,36 +211,31 @@ td {
 	padding:				0;
 }
 
+input::-moz-focus-inner, /*Remove button padding in FF*/
+button::-moz-focus-inner
+{ 
+    border: 0;
+    padding: 0;
+}
 
 button {
 	display:				inline-block;
 
-	height:					2em;
-	margin:					0;
-	padding:				0.3em 1em;
-	line-height:			1.2em;
+
+	font-size:				1em;
+	height:					1.6em;
+	line-height:			1.6em;
+	padding:				0 0.5em;
 
 	border:					none;
-	border-radius: 			0.3em;
-	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);
+	width:					auto;
+	box-shadow:				none;
+	border-radius:			none;
+	cursor:					pointer;
 
 }
 
-button.ui-icon-edit,
-button.ui-icon-delete {
-	padding-left:			1.5em;
-	background-size:		1em;
-	background-position:	0.25em 50%;
-	background-repeat:		no-repeat;
-}
 
-button.ui-icon-edit {
-	background-image:		url('icons/ic_edit.png');
-}
-
-button.ui-icon-delete {
-	background-image:		url('icons/ic_delete.png');
-}
 
 hr {
 	display:				block;
@@ -443,6 +441,92 @@ li {
 
 
 
+.button-prepend {
+	position:				relative;
+	display:				inline-block;
+	background: 			#fff;
+	border: 				none;
+	padding:				0;
+	margin:					0;
+	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);	
+	line-height:			1.6em;
+	border-radius: 			0.3em;
+	overflow:				hidden;
+	white-space:			nowrap;	
+	width:					auto;	
+	overflow:hidden;
+	cursor:					pointer;
+}
+
+.button-prepend.large {
+	font-size: 				1.2em;	
+}
+
+
+
+.button-prepend .add-on {		
+	display:				inline-block;
+	height:					1.6em;
+	line-height:			1.6em;	
+	background:				#647D8C;
+	color:					#fff;	
+	text-align:				center;
+	width:					1.6em;
+	vertical-align: 		top;
+}
+
+.button-prepend button {	
+	display:				inline-block;
+	margin:					0;		
+	vertical-align: 		top;
+}
+
+textarea[extendable] {
+	resize:					none;
+}
+
+
+
+
+
+.combo-box {
+	display: 				inline-block;
+	position:				relative;
+	width:					33.6em;
+	border-radius:			0.3em;
+	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);	
+	overflow:				hidden;	
+}
+
+.combo-box .labels {
+	position:				absolute;
+	display:				block;
+	background:				#647D8C;
+	color:					#fff;
+	font-size:				1em;
+	padding:				0.35em 0.5em;
+	line-height:			1.4em;	
+	width:					9.5em;	
+}
+
+.combo-box input {
+	font-size:				1.4em;
+	line-height:			2.5em;	
+	height:					2.5em;
+	padding-left:			8em;
+	padding-right:			0.5em;	
+	margin:					0;
+	width:					15.5em;
+	box-shadow:				0 0 0.1em rgba(0,0,0, 0.1) inset;
+}
+
+.combo-box textarea {
+	width: 					92%;
+	padding:				1em 4% 1em 4%;
+	margin:					0;
+	min-height:				4em;
+}
+
 
 
 
@@ -586,11 +670,16 @@ li {
 
 /* Options */
 
+.ballot-options li.controls {
+	padding-left:				1.6em;
+}
 
+.ballot-options li {
+	margin-bottom:				3em;	
+}
 
 li.option {
 	position:					relative;
-	margin:						1em 0;	
 	padding-left:				5em;
 	line-height:				2em;
 }
@@ -599,31 +688,49 @@ li.option * {
 	vertical-align:				top;
 }
 
-li.option .tag{
-	position:					absolute;
+li.option .side {
+	position:					absolute;	
 	top:						0;	
 	left:						0;
-	width:						1.8em;
-	height:						1.8em;
-	line-height:				1.8em;
+	height:						100%;
+	background:					#fff;
+	box-shadow:					0 0 0.2rem rgba(0,0,0, 0.5);
+	overflow:					hidden;
+	border-radius:				0 0.3em 0.3em 0;
+
+}
+
+li.option .side .tag{	
+	width:						1.75em;
+	height:						1.75em;
+	line-height:				1.75em;
 	text-align:					center;
 	font-size:					2em;
 	color:						#fff;
 	background:					#647D8C;	
 }
 
-li.option .controls{
+li.option .side .controls{		
 	position:					absolute;
-	top:						3em;
-	left:						0;
+	bottom:						0;
 	font-size:					1.5em;
 	width:						2.4em;
-	text-align:					center;
-	color:						#ccc;
+	padding: 					0.5em 0;
 }
 
-li.option .controls i{
+li.option .side .controls button{
 	display:					block;
+	border:						none;
+	box-shadow:					none;		
+	padding:					0;
+	border-radius:				0;
+	text-align:					center;
+	width:						100%;
+	line-height:				1.2em;
+	background:					transparent;
+	font-size:					1em;
+	height:						1.2em;
+	color:						#666666;
 }
 
 

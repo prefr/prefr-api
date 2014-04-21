@@ -84,6 +84,7 @@ prefrControllers.controller(
 							                        ]
 									}
 								
+			$scope.isAdmin = true
 
 
 		    $scope.addBallotPaper = function(id, ranking) {
@@ -154,7 +155,7 @@ prefrControllers.controller(
 			})
 		    .always(function(data){
 
-				$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
+				//$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
 				//$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')
 
 			    $scope.addBallotPaper("")
@@ -180,36 +181,3 @@ prefrControllers.controller(
 		}
 	]
 )
-
-prefrControllers.controller(
-	'ManageOptions', 
-	
-	function ($scope, $routeParams) {		
-		$scope.options 		= [{title:'', details:''}]
-		$scope.tags_base 	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-
-		$scope.getTag		= 	function(index){ return (new Array(2+Math.floor(index/26))).join($scope.tags_base.charAt(index%26)) }
-		$scope.addOption 	= 	function()	 { $scope.options.push({title:'', details:''}) }
-		$scope.removeOption = 	function(index){ $scope.options.slice(index,index) }
-
-		$scope.optionUp		= 	function(index){ 
-									if(index == 0) return null
-
-									var x = $scope.options[index-1]
-
-									$scope.options[index-1] = $scope.options[index]
-									$scope.options[index] 	= x
-							 	}
-
-	 	$scope.optionDown	= 	function(index){ 
-		 							if(index == $scope.options.length-1) return null
-
-									var x = $scope.options[index+1]
-
-									$scope.options[index+1] = $scope.options[index]
-									$scope.options[index] 	= x
-	 							}
-	}
-)
-
