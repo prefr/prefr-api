@@ -10,32 +10,33 @@
         ng-repeat   = "option in options"
         class       = "option"
     >
-        <div class="side">
-            <div class="tag">
-                {{getTag($index)}}
-            </div>
 
-            <div class="controls">
-                <button ng-click="optionUp($index)">
-                    <i class="fa fa-angle-up"></i>    
-                </button>
-                <button ng-click="removeOption($index)">                        
-                    <i class="fa fa-times"></i>                            
-                </button>
-                <button ng-click="optionDown($index)">
-                    <i class="fa fa-angle-down"></i>
-                </button>
-            </div>
+        <div class="two-bar short">
+                <div>
+                    {{getTag($index)}}
+                </div>
+                <div>
+                    <input name = "title" type="text" maxlength="50" ng-disable="!isAdmin" placeholder ="title" value = "{{option.title}}">
+                </div>
         </div>
 
-        <div class="combo-box">
-            <div class="labels">
-                Option title <br>
-                Details
-            </div>
-            <input name = "title" type="text" ng-disable="!isAdmin" placeholder ="title" value = "{{option.title}}">
-            <textarea placeholder="details" ng-disable="!isAdmin" extendable>{{option.details}}</textarea>
+        <div class="two-bar white short multiline">
+                <div class="controls">
+                    <button ng-click="optionUp($index)">
+                        <i class="fa fa-angle-up"></i>    
+                    </button>
+                    <button ng-click="removeOption($index)">                        
+                        <i class="fa fa-times"></i>                            
+                    </button>
+                    <button ng-click="optionDown($index)">
+                        <i class="fa fa-angle-down"></i>
+                    </button>  
+                </div>
+                <div>
+                    <textarea class="details" placeholder="details" ng-disable="!isAdmin" extendable>{{option.details}}</textarea>      
+                </div>
         </div>
+        <hr/>     
     </li>  
 
     <li class="controls">                                            

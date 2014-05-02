@@ -375,111 +375,97 @@ li {
 
 
 
-
-
-
-
-
-
-
-/* inputs */
-
-
-.input-prepend {
+.two-bar {
 	position:				relative;
-	display:				inline-block;
-	background: 			#fff;
-	border: 				none;
-	padding:				0;
-	margin:					0;
-	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);	
-	line-height:			1.6em;
-	border-radius: 			0.3em;
-	overflow:				hidden;
-	white-space:			nowrap;	
-	width:					28em;	
-	overflow:hidden;
+	display: 				block;
+
+	font-size:				1.4em;    
+    line-height: 			3em;
+    margin: 				0;
+    position: 				relative;
+    text-align: 			left;    
+    vertical-align: 		middle;
+    white-space: 			nowrap;
+    overflow:				hidden;    
+    background-color:		#AAAAAA;    
 }
 
-.input-prepend .add-on {
-	display:				block;
+.two-bar.white{
+	background-color: 		#fff;
+}
+
+.two-bar > * {
+	display:				inline-block;
+	white-space: 			nowrap;
+    height:					3em;
+	line-height:			3em;
+}
+
+.two-bar.multiline > * {
+	height:					auto;
+}
+
+.two-bar.multiline > * > *{
+	white-space:			normal;
+	height:					auto;
+	line-height:			1.4em;
+	font-size:				0.8em;
+	vertical-align:			top;	
+}
+
+
+.two-bar * {
+	vertical-align:			baseline;
+}
+
+.two-bar > *:first-child{	
 	position:				absolute;
+	width:					12em;	
 	top:					0;
+	bottom:					0;
 	left:					0;
-	width:					8em;
-	height:					1.6em;
-	line-height:			1.6em;
 	text-align:				left;
 	background:				#647D8C;
-	color:					#fff;
-	padding-left: 			0.5em;
+	color:					#fff;	
 }
 
-.input-prepend input {	
-	font-size:				1em;
-	height:					1.6em;
-	line-height:			1.6em;
-	margin:					0 0.5em 0em 9em;	
-	padding:				0;
-	border:					none;
-	width:					18.5em;	
+.two-bar.white > *:first-child{
+	background-color:		#fff;
 }
 
-.input-prepend textarea {
-	display:				block;
-	width:					27em;
-	min-height:				6em;
-	font-size:				1em;	
-	line-height:			1.4em;
-	margin:					0 0.5em 0 0.5em;	
-	padding:				0;
-	padding-top:			1.6em;
-	border:					none;	
-	resize:					none;
+.two-bar.short > *:first-child{
+	width:					3em;
+	text-align:				center;
 }
 
+.two-bar > *:last-child{
+	background:				transparent;
+	color:					#fff;		
+	display:				block;	
+	margin-left:			13em;
+}
 
+.two-bar.white > *:last-child{
+	color:					inherit;
+}
 
+.two-bar.short > *:last-child{
+	margin-left:			4em;
+}
 
-.button-prepend {
-	position:				relative;
-	display:				inline-block;
-	background: 			#fff;
-	border: 				none;
+.two-bar input,
+.two-bar textarea {
+	font-size:				inherit;
+	background-color:		inherit;
 	padding:				0;
 	margin:					0;
-	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);	
-	line-height:			1.6em;
-	border-radius: 			0.3em;
-	overflow:				hidden;
-	white-space:			nowrap;	
-	width:					auto;	
-	overflow:hidden;
-	cursor:					pointer;
-}
-
-.button-prepend.large {
-	font-size: 				1.2em;	
+	border:					0;
+	color:					inherit;
+	width:					100%;	
 }
 
 
 
-.button-prepend .add-on {		
-	display:				inline-block;
-	height:					1.6em;
-	line-height:			1.6em;	
-	background:				#647D8C;
-	color:					#fff;	
-	text-align:				center;
-	width:					1.6em;
-	vertical-align: 		top;
-}
-
-.button-prepend button {	
-	display:				inline-block;
-	margin:					0;		
-	vertical-align: 		top;
-}
 
 textarea[extendable] {
 	resize:					none;
@@ -488,55 +474,30 @@ textarea[extendable] {
 
 
 
+/* options */
 
-.combo-box {
-	display: 				inline-block;
-	position:				relative;
-	width:					33.6em;
-	border-radius:			0.3em;
-	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);	
-	overflow:				hidden;	
+.option {
+	margin-bottom:			1em;
 }
 
-.combo-box .labels {
-	position:				absolute;
+.option .controls {
 	display:				block;
-	background:				#647D8C;
-	color:					#fff;
-	font-size:				1em;
-	padding:				0.35em 0.5em;
-	line-height:			1.4em;	
-	width:					9.5em;	
 }
 
-.combo-box input {
-	font-size:				1.4em;
-	line-height:			2.5em;	
-	height:					2.5em;
-	padding-left:			8em;
-	padding-right:			0.5em;	
-	margin:					0;
-	width:					15.5em;
-	box-shadow:				0 0 0.1em rgba(0,0,0, 0.1) inset;
+.option .controls button{
+	display:				block;
+	text-align:				center;
+	background: 			transparent;
+	padding:				0;
+	width:					100%;
+	line-height:			1em;
+	font-size:				1.2em;
 }
 
-.combo-box textarea {
-	width: 					92%;
-	padding:				1em 4% 1em 4%;
-	margin:					0;
-	min-height:				4em;
+.option .details {
+	min-height:				5em;
+	margin:					1em 0;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -667,91 +628,6 @@ textarea[extendable] {
 
 
 
-
-/* Options */
-
-.ballot-options li.controls {
-	padding-left:				1.6em;
-}
-
-.ballot-options li {
-	margin-bottom:				3em;	
-}
-
-li.option {
-	position:					relative;
-	padding-left:				5em;
-	line-height:				2em;
-}
-
-li.option * {
-	vertical-align:				top;
-}
-
-li.option .side {
-	position:					absolute;	
-	top:						0;	
-	left:						0;
-	height:						100%;
-	background:					#fff;
-	box-shadow:					0 0 0.2rem rgba(0,0,0, 0.5);
-	overflow:					hidden;
-	border-radius:				0 0.3em 0.3em 0;
-
-}
-
-li.option .side .tag{	
-	width:						1.75em;
-	height:						1.75em;
-	line-height:				1.75em;
-	text-align:					center;
-	font-size:					2em;
-	color:						#fff;
-	background:					#647D8C;	
-}
-
-li.option .side .controls{		
-	position:					absolute;
-	bottom:						0;
-	font-size:					1.5em;
-	width:						2.4em;
-	padding: 					0.5em 0;
-}
-
-li.option .side .controls button{
-	display:					block;
-	border:						none;
-	box-shadow:					none;		
-	padding:					0;
-	border-radius:				0;
-	text-align:					center;
-	width:						100%;
-	line-height:				1.2em;
-	background:					transparent;
-	font-size:					1em;
-	height:						1.2em;
-	color:						#666666;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Ballot Box */
 
 .ballot-box {
@@ -780,10 +656,6 @@ li.option .side .controls button{
 .ballot-box .edit-options{
 	background: 			#fff;
 	min-width:				3.5em;	
-}
-
-.ballot-box .ballot-overview .details {
-	padding:1em;
 }
 
 .ballot-box .ballot-papers,
