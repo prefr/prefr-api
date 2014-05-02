@@ -839,8 +839,6 @@ preference-ranking preference-rank {
 	background:				#444;
 
 	opacity:				1;
-
-	transition-duration:	1000ms;
 }
 
 preference-ranking.vertical preference-rank {
@@ -874,6 +872,8 @@ preference-rank.nonempty > summary:before{
 
 preference-ranking preference-rank.empty {
 	opacity:				0;
+	
+	transition-duration:	1000ms;
 }
 
 preference-ranking preference-rank.empty.depleted{
@@ -881,14 +881,14 @@ preference-ranking preference-rank.empty.depleted{
 }
 
 preference-ranking.dragging preference-rank.empty {
-	opacity:				0.5;
+	opacity:				0;
 }
 
-preference-ranking.vertical.dragging preference-rank.empty {
+preference-ranking.vertical.dragging preference-rank.empty.active {
 	margin:					2.5em 0;	
 }
 
-preference-ranking.horizontal.dragging preference-rank.empty {
+preference-ranking.horizontal.dragging preference-rank.empty.active {
 	margin:					0 2.5em;
 }
 
@@ -1005,6 +1005,9 @@ preference-option.dragged {
 }
 
 
+preference-option.dummy {
+	opacity : 				0;
+}
 
 
 /* transition mechanics:*/

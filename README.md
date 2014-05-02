@@ -10,9 +10,13 @@ Deploy
 
 Dependencies:
 
-* openjdk-7 (should work with 6 as well)
-* mongodb that listens on localhost:27017 (can be adjusted in application.conf)
+* docker
+* mongodb on localhost:27017 (can be adjusted in application.conf)
 
-Running './sbt start' in the root folder will download all dependencies, build the code and start a Webserver that listens on port 9000.
+To start the prefr server on port 9000, simply run
+
+    docker run -d -p 9000:9000 reimerei/prefr
+
+
 
 

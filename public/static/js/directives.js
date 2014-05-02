@@ -205,11 +205,18 @@ function HTMLpreferenceRanking($parse, $animate) {
 									scope.startDragging = function(event, last_mousemove, option) {										
 
 										scope.dragged_element = option.clone().addClass('dragged').appendTo(element)
-
-										controller.removeOption(option.attr('value'))
-										scope.$apply()
+										option.addClass('dummy')
+										//remove option from data: (actually dont)
+										//controller.removeOption(option.attr('value'))
+										//scope.$apply()
 
 										element.addClass('dragging')
+
+
+										scope.$on('dragging-done', function(event){
+											option.removeClass('dummy')
+											element.removeClass('dragging')
+										})
 										
 										scope.trackMouseMovement(last_mousemove)
 
@@ -229,12 +236,11 @@ function HTMLpreferenceRanking($parse, $animate) {
 										$(document).off('mouseup mouseleave',	scope.drop)
 
 										var	option_id = scope.dragged_element.attr('value')
-
-										controller.addOption(option_id, controller.getActive())
-										controller.setActive(null)
-										controller.commit()
-
-										element.removeClass('dragging')
+								
+										controller
+										.addOption(option_id, controller.getActive())
+										.setActive(null)
+										.commit()
 
 										scope.dragged_element.remove()
 										delete scope.dragged_element
@@ -273,6 +279,69 @@ function HTMLpreferenceRanking($parse, $animate) {
 									$scope.raw_rankingData	= $scope.$eval($attrs.rankingModel)
 
 
+									this.import = function(){
+										var result = [[]]
+
+										$scope.raw_rankingData.forEach(function(rank, index){
+											result.push(rank)
+											result.push([])
+										})
+
+										$scope.rankingData.splice(0, $scope.rankingData.length)
+										$scope.rankingData.push.apply($scope.rankingData, result)
+										
+										return this
+									}
+
+									this.export = function(){
+										$scope.raw_rankingData.splice(0, $scope.raw_rankingData.length)
+										$scope.rankingData.forEach(function(rank, index){
+											if(rank.length != 0) $scope.raw_rankingData.push(rank)
+										})
+										return this
+									}
+
+									this.removeOption = function(option){
+										$scope.rankingData.forEach(function(rank, index){
+											rank.forEach(function(present_option, index){
+												if(option == present_option) rank.splice(index, 1)
+											})
+										})
+										return this
+									}
+
+									this.addOption = function(option, rank) {
+										this.removeOption(option)
+										rank.push(option)
+										return this
+									}
+
+									this.isEmpty = function(rank) {
+										return(rank && rank.length == 0)
+									}
+
+									this.setActive = function(rank) {
+										$scope.active = rank
+										return this
+									}
+
+									this.getActive = function() {
+										return($scope.active)
+									}
+
+									this.commit = function(){
+										this.export()
+										this.import()
+
+										$scope.$apply()
+
+										return this
+									}
+
+									this.import()
+
+
+									/*
 									this.addRank			=	function(rank, after) {																		
 																	var pos 	= typeof after =='number' ? after : $scope.rankingData.indexOf(after),
 																		length	= $scope.rankingData.length																	
@@ -381,17 +450,21 @@ function HTMLpreferenceRanking($parse, $animate) {
 																	$scope.$apply()
 																}
 
-									this.processRankingData()
+									*/
+								
+									//this.processRankingData()
+									
+									/*
 
 									$scope.$watchCollection($attrs.rankingModel, function(new_value){
-										if(!$scope.saved){
 											$scope.raw_rankingData	= new_value											
 											self.processRankingData()											
 										}
 										delete $scope.saved
 									}, true)
 
-									$scope.rankingOrientation 	= $attrs.rankingOrientation || 'vertical'																		
+									$scope.rankingOrientation 	= $attrs.rankingOrientation || 'vertical'	
+									*/																	
 									
 								}
 			}

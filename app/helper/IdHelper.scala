@@ -15,10 +15,10 @@ object IdHelper {
   }
 
   def generateBallotId(): String = {
-    randomString(16)
+    randomString(20)
   }
 
   def generateAdminSecret(): String = {
-    randomString(10)
+    randomString(20)
   }
 }

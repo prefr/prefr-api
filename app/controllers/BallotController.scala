@@ -7,8 +7,6 @@ import model.{ BallotBoxUpdate, Paper, BallotBox }
 
 import scala.concurrent.{ Future, ExecutionContext }
 import ExecutionContext.Implicits.global
-import helper.Schulze
-import java.util.Date
 import play.api.Logger
 
 /**
@@ -25,7 +23,7 @@ object BallotController extends Controller with MongoController {
           ballotBox =>
             {
               BallotBox.col.insert(ballotBox)
-              Logger.info("Created Ballot: " + ballotBox.toJson)
+              Logger.debug("Created Ballot: " + ballotBox.toJson)
               Ok(ballotBox.toJson ++ Json.obj("adminSecret" -> ballotBox.adminSecret))
             }
         }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
@@ -33,7 +31,7 @@ object BallotController extends Controller with MongoController {
   }
 
   def getBalloxBox(id: String) = Action.async {
-
+    Logger.debug("Get Ballot: " + id)
     BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
       case None    => NotFound
       case Some(b) => Ok(b.toJson)
@@ -41,12 +39,11 @@ object BallotController extends Controller with MongoController {
   }
 
   def addVote(id: String) = Action.async(parse.tolerantJson) {
-
     request =>
       request.body.validate[Paper](Paper.inputReads).map {
         paper =>
           {
-            Logger.info("Add vote to id: " + id + " pater: " + paper)
+            Logger.debug("Add vote to id: " + id + " pater: " + paper)
 
             // check if vote is valid
             paper.check match {
@@ -87,8 +84,9 @@ object BallotController extends Controller with MongoController {
                     Ok("nothing to update")
                   }
                   else {
-                    bb.update(update).map { le =>
-                      Logger.debug("Updated: " + le.message)
+                    bb.update(update).map {
+                      le =>
+                        Logger.debug("Modfied Ballot: " + update)
                     }
                     Ok("updated")
                   }
@@ -102,8 +100,10 @@ object BallotController extends Controller with MongoController {
       BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
         case None => Future(NotFound("ballot not found"))
         case Some(bb) => bb.calculateResult.map {
-          case None           => InternalServerError("something went wrong :(")
-          case Some(resultBB) => Ok(resultBB.toResultJson)
+          case None => InternalServerError("something went wrong :(")
+          case Some(resultBB) =>
+            Logger.debug("Ballot result: " + resultBB)
+            Ok(resultBB.toResultJson)
         }
       }
   }
