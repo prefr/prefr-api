@@ -628,7 +628,7 @@ function manageOptions(){
 
 			$scope.getTag		= 	function(index)	{ return (new Array(2+Math.floor(index/26))).join($scope.tag_base.charAt(index%26)) }
 			$scope.addOption 	= 	function()	 	{ $scope.options.push({title:'', details:''});}
-			$scope.removeOption = 	function(index)	{ $scope.options.slice(index,index) }
+			$scope.removeOption = 	function(index)	{ $scope.options.slice(index,1) }
 
 			$scope.optionUp		= 	function(index){ 
 										if(index == 0) return null

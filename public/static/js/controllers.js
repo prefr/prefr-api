@@ -7,6 +7,8 @@ prefrControllers.controller(
 	[
 		'$scope', 
 		'$routeParams',
+		'$animate',
+		
 		function ($scope, $routeParams) {
 
 			//dummy:

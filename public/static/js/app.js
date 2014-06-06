@@ -57,7 +57,7 @@ prefr.config([
     }
 ])
 
-prefr.directive('manageOptions',        manageOptions)
+prefr.directive('manageOptions',        ['$animate', manageOptions])
 
 prefr.directive('singleSelect',         HTMLsingleSelect)
 prefr.directive('tooltip',              ['$animate', HTMLtooltip])
