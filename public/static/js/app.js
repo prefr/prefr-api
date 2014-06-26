@@ -3,8 +3,8 @@ var prefr   =   angular.module(
                             [
                                 'ng',
                                 'ngRoute',
-                                'ngAnimate',
-                                'prefrControllers',                               
+                                'prefrControllers',  
+                                'services'                             
                             ]
                         )
 
@@ -57,15 +57,15 @@ prefr.config([
     }
 ])
 
-prefr.directive('manageOptions',        ['$animate', manageOptions])
+prefr.directive('manageOptions',        [manageOptions])
 
 prefr.directive('singleSelect',         HTMLsingleSelect)
-prefr.directive('tooltip',              ['$animate', HTMLtooltip])
+prefr.directive('tooltip',              [HTMLtooltip])
 prefr.directive('extendable',           HTMLextendable)
 
 prefr.directive('rankingSource',        HTMLrankingSource)
 
-prefr.directive('preferenceRanking',    ['$parse', '$animate', HTMLpreferenceRanking])
-prefr.directive('preferenceRank',       ['$animate', HTMLpreferenceRank])
-prefr.directive('preferenceOption',     ['$animate', HTMLpreferenceOption])
+prefr.directive('preferenceRanking',    ['$compile', HTMLpreferenceRanking])
+prefr.directive('preferenceRank',       [HTMLpreferenceRank])
+prefr.directive('preferenceOption',     [HTMLpreferenceOption])
 

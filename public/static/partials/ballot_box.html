@@ -1,6 +1,6 @@
 <div
 	class			=	"ballot-box"
-	single-select	=	"{'ballot-paper': ballot_box.papers[0], 'mode' : 'prefr'}"		
+	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
 >
 
     <table> 
@@ -8,6 +8,7 @@
 
         	<!-- selected ballot paper to edit start -->
 
+            <!--
             <td class="edit-options">
                 <nav class="vertical">
 
@@ -37,16 +38,72 @@
                     ></i>                
                 </nav>
             </td>
+            -->
 
-        	<td class = "edit-paper ui-deep-shadow" > 
+            <td id="left-column" class="white">
+                <div class="ui-relative">
+                    <div class="ui-content ui-white">
+                        <h2>Participants</h2>
+                        <p>
+                            Enter your name below and arranged the options in the middle column according to your preference.
+                        </p>
+                        <small>
+                            You can change your or others preference ranking or name later on if you like. In order to edit a name click the lock to unlock the input field.
+                        </small>
+                    </div>
+                    <hr/>
+                    <div class="participants-overview ui-dotted right">
+                        <label
+                            ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
+                            ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
+                            ng-click        = "select('ballot-paper', paper)"                
+                        >
+                            
+                            <span class = "icons">
+                                
+                                <i 
+                                    class           = "fa fa-lock"
+                                    ng-show         = "paper.locked"
+                                    ng-click        = "paper.locked = false"
+                                ></i>
+
+                                <i 
+                                    class           = "fa fa-unlock-alt"                                    
+                                    ng-hide         = "paper.locked"
+                                    ng-click        = "paper.locked = true"
+                                ></i>
+
+                            </span> 
+
+                            <span 
+                                class   = "name"
+                                ng-show = "paper.locked"
+                            >
+                                {{paper.participant || 'Enter name'}}
+                            </span>
+
+                            <input
+                                type        = "text"                                 
+                                ng-model    = "paper.participant"
+                                placeholder = "Enter name"
+                                ng-show     = "!paper.locked"
+                            />
+
+                            <div class="connector right"></div>
+                        </label>
+                    </div>
+                </div>
+            </td>
+
+        	<td class = "edit-paper ui-deep-shadow" >
+
         		<preference-ranking
-        			ranking-model		=	"selectionBallotPaper.value.ranking"
         			ranking-orientation =   "vertical"
                     no-dragging         =   "selectionBallotPaper.value.locked"
-                    ng-show             =   "selectionEditMenu.value == 'ranking'"
+                    ng-if               =   "selectionEditMenu.value == 'ranking' && selectionBallotPaper.value"
         		>			         
         			<preference-rank
-        				ng-repeat 	=	"rank in rankingData"
+        				ng-repeat 	=	"rank in selectionBallotPaper.value.ranking"
         				class		=	"ui-panel left vertical ui-borders ui-corners-all"
         			>
         				<summary>
@@ -55,14 +112,16 @@
 
         				<preference-option 
         					class		=	"ui-panel right ui-corners-left"
-        					ng-repeat	=	"option in rank"
-        					value		=	"{{option}}"
+                            ng-class    =   "{'selected': selectionBallotOption.value == ballot.getOptionByTag(tag)}"
+        					ng-repeat	=	"tag in rank"
+        					value		=	"{{tag}}"
+                            ng-click    =   "select('ballot-option', ballot.getOptionByTag(tag))"
         				>
         					<details>						
-        						<div class="title"> 	{{ballot_box.options[option].title}} 	</div>						
+        						<div class="title"> 	{{ballot.getOptionByTag(tag).title}} 	</div>						
         					</details>
         					<summary>
-        						{{option}}
+        						{{ballot.getOptionByTag(tag).tag}}
         					</summary>
         				</preference-option>	
 
@@ -101,6 +160,7 @@
         	
 
             <td
+                id              = "right-column"
                 class           = "ballot-overview"
                 single-select   = "{'overview-menu': 'papers'}"   
             >
@@ -108,7 +168,7 @@
 
                 	<h2>   
                             <span ng-if="!isAdmin">
-                                {{ballot_box.subject}} ({{ballot_box.id}})
+                                {{ballot.subject}} ({{ballot.id}})
                             </span>
                             <div 
                                 ng-if = "isAdmin"
@@ -126,139 +186,50 @@
         				Instructions go here.
         			</small>
         		</div>
-                <nav>
-                    <a
-                        ng-click        = "select('overview-menu', 'papers')"
-                        select-initial  = "true"                        
-                        class           = "{{selectionOverviewMenu.value == 'papers' ? 'current' : ''}} "
-                    >
-                        Ballot papers
-                    </a>                    
-                    <a
-                        ng-click        = "select('overview-menu', 'options')"                        
-                        class           = "{{selectionOverviewMenu.value == 'options' ? 'current' : ''}} "
-                    >
-                        Ballot options
-                    </a> 
 
-                    <a
-                        ng-click = "postBox()"
-                    >
-                        result
-                    <a>
-                </nav>
-                <hr />
-
-                <!-- list of all ballot papers -->
-
-                <ul
-                    class   =   "ballot-papers"
-                    ng-show =   "selectionOverviewMenu.value == 'papers'"
-                >
-                    <li
-                        class           = "ballot-paper {{selectionBallotPaper.value == paper ? 'selected' : ''}}"
-                        ng-repeat       = "paper in (ballot_box.papers | orderBy:'-id':true)"                        
-                    >
-                        <div
-                            class           = "two-bar participant {{paper.id == -1 ? 'result' :''}}"
-                            ng-click        = "select('ballot-paper', paper)" 
-                            select-initial  = "$first"
-                        >
-                            <div> 
-                                <span
-                                    class   = "name" 
-                                    ng-hide = "selectionBallotPaper.value == paper"
-                                >
-                                    {{paper.participant}}
-                                </span>
-
-                                <input
-                                    type    = "text" 
-                                    ng-show = "selectionBallotPaper.value == paper" 
-                                    ng-model= "paper.participant"
-                                />
-
-                                <span
-                                    class           = "icons"                                
-                                >
-                                    
-                                    <i 
-                                        class           = "fa fa-lock"
-                                        ng-show         = "paper.locked"
-                                        ng-click        = "paper.locked = false"
-                                    ></i>
-
-                                    <i 
-                                        class           = "fa fa-unlock-alt"                                    
-                                        ng-hide         = "paper.locked"
-                                        ng-click        = "paper.locked = true"
-                                    ></i>
-                                </span> 
-                                <!--
-                                <button
-                                    ng-click	= "select()"
-                                    class		= "ui-icon-edit"
-                                >
-                                    edit
-                                </button>
-                                <button
-                                    ng-click	= "removeBallotPaper($index)"
-                                    class		= "ui-icon-delete"
-                                >
-                                    delete
-                                </button>
-                                -->
-                            </div>
-
-                            <div>
-
-                                <preference-ranking
-                                    ranking-model		=	"paper.ranking"
-                                    ranking-orientation	=	"horizontal"
-                                    no-dragging         =   "true"
-                                    class				=	"compact"
-                                >
-                                    <preference-rank
-                                        ng-repeat 	=	"rank in rankingData"
-                                        class		=	"ui-panel left horizontal ui-borders ui-corners-all"
-                                    >
-                                        <summary>
-
-                                            <!-- CSS will put the counter here-->
-
-                                        </summary>
-
-                                        <preference-option
-                                            class		=	"ui-panel right horizontal ui-corners-left"
-                                            ng-repeat	=	"option in rank"
-                                            value		=	"{{option}}"
-                                        >
-                                            <details>
-                                                <div class="title"> 	{{ballot_box.options[option].title}} 	</div>
-                                            </details>
-                                            <summary>
-                                                {{option}}
-                                            </summary>
-                                        </preference-option>
-
-                                    </preference-rank>
-                                </preference-ranking>
-                            </div>
-
-                        </div>
-                    </li>
-                </ul>
-                <!-- list of all ballot papers end-->
+                <hr/>
 
 
                 <!-- list of all ballot options start -->
-                <div
-                    ng-show       = "selectionOverviewMenu.value == 'options'"
-                    manage-options = "ballot_box.options"
-                >
+
+                <div class = "options-overview ui-dotted left right">
+                    <div 
+                        class       = "option"
+                        ng-repeat   = "option in ballot.options" 
+                        ng-click        = "select('ballot-option', option)" 
+                    >                       
+                        <label ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}">                            
+                            <span class="tag">
+                                {{option.tag}}
+                            </span>
+
+                            <input 
+                                name        = "title" 
+                                type        = "text"
+                                ng-disabled = "!isAdmin" 
+                                placeholder = "Enter title" 
+                                ng-model    = "option.title"
+                                class       = "ui-extended-width"
+                                max-size    
+                            >
+                            <!--
+                                <div class="connector right"></div>
+                            -->
+                        </label>
+                        <div 
+                            class   = "details ui-white"
+                        >
+                            <textarea extendable placeholder ="no further description">{{option.description}}</textarea>
+                        </div>
+                        <hr/>
+                    </div>
+                </div>
+                
+                <!--
+                <div manage-options = "ballot.options">
                     
                 </div>
-
+                -->
             </td>
         	
 

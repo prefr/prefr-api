@@ -1,4 +1,30 @@
-<ul class = "ballot-options">
+
+
+<ul class = "options dotted left">
+    <li
+        ng-repeat       = "option in options"    
+        ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
+        ng-click        = "select('ballot-option', option)"          
+    >
+        <div class="connector left"></div>
+        
+        <span class="tag">
+            {{getTag($index)}}
+        </span>
+
+        <input 
+            name        = "title" 
+            type        = "text"
+            ng-disable  = "!isAdmin" 
+            placeholder = "Enter title" 
+            value       = "{{option.title}}"
+        >
+
+        <div class="connector right"></div>
+    </li>
+
+
+    <!--
     <li>                                            
         <div class="two-bar short inline small clickable" ng-click = "addOption()" ng-disable="!isAdmin">
             <div><i class="fa fa-plus" ></i></div>
@@ -43,5 +69,6 @@
             <div><i class="fa fa-plus" ></i></div>
             <div>Add new option</div>
         </div>
-    </li>                  
+    </li>              
+    -->    
 </ul>

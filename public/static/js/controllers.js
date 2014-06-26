@@ -7,9 +7,9 @@ prefrControllers.controller(
 	[
 		'$scope', 
 		'$routeParams',
-		'$animate',
-		
-		function ($scope, $routeParams) {
+		'Ballot',
+
+		function ($scope, $routeParams, Ballot){
 
 			//dummy:
 			var dummy	=	{
@@ -89,14 +89,6 @@ prefrControllers.controller(
 			$scope.isAdmin = true
 
 
-		    $scope.addBallotPaper = function(id, ranking) {
-		    	$scope.ballot_box.papers.unshift({
-		    		id			:	id !== undefined ? id : Math.floor(Math.random()*100),
-					participant :   "unnamed",
-					ranking     :   ranking || [Object.keys($scope.ballot_box.options)]
-		    	})
-		    }
-
 		    $scope.addResult = function(ranking) {
 		    	$scope.ballot_box.papers.unshift({
 		    		id			:	-1,
@@ -132,11 +124,8 @@ prefrControllers.controller(
 		    	})
 		    }
 
-		    $scope.lockPapers = function(papers) {
-		    	$.each(papers, function(key, paper) {
-		    		paper.locked = true
-		    	})
-		    	return(papers)
+		    $scope.lockPapers = function() {
+		    	$scope.ballot.papers.forEach(function(paper){ paper.locked = true })		    
 		    }
 
 
@@ -150,18 +139,17 @@ prefrControllers.controller(
 				async: false
 			})
 			.done(function(data){
-				$scope.ballot_box	= data
+				$scope.ballot	= data
 			})
 			.error(function(){
-				$scope.ballot_box	= dummy
+				$scope.ballot	= new Ballot(dummy)
+				console.dir($scope.ballot)
 			})
 		    .always(function(data){
 
 				//$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
 				//$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')
-
-			    $scope.addBallotPaper("")
-				$scope.lockPapers($scope.ballot_box.papers)
+				$scope.lockPapers()
 
 		    })
 

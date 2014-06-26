@@ -1,6 +1,7 @@
 /* COLORS:
 
 	blue:			rgba(100,125,140,1) / #647D8C;
+	saturated blue: #647De0;
 	light-blue:		#A7C7DC;
 	light-gray:		#ccc;
 	white:			rgba(245, 245, 240, 1);
@@ -29,6 +30,7 @@ textarea {
 	border:					none;
 	padding:				0;
 	margin:					0;
+	color:					#666;
 }
 
 
@@ -255,6 +257,16 @@ li {
 }
 
 
+
+
+#left-column {
+	text-align:				left;
+	vertical-align:			top;
+	position:				relative;
+}
+
+
+
 .ui-content {
 	padding:				1em;
 }
@@ -291,6 +303,14 @@ li {
 	height:					2em;
 }
 
+.ui-extended-width{
+	width:					15em;
+}
+
+.ui-extended-height{
+	height:					5em;
+}
+
 .ui-extensive-width {
 	width: 					21em;
 }
@@ -304,7 +324,16 @@ li {
 }
 
 .ui-white {
-	background: #fff;
+	background: 			#fff;
+}
+
+.ui-dotted {
+	background-image:		url('images/dots.png');
+	background-size:		0.15em;
+}
+
+.ui-relative {
+	position:				relative;
 }
 
 
@@ -488,33 +517,22 @@ textarea[extendable] {
 
 /* options */
 
-.option {
-	margin:					1em 0;
-	transition:				all 500ms ease-out;
+.options-overview .option .details{
+	display:				block;
+	padding:				0.5em 1em;
+	margin-bottom:			1em;
 }
 
-.option .controls {
-	display:				block;
-}
+.options-overview .option .details textarea{
+	background:				transparent;
+	overflow:				visible;
+	font-size: 				0.9em;
 
-.option .controls button{
-	display:				block;
-	text-align:				center;
-	background: 			transparent;
-	padding:				0;
+	min-height:				3em;
 	width:					100%;
-	line-height:			1em;
-	font-size:				1.2em;
+	resize:					none;
 }
 
-.option .details {
-	min-height:				5em;
-	margin:					1em 0;
-}
-
-.ballot-options .option.ng-move-active{
-	font-size:				0em;
-}
 
 
 /* panels */
@@ -530,6 +548,7 @@ textarea[extendable] {
 
 	vertical-align: 		middle;
 }
+
 
 .ui-panel.left {
 	padding-left:			3.2em;
@@ -632,6 +651,10 @@ textarea[extendable] {
 		color:					rgba(255,255,255,0.95);
 	}
 
+	.ui-panel.selected details{
+		background-color:		#647De0;
+	}
+
 	.ui-panel.vertical > .ui-panel > details {
 		height:					100%;
 	}
@@ -706,6 +729,143 @@ textarea[extendable] {
 .ballot-box .ballot-paper:hover {
 }
 
+.options-overview,
+.participants-overview{
+	padding:				1em 0;
+}
+
+
+
+label {
+	display:				block;
+	position:				relative;
+
+	font-size:				1.2em;
+	line-height:			2em;
+
+	color: 					#fff;
+	background-color:		#647D8C;
+	white-space:			nowrap;
+	text-align:				left;
+	padding:				0 0.5em;
+	margin-left:			1em;
+	margin-right:			1em;
+	border-radius:			1em;
+
+	cursor:					pointer;
+}
+
+label + label {
+	margin-top:				0.5em;
+}
+
+.right label {
+	border-top-right-radius:	0em;
+	border-bottom-right-radius:	0em;
+	margin-right:				0em;
+}
+
+.left label {
+	border-top-left-radius:		0em;
+	border-bottom-left-radius:	0em;
+	margin-left:				0em;
+}
+
+label.selected {
+	background-color:		#647De0;
+}
+
+label > * {
+	display:				inline-block;
+	vertical-align: 		top;
+}
+
+label .icons {
+	word-spacing: 			0.2em;
+}
+
+label .tag {
+	min-width: 					1.5em;
+	text-align:				center;
+}
+
+
+label .name,
+label input {
+	width:					10em;
+	line-height:			1.2em;
+	height:					1.2em;
+
+	background:				transparent;
+	font-size:				inherit;
+	color:					#fff;
+	margin-left:			0.25em;
+	padding:				0 0.25em;
+
+
+	margin-top:				0.4em;
+	margin-bottom:			0.4em;
+	border:					none;
+
+	overflow:				hidden;
+	text-overflow:			ellipsis;
+
+	cursor:					pointer;
+}
+
+
+label input:focus {
+	background:				rgba(255,255,255,0.2);
+	cursor: 				text;
+}
+
+label .connector {
+	display:				none;
+	position:				absolute;
+
+	top:					-1em;
+	bottom:					-1em;
+	padding:				1em;
+
+	overflow:				hidden;
+}
+
+label.selected .connector {
+	display:				inline-block;
+}
+
+label .connector.right {
+	left:					100%;
+	padding-left:			0;
+}
+
+label .connector.left {
+	right:					100%;
+	padding-right:			0;
+}
+
+label.selected .connector:after {
+	content:				'\25CF';
+	display:				inline-block;
+
+	background-color:		#647De0;
+	padding:				0 0.5em;
+	box-shadow:				0 0 0.75em rgba(0, 0, 0, 0.6);
+
+}
+
+label.selected .connector.right:after {
+	border-radius:			0 1em 1em 0;
+}
+
+
+label.selected .connector.left:after {
+	border-radius:			1em 0 0 1em;
+}
+
+
+
+
 /*
 
 .ballot-box .ballot-paper .participant {
@@ -735,6 +895,8 @@ textarea[extendable] {
 }
 
 */
+
+/*
 
 .ballot-box .ballot-paper .participant span.name,
 .ballot-box .ballot-paper .participant input {
@@ -809,6 +971,8 @@ textarea[extendable] {
 	white-space: 			nowrap;
 }
 
+*/
+
 
 .ballot-box .edit-paper {
 	min-width:				30em;
@@ -824,7 +988,6 @@ textarea[extendable] {
 	background-image:		url('images/stripes.png');
 	background-size:		4px 4px;
 }
-
 
 
 
@@ -996,10 +1159,13 @@ preference-option summary {
 
 preference-option .title {
 	display:				inline-block;
-	padding:				0.1em 0.4em;
+	padding:				0.1em 0em;
 	line-height:			1.1em;
 	vertical-align:			middle;
 	white-space: 			normal;
+	overflow:				hidden;
+	text-overflow:			ellipsis;
+	width:					100%;
 }
 
 
