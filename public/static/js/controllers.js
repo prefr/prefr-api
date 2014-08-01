@@ -143,7 +143,6 @@ prefrControllers.controller(
 			})
 			.error(function(){
 				$scope.ballot	= new Ballot(dummy)
-				console.dir($scope.ballot)
 			})
 		    .always(function(data){
 

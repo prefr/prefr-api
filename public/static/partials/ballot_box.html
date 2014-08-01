@@ -97,36 +97,43 @@
 
         	<td class = "edit-paper ui-deep-shadow" >
 
-        		<preference-ranking
-        			ranking-orientation =   "vertical"
-                    no-dragging         =   "selectionBallotPaper.value.locked"
-                    ng-if               =   "selectionEditMenu.value == 'ranking' && selectionBallotPaper.value"
-        		>			         
-        			<preference-rank
-        				ng-repeat 	=	"rank in selectionBallotPaper.value.ranking"
-        				class		=	"ui-panel left vertical ui-borders ui-corners-all"
-        			>
-        				<summary>
-        					<!-- CSS will put the counter here-->
-        				</summary>
+                <div
+                    ng-repeat = "paper in ballot.papers"
+                    ng-if     =  "selectionEditMenu.value == 'ranking'"
+                >
 
-        				<preference-option 
-        					class		=	"ui-panel right ui-corners-left"
-                            ng-class    =   "{'selected': selectionBallotOption.value == ballot.getOptionByTag(tag)}"
-        					ng-repeat	=	"tag in rank"
-        					value		=	"{{tag}}"
-                            ng-click    =   "select('ballot-option', ballot.getOptionByTag(tag))"
-        				>
-        					<details>						
-        						<div class="title"> 	{{ballot.getOptionByTag(tag).title}} 	</div>						
-        					</details>
-        					<summary>
-        						{{ballot.getOptionByTag(tag).tag}}
-        					</summary>
-        				</preference-option>	
+            		<preference-ranking
+            			ranking-orientation =   "vertical"
+                        ranking-model       =   "paper.ranking"
+                        no-dragging         =   "paper.locked"
+                        ng-if               =   "selectionBallotPaper.value == paper"
+            		>			         
+            			<preference-rank
+            				ng-repeat 	=	"rank in ranking"
+            				class		=	"ui-panel left vertical ui-borders ui-corners-all"
+            			>
+            				<summary>
+            					<!-- CSS will put the counter here-->
+            				</summary>
 
-        			</preference-rank>
-        		</preference-ranking>
+            				<preference-option 
+            					class		=	"ui-panel right ui-corners-left"
+                                ng-class    =   "{'selected': selectionBallotOption.value == ballot.getOptionByTag(tag)}"
+            					ng-repeat	=	"tag in rank"
+            					value		=	"{{tag}}"
+                                ng-click    =   "select('ballot-option', ballot.getOptionByTag(tag))"
+            				>
+            					<details>						
+            						<div class="title"> 	{{ballot.getOptionByTag(tag).title}} 	</div>						
+            					</details>
+            					<summary>
+            						{{ballot.getOptionByTag(tag).tag}}
+            					</summary>
+            				</preference-option>	
+            			</preference-rank>
+            		</preference-ranking>
+                </div>
+
 
                 <div
                     ng-show     = "selectionEditMenu.value == 'source'" 
