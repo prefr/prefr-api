@@ -7,9 +7,10 @@ prefrControllers.controller(
 	[
 		'$scope', 
 		'$routeParams',
+		'$http',
 		'Ballot',
 
-		function ($scope, $routeParams, Ballot){
+		function ($scope, $routeParams, $http, Ballot){
 
 			//dummy:
 			var dummy	=	{
@@ -131,26 +132,39 @@ prefrControllers.controller(
 
 			$scope.box_id		=	$routeParams.box_id
 
+			if($scope.box_id != 'new'){
+				$http.get('/api/ballotBox/'+$scope.box_id)
+				.then(
+					function(data){
+						$scope.ballot	= new Ballot(data)
+						$scope.lockPapers()
+					},
+					function(){
+						$scope.ballot	= new Ballot(dummy)
+						$scope.lockPapers()
+					}
+			    )
+			} else {
+				$scope.ballot =	new Ballot({
+									id: 		undefined,
+									subject: 	undefined,
+									options:	[
+													{
+														tag:		"A",
+														title:		undefined,
+														details: 	undefined,
+													}
+												],
+									papers:		[
+													{
+														id:				undefined,
+														participant:	undefined,
+														ranking:		["A"]
+													}
+												]
 
-
-			$.ajax({
-				url: 'api/ballotBox/'+$scope.box_id,
-				data: null,
-				async: false
-			})
-			.done(function(data){
-				$scope.ballot	= data
-			})
-			.error(function(){
-				$scope.ballot	= new Ballot(dummy)
-			})
-		    .always(function(data){
-
-				//$scope.ballot_box.options	= _property2key($scope.ballot_box.options, 'tag')
-				//$scope.ballot_box.papers	= _property2key($scope.ballot_box.papers, 'id')
-				$scope.lockPapers()
-
-		    })
+								})
+			}
 
 		}
 	]

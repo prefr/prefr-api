@@ -52,7 +52,7 @@ prefr.config([
             }
         )
         .otherwise({
-            redirectTo: '/ballot_box/1'
+            redirectTo: '/ballot_box/new'
         })
     }
 ])

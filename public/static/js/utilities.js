@@ -16,15 +16,15 @@ function _l(obj){
 	return(obj)
 }
 
-function _within(boundry, point) {
+function _within(boundry, point, ignore_x, ignore_y) {
 	return(
-		(point.x == undefined ?  true : (boundry.left	<= point.x && point.x <= boundry.right) ) 
+		(ignore_x || (point.x == undefined ?  false : (boundry.left	< point.x && point.x < boundry.right) ) )
 		&& 
-		(point.y == undefined ?  true : (boundry.top	<= point.y && point.y <= boundry.bottom) )
+		(ignore_y || (point.y == undefined ?  false : (boundry.top	< point.y && point.y < boundry.bottom) ) )
 	)
 }
 
-function _over(element, mouse, rel) {	
+function _over(element, mouse, rel, ignore_x, ignore_y) {	
 	var	pos		=	rel ? element.position()	: element.offset(),
 		margin	=	{
 						top		: parseInt(element.css('margin-top')),
@@ -59,6 +59,7 @@ function _over(element, mouse, rel) {
 
 		level	=	0
 
+
 		//check perimeter (with margin, border and padding)
 
 		boundry	=	{
@@ -70,7 +71,7 @@ function _over(element, mouse, rel) {
 
 		
 
-		if(_within(boundry, point)){
+		if(_within(boundry, point, ignore_x, ignore_y)){
 		 	level++
 		} else {
 			return(level)
@@ -85,7 +86,7 @@ function _over(element, mouse, rel) {
 						right	: pos.left	+ margin.left	+ border.left	+ padding.left	+ width		+ padding.right		+ border.right,
 					}
 
-		if(_within(boundry, point)){
+		if(_within(boundry, point, ignore_x, ignore_y)){
 		 	level++
 		} else {
 			return(level)
@@ -101,7 +102,7 @@ function _over(element, mouse, rel) {
 					}
 
 
-		if(_within(boundry, point)){
+		if(_within(boundry, point, ignore_x, ignore_y)){
 		 	level++
 		} else {
 			return(level)
@@ -115,7 +116,7 @@ function _over(element, mouse, rel) {
 						right	: pos.left	+ margin.left	+ border.left	+ padding.left	+ width,
 					}
 
-		if(_within(boundry, point)){
+		if(_within(boundry, point, ignore_x, ignore_y)){
 		 	return(level+1)
 		} else {
 			return(level)

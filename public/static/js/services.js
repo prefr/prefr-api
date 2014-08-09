@@ -75,6 +75,7 @@ angular.module('services',[])
                 this.id      = data.id      || this.id
                 this.subject = data.subject || this.subject
 
+
                 this.options =  data.options.map(function(option_data){
                                     var option = self.getOptionByTag(option_data.tag) || new BallotOption(option_data)
 

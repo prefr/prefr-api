@@ -68,6 +68,7 @@ function HTMLpreferenceRanking() {
 										'position'		:	'relative'
 									})
 
+
 									var no_drag = false
 
 									scope.trackMouseMovement = function(event) {
@@ -107,14 +108,20 @@ function HTMLpreferenceRanking() {
 									scope.positionUpdate = function(event, pos){
 										var over = false
 
-										scope.ranks.forEach(function(rank){
-											over = pos && (_over(rank, pos, true) >= 1)
+										var ranks = element.find('preference-rank')
+
+										ranks.each(function(index, rank_DOM){
+											var rank = $(rank_DOM)
+
+											over = pos && (_over(rank, pos, true, true, false) >= 1)
 
 											if(over) scope.active_rank = rank
 
-											rank.toggleClass('active',		rank === scope.active_rank)
+											var is_active = scope.active_rank && scope.active_rank.get(0) == rank_DOM
+
+											rank.toggleClass('active',		is_active)
 											rank.toggleClass('empty',		rank.find('preference-option').length == 0)	
-											rank.toggleClass('nonempty',	rank.find('preference-option').length != 0 || rank === scope.active_rank)
+											rank.toggleClass('nonempty',	rank.find('preference-option').length != 0 || is_active)
 
 											rank.removeClass('no-transition')
 										})
@@ -139,6 +146,7 @@ function HTMLpreferenceRanking() {
 											parent_rank.addClass('empty')
 										}
 
+										scope.active_rank = parent_rank
 
 										scope.dragged_option = option.addClass('dragged').appendTo(element)
 										element.addClass('dragging')
@@ -168,6 +176,7 @@ function HTMLpreferenceRanking() {
 										.removeClass('active')
 										.removeClass('empty')
 
+
 										scope.dragged_option
 										.appendTo(scope.active_rank)
 										.removeClass('dragged')
@@ -183,11 +192,11 @@ function HTMLpreferenceRanking() {
 
 
 										if(!prev_empty)
-											scope.ranks.push( scope.empty_rank.clone(true).insertBefore(scope.active_rank) )
+											scope.empty_rank.clone(true).insertBefore(scope.active_rank)
 										
 
 										if(!next_empty)
-											scope.ranks.push( scope.empty_rank.clone(true).insertAfter(scope.active_rank) )
+											scope.empty_rank.clone(true).insertAfter(scope.active_rank)
 
 
 										element.removeClass('dragging')
@@ -195,12 +204,9 @@ function HTMLpreferenceRanking() {
 										delete scope.dragged_option
 										delete scope.active_rank
 
-										scope.positionUpdate()
 										controller.evaluate()
 									}
 
-								
-									
 
 									scope.$on('dragging-started', 			scope.startDragging)
 									scope.$on('dragging-position-update', 	scope.drag)		
@@ -229,10 +235,13 @@ function HTMLpreferenceRanking() {
 									
 									var	self = this
 
-
-									$scope.ranks 		= []
 									$scope.empty_rank 	= undefined
 									$scope.ranking 		= JSON.parse(JSON.stringify($scope.$eval($attrs.rankingModel))) || []
+
+
+									this.registerRank = function(rank){
+										$scope.empty_rank = $scope.empty_rank || rank.clone(true).addClass('empty')
+									}
 
 									this.evaluate = function(){
 										var ranking = []
@@ -253,20 +262,10 @@ function HTMLpreferenceRanking() {
 										if(JSON.stringify(ranking) != JSON.stringify(rankingModel)){																					
 											while(rankingModel.length) rankingModel.pop()
 											rankingModel.push.apply(rankingModel, ranking)	
-											console.log(ranking)	
 										}						
 										
 									}
 
-									this.registerRank = function(rank){
-										if(!$scope.empty_rank) $scope.empty_rank = rank.clone(true).addClass('empty')
-
-										if($scope.ranks.length == 0)
-											$scope.ranks.push($scope.empty_rank.clone(true).insertBefore(rank))
-										
-										$scope.ranks.push(rank.addClass('nonempty'))
-										$scope.ranks.push($scope.empty_rank.clone(true).insertAfter(rank))
-									}
 									
 								}
 			}
@@ -278,7 +277,15 @@ function HTMLpreferenceRank() {
 				require		:	'^preferenceRanking',
 
 				link		:	function(scope, element, attrs, controller){
+
 									controller.registerRank(element)
+
+									if(element.parent().find('preference-rank').length == 0)
+										element.clone(true).addClass('empty').insertBefore(element)
+										
+									element.clone(true).addClass('empty').insertAfter(element)
+									
+									element.addClass('nonempty')
 								},
 
 				controller	:	function(){}
@@ -395,9 +402,6 @@ function manageOptions(){
 			
 			$scope.tag_base 	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-			$scope.$watch('options', function(x){ console.log(x) })
-
-			console.log($scope.options)
 
 			$scope.getTag		= 	function(index)	{ return (new Array(2+Math.floor(index/26))).join($scope.tag_base.charAt(index%26)) }
 			$scope.addOption 	= 	function()	 	{ $scope.options.push({title:'', details:''});}
