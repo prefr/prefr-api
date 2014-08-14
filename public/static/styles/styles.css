@@ -1016,6 +1016,7 @@ preference-ranking.compact {
 
 preference-ranking preference-rank {
 	position:				relative;
+	display:				block;
 
 	min-width:				2em;
 	margin:					0;

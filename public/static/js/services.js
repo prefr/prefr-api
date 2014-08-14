@@ -10,6 +10,7 @@ angular.module('services',[])
             this.tag        = undefined
 
             this.importData = function(data){
+                data = data || {}
                 this.title      = data.title    || this.title
                 this.details    = data.details  || this.details
                 this.tag        = data.tag      || this.tag
@@ -89,7 +90,35 @@ angular.module('services',[])
                                 })
             }
 
-            this.newOption  = function(){ this.papers.unshift(new BallotOption()) }
+            this.getNextAvailableTag = function(){
+                var base_tags   =   "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                    taken_tags  =   this.options.map(function(option){
+                                        return option.tag
+                                    }),
+                    i           =   0,
+                    next_tag    =   'A'
+
+                function number2Tag(x){
+                    return (x > 26) ? number2Tag(Math.floor(x/26)-1) + base_tags[x % 26] : base_tags[x % 26]
+                }
+
+                while(taken_tags.indexOf(next_tag) != -1){
+                    next_tag =  number2Tag(i)                    
+                    i++
+                }
+                return next_tag
+
+            }
+
+            this.newOption  =   function(){
+                var new_option = new BallotOption( {tag : self.getNextAvailableTag()} )
+                this.options.push(new_option)
+                this.papers.forEach(function(paper){
+                    paper.ranking[paper.ranking.length-1].push(new_option.tag)
+                })
+                return self
+            }
+
             this.newPaper   = function(){ this.papers.unshift(new BallotPaper()) }
 
             this.removeOption = function(option){

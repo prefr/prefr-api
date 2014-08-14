@@ -159,7 +159,7 @@ prefrControllers.controller(
 													{
 														id:				undefined,
 														participant:	undefined,
-														ranking:		["A"]
+														ranking:		[["A"]]
 													}
 												]
 

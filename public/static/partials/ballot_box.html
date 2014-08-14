@@ -107,11 +107,11 @@
                         ranking-model       =   "paper.ranking"
                         no-dragging         =   "paper.locked"
                         ng-if               =   "selectionBallotPaper.value == paper"
-            		>			         
-            			<preference-rank
-            				ng-repeat 	=	"rank in ranking"
-            				class		=	"ui-panel left vertical ui-borders ui-corners-all"
-            			>
+            		>			      
+                        <preference-rank
+                            ng-repeat   =   "rank in ranking"
+                            class       =   "ui-panel left vertical ui-borders ui-corners-all"
+                        >
             				<summary>
             					<!-- CSS will put the counter here-->
             				</summary>
@@ -192,6 +192,10 @@
         			<small>
         				Instructions go here.
         			</small>
+
+                    <button ng-click="ballot.newOption()">
+                        Add new option
+                    </button>
         		</div>
 
                 <hr/>
