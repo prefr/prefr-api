@@ -32,6 +32,8 @@ angular.module('services',[])
     function(BallotOption){
         function BallotPaper(data){
 
+            var self = this
+
             this.id             = undefined
             this.participant    = undefined
             this.ranking        = undefined
@@ -43,6 +45,27 @@ angular.module('services',[])
 
                 return this
             }
+
+            this.addOption = function(tag){
+                this.ranking[this.ranking.length-1].push(tag)
+                return this
+            }
+
+            this.removeOption = function(tag){
+                this.ranking.forEach(function(rank, index){
+                    var pos = rank.indexOf(tag)
+                    if(pos != -1)
+                        rank.splice(pos, 1)         
+
+                    if(rank.length == 0)
+                        self.ranking.splice(index, 1)
+                })
+
+
+                return this
+            }           
+
+
 
             this.importData(data)
         }
@@ -61,6 +84,7 @@ angular.module('services',[])
 
             this.id          = undefined
             this.subject     = undefined
+            this.details     = undefined
             this.options     = []
             this.papers      = []
 
@@ -114,16 +138,24 @@ angular.module('services',[])
                 var new_option = new BallotOption( {tag : self.getNextAvailableTag()} )
                 this.options.push(new_option)
                 this.papers.forEach(function(paper){
-                    paper.ranking[paper.ranking.length-1].push(new_option.tag)
+                    paper.addOption(new_option.tag)
                 })
-                return self
+                return new_option
             }
 
             this.newPaper   = function(){ this.papers.unshift(new BallotPaper()) }
 
             this.removeOption = function(option){
+
+                if(this.options.length == 1)
+                    return false
+
                 var tag = option.tag || option
-                this.options = this.option.filter(function(option){ return option.tag != tag })
+                this.options = this.options.filter(function(option){ return option.tag != tag })
+
+                this.papers.forEach(function(paper){
+                    paper.removeOption(tag)
+                })
             }
 
             this.removePaper = function(paper){

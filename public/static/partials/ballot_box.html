@@ -3,7 +3,7 @@
 	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
 >
 
-    <table> 
+    <table id = "main"> 
         <tr single-select   = "{'edit-menu' : 'ranking'}">
 
         	<!-- selected ballot paper to edit start -->
@@ -40,59 +40,102 @@
             </td>
             -->
 
-            <td id="left-column" class="white">
-                <div class="ui-relative">
+            <td id="left-column" class="ballot-overview">
+                
+
+                <div class = "ui-white left right">
+
+                    <label ng-if = "isAdmin" class = "subject">
+                        <span> Subject: </span>
+                        <input type="text" ng-model = "ballot.subject" placeholder = "Enter subject">
+                        <div class = "icons right">
+                            <i class = "fa fa-pencil"></i>
+                        </div>
+                    </label>
+
+                    <label ng-if = "isAdmin" class = "ui-white">
+                        <span> Details: </span>
+                        <div class = "icons right">
+                            <i class = "fa fa-pencil"></i>
+                        </div>
+                         <br/>
+                        <textarea placeholder = "Enter details" extendable>{{ballot.details}}</textarea>
+                        
+                    </label>                    
+
                     <div class="ui-content ui-white">
-                        <h2>Participants</h2>
-                        <p>
-                            Enter your name below and arranged the options in the middle column according to your preference.
-                        </p>
-                        <small>
-                            You can change your or others preference ranking or name later on if you like. In order to edit a name click the lock to unlock the input field.
-                        </small>
-                    </div>
-                    <hr/>
-                    <div class="participants-overview ui-dotted right">
-                        <label
-                            ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
-                            ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
-                            ng-click        = "select('ballot-paper', paper)"                
-                        >
-                            
-                            <span class = "icons">
-                                
-                                <i 
-                                    class           = "fa fa-lock"
-                                    ng-show         = "paper.locked"
-                                    ng-click        = "paper.locked = false"
-                                ></i>
-
-                                <i 
-                                    class           = "fa fa-unlock-alt"                                    
-                                    ng-hide         = "paper.locked"
-                                    ng-click        = "paper.locked = true"
-                                ></i>
-
-                            </span> 
-
-                            <span 
-                                class   = "name"
-                                ng-show = "paper.locked"
-                            >
-                                {{paper.participant || 'Enter name'}}
+                        <h2>                        
+                            <span ng-if="!isAdmin">
+                                {{ballot.subject || '(no subject)'}} ({{ballot.id}})
                             </span>
+                        </h2>
 
-                            <input
-                                type        = "text"                                 
-                                ng-model    = "paper.participant"
-                                placeholder = "Enter name"
-                                ng-show     = "!paper.locked"
-                            />
 
-                            <div class="connector right"></div>
-                        </label>
+                        <p ng-if = "!isAdmin">
+                            {{ballot.details}}
+                        </p>
+
+                        <p>
+                            <small>
+                               Instructions go here.
+                             </small>
+                        </p>
+
+                        <button ng-click="select('ballot-option', ballot.newOption())">
+                            Add new option
+                            <i class = "fa fa-plus-square fa-3x"></i>
+                        </button>
                     </div>
                 </div>
+
+                <hr/>
+
+
+                <!-- list of all ballot options start -->
+
+                <div class = "options-overview left right" ng-click = "select('ballot-option', null)">
+                    <div 
+                        class       = "option"
+                        ng-repeat   = "option in ballot.options | orderBy:'tag'" 
+                        ng-click        = "select('ballot-option', option); $event.stopPropagation()" 
+                        ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
+                    >                       
+                        <label>                            
+                            <span class="tag">
+                                {{option.tag}}
+                            </span>
+
+                            <input 
+                                name        = "title" 
+                                type        = "text"
+                                ng-disabled = "!isAdmin" 
+                                placeholder = "Enter title" 
+                                ng-model    = "option.title"
+                                max-size    
+                            >
+                            <!--
+                                <div class="connector right"></div>
+                            -->
+                            <div class = "icons right">
+                                <i class = "fa fa-times" ng-click = "ballot.removeOption(option)"></i>
+                            </div>
+
+                        </label>
+                        <div 
+                            class   = "details ui-white"
+                        >
+                            <textarea extendable placeholder ="no further description">{{option.description}}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="up"/>
+                
+                <!--
+                <div manage-options = "ballot.options">
+                    
+                </div>
+                -->
             </td>
 
         	<td class = "edit-paper ui-deep-shadow" >
@@ -112,9 +155,9 @@
                             ng-repeat   =   "rank in ranking"
                             class       =   "ui-panel left vertical ui-borders ui-corners-all"
                         >
-            				<summary>
+            				<div class = "tag">
             					<!-- CSS will put the counter here-->
-            				</summary>
+            				</div>
 
             				<preference-option 
             					class		=	"ui-panel right ui-corners-left"
@@ -123,12 +166,12 @@
             					value		=	"{{tag}}"
                                 ng-click    =   "select('ballot-option', ballot.getOptionByTag(tag))"
             				>
-            					<details>						
+            					<div class="content">						
             						<div class="title"> 	{{ballot.getOptionByTag(tag).title}} 	</div>						
-            					</details>
-            					<summary>
+            					</div>
+            					<div class = "tag">
             						{{ballot.getOptionByTag(tag).tag}}
-            					</summary>
+            					</div>
             				</preference-option>	
             			</preference-rank>
             		</preference-ranking>
@@ -168,85 +211,64 @@
 
             <td
                 id              = "right-column"
-                class           = "ballot-overview"
+                class           = ""
                 single-select   = "{'overview-menu': 'papers'}"   
             >
-        		<div class="ui-content">
 
-                	<h2>   
-                            <span ng-if="!isAdmin">
-                                {{ballot.subject}} ({{ballot.id}})
-                            </span>
-                            <div 
-                                ng-if = "isAdmin"
-                                class="input-prepend"
-                            >
-                                <span class="add-on">Subject</span>
-                                <input class="span8" name="subject" type="text">
-                            </div>
-                    </h2>
-
-        			<p>
-        				Example text. Put further details here. sgfjh ,jhsd f,jhsdf ewjhgf wje,a gfewhf g
-        			</p>
-        			<small>
-        				Instructions go here.
-        			</small>
-
-                    <button ng-click="ballot.newOption()">
-                        Add new option
-                    </button>
-        		</div>
-
-                <hr/>
-
-
-                <!-- list of all ballot options start -->
-
-                <div class = "options-overview ui-dotted left right">
-                    <div 
-                        class       = "option"
-                        ng-repeat   = "option in ballot.options" 
-                        ng-click        = "select('ballot-option', option)" 
-                    >                       
-                        <label ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}">                            
-                            <span class="tag">
-                                {{option.tag}}
-                            </span>
-
-                            <input 
-                                name        = "title" 
-                                type        = "text"
-                                ng-disabled = "!isAdmin" 
-                                placeholder = "Enter title" 
-                                ng-model    = "option.title"
-                                class       = "ui-extended-width"
-                                max-size    
-                            >
-                            <!--
-                                <div class="connector right"></div>
-                            -->
-                        </label>
-                        <div 
-                            class   = "details ui-white"
+            <div class="ui-relative">
+                    <div class="ui-content ui-white">
+                        <h2>Participants</h2>
+                        <p>
+                            Enter your name below and arranged the options in the middle column according to your preference.
+                        </p>
+                        <small>
+                            You can change preference ranking or name of yours or others' later on if you like. In order to edit a name click the lock to unlock the input field.
+                        </small>
+                    </div>
+                    <hr/>
+                    <div class="participants-overview left">
+                        <label
+                            ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
+                            ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
+                            ng-click        = "select('ballot-paper', paper)"                
                         >
-                            <textarea extendable placeholder ="no further description">{{option.description}}</textarea>
-                        </div>
-                        <hr/>
+                            <div class="connector left"></div>
+
+                            <span 
+                                class   = "name"
+                                ng-show = "paper.locked"
+                            >
+                                {{paper.participant || 'Enter name'}}
+                            </span>
+
+                            <input
+                                type        = "text"                                 
+                                ng-model    = "paper.participant"
+                                placeholder = "Enter name"
+                                ng-show     = "!paper.locked"
+                            />
+
+                            <div class = "icons right shift">
+                                
+                                <i 
+                                    class           = "fa fa-lock"
+                                    ng-show         = "paper.locked"
+                                    ng-click        = "paper.locked = false"
+                                ></i>
+
+                                <i 
+                                    class           = "fa fa-unlock-alt"                                    
+                                    ng-hide         = "paper.locked"
+                                    ng-click        = "paper.locked = true"
+                                ></i>
+
+                            </div> 
+                        </label>
                     </div>
                 </div>
-                
-                <!--
-                <div manage-options = "ballot.options">
-                    
-                </div>
-                -->
             </td>
         	
 
         </tr>
     </table>
 </div>
-    <tooltip>
-        test tooltip
-    </tooltip>

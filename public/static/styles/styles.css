@@ -1,7 +1,7 @@
 /* COLORS:
 
 	blue:			rgba(100,125,140,1) / #647D8C;
-	saturated blue: #647De0;
+	saturated blue: #5f98f7; #5f98f7
 	light-blue:		#A7C7DC;
 	light-gray:		#ccc;
 	white:			rgba(245, 245, 240, 1);
@@ -14,6 +14,7 @@
 
 html {
 	font-size:				0.9em;
+	min-height:				100%;
 }
 
 body {
@@ -22,6 +23,7 @@ body {
 	padding:				3.5em 0em 0em 0em;
 	margin:					0;
 	background-color:		rgba(245, 245, 240, 1);	
+	min-height:				100%;
 }
 
 input,
@@ -31,10 +33,14 @@ textarea {
 	padding:				0;
 	margin:					0;
 	color:					#666;
+	font-size:				inherit;
+	outline:				none;
 }
 
-
-
+textarea {
+	display:				block;
+	resize:					none;	
+}
 
 
 
@@ -153,7 +159,6 @@ body > article {
 
 	padding:				0;
 	text-align:				center;
-	overflow-x:				auto;
 
 	
 
@@ -166,9 +171,6 @@ body > article:after {
 }
 
 body > footer {	
-	position:				relative;
-	height: 				20em;	
-	
 	background-color:		rgba(245, 245, 240, 1);
 	box-shadow:				0 0 0.2em rgba(0, 0, 0, 0.5);
 	z-index:				10;	
@@ -252,18 +254,34 @@ hr {
 	box-shadow:				0 0.2em 0.2rem -0.2em rgba(0, 0, 0, 0.5) inset;
 }
 
+hr.up{
+	margin-top:				-0.2;
+	box-shadow:				0 -0.2em 0.2rem -0.2em rgba(0, 0, 0, 0.5) inset;	
+}
+
 li {
 	list-style: none;
 }
 
 
-
-
-#left-column {
-	text-align:				left;
-	vertical-align:			top;
-	position:				relative;
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:		inherit;
+    opacity: 	0.5;
 }
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:		inherit;
+    opacity: 	0.5;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:		inherit;
+    opacity: 	0.5;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:		inherit;
+    opacity: 	0.5;
+}
+
+
 
 
 
@@ -325,11 +343,6 @@ li {
 
 .ui-white {
 	background: 			#fff;
-}
-
-.ui-dotted {
-	background-image:		url('images/dots.png');
-	background-size:		0.15em;
 }
 
 .ui-relative {
@@ -517,22 +530,32 @@ textarea[extendable] {
 
 /* options */
 
+.options-overview .option {
+	margin-right:			10em;
+}
+
+.options-overview .option label input {
+	width:					75%;
+}
+
+
 .options-overview .option .details{
 	display:				block;
 	padding:				0.5em 1em;
-	margin-bottom:			1em;
+	margin-bottom:			1.5em;
+	background-color:		#647d8c;
+	border-top:				0.1em solid rgba(245, 245, 240, 1);
 }
 
 .options-overview .option .details textarea{
 	background:				transparent;
 	overflow:				visible;
-	font-size: 				0.9em;
+	color:					#fff;
 
 	min-height:				3em;
 	width:					100%;
 	resize:					none;
 }
-
 
 
 /* panels */
@@ -586,7 +609,7 @@ textarea[extendable] {
 	}
 
 
-	.ui-panel summary {
+	.ui-panel .tag {
 		display:				block;
 		text-align: 			center;
 		color:					#666;
@@ -610,54 +633,41 @@ textarea[extendable] {
 		vertical-align:			middle;
 	}
 
-	.ui-panel.left > summary,
-	.ui-panel.right > summary {
+	.ui-panel.left > .tag,
+	.ui-panel.right > .tag {
 		position:				absolute;
 		top:					0;
 		bottom: 				0;
 		width:					2em;
 	}
 
-	.ui-panel.left.large > summary,
-	.ui-panel.right.large > summary {
+	.ui-panel.left.large > .tag,
+	.ui-panel.right.large > .tag {
 		width:					10em;
 	}
 
-	.ui-panel.left > summary {
+	.ui-panel.left > .tag {
 		left:					0;
 	}
 
 
-	.ui-panel.right > summary {
+	.ui-panel.right > .tag {
 		right:					0;
 	}
 
 
-
-	/* link in summary */
-
-		/*
-		.ui-panel summary a {
-			display:				block;
-			position:				relative;
-			padding: 				0.5em;
-		}
-		*/
-
-	/* details */
-
-	.ui-panel details {
+	.ui-panel .content {
 		display:				block;
 		background-color:		rgba(100,125,140,1);
 		/*background-image:		linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);*/
 		color:					rgba(255,255,255,0.95);
 	}
 
-	.ui-panel.selected details{
-		background-color:		#647De0;
+	.ui-panel.selected .content{
+		background-color:		#5f98f7;
 	}
 
-	.ui-panel.vertical > .ui-panel > details {
+	.ui-panel.vertical > .ui-panel > .content {
 		height:					100%;
 	}
 
@@ -680,19 +690,24 @@ textarea[extendable] {
 }
 
 .ballot-box .ballot-overview {
-
-   	min-height:				100%;
-    min-width:				100%;
 	text-align:				left;
 
 	padding-bottom:			10em;
 
 	color:					#666666;
-    background-color:       #fff;
-
     vertical-align:			top;    
  
 }
+
+.ballot-box .ballot-overview label.subject{
+	padding-top:			1.5em;
+	padding-bottom:			1.5em;
+}
+
+.ballot-box .ballot-overview label.subject input{
+	width:					75%;
+}
+
 
 .ballot-box .edit-options{
 	background: 			#fff;
@@ -731,10 +746,15 @@ textarea[extendable] {
 .ballot-box .ballot-paper:hover {
 }
 
-.options-overview,
+.options-overview {
+	padding-top: 			2em;
+	padding-bottom:			0.5em;
+}
+
 .participants-overview{
 	padding:				1em 0;
 }
+
 
 
 
@@ -757,6 +777,11 @@ label {
 	cursor:					pointer;
 }
 
+label.ui-white{
+	background-color: 		#fff;
+	color:					inherit;
+}
+
 label + label {
 	margin-top:				0.5em;
 }
@@ -773,8 +798,9 @@ label + label {
 	margin-left:				0em;
 }
 
+.selected label,
 label.selected {
-	background-color:		#647De0;
+	background-color:		#5f98f7;
 }
 
 label > * {
@@ -786,21 +812,31 @@ label .icons {
 	word-spacing: 			0.2em;
 }
 
+label .icons.right {
+	position:				absolute;
+	right:					0;
+	padding:				0 0.5em;
+}
+
+label .icons.right.shift {
+	right:					1em;
+}
+
 label .tag {
-	min-width: 					1.5em;
+	min-width: 				1.5em;
 	text-align:				center;
 }
 
 
 label .name,
-label input {
+label input{
 	width:					10em;
 	line-height:			1.2em;
 	height:					1.2em;
 
 	background:				transparent;
 	font-size:				inherit;
-	color:					#fff;
+	color:					inherit;
 	margin-left:			0.25em;
 	padding:				0 0.25em;
 
@@ -815,8 +851,13 @@ label input {
 	cursor:					pointer;
 }
 
+label textarea{
 
-label input:focus {
+}
+
+
+label input:focus,
+label textarea:focus {
 	background:				rgba(255,255,255,0.2);
 	cursor: 				text;
 }
@@ -850,7 +891,7 @@ label.selected .connector:after {
 	content:				'\25CF';
 	display:				inline-block;
 
-	background-color:		#647De0;
+	background-color:		#5f98f7;
 	padding:				0 0.5em;
 	box-shadow:				0 0 0.75em rgba(0, 0, 0, 0.6);
 
@@ -864,7 +905,6 @@ label.selected .connector.right:after {
 label.selected .connector.left:after {
 	border-radius:			1em 0 0 1em;
 }
-
 
 
 
@@ -976,8 +1016,30 @@ label.selected .connector.left:after {
 */
 
 
+.ballot_box #main {
+	width: 					100%;
+	min-height:				100%;	
+}
+
+.ballot-box #left-column {
+    min-width:				30em;
+    width:					35%;
+
+   	min-height:				100%;
+
+	text-align:				left;
+	vertical-align:			top;
+
+	position:				relative;
+}
+
+
 .ballot-box .edit-paper {
-	min-width:				30em;
+	min-width:				16em;
+	width:					40%;
+
+	min-height:				100%;
+
 	left:					0;
 	top:					0;
 	bottom:					0;
@@ -990,6 +1052,19 @@ label.selected .connector.left:after {
 	background-image:		url('images/stripes.png');
 	background-size:		4px 4px;
 }
+
+.ballot-box #right-column {
+	min-width:				18em;
+	width:					25%;
+
+	min-height:				100%;
+
+	text-align:				left;
+	vertical-align:			top;
+
+	position:				relative;
+}
+
 
 
 
@@ -1053,12 +1128,12 @@ preference-ranking.horizontal preference-rank {
 }
 
 
-preference-rank > summary {
+preference-rank > .tag {
 	text-align:				left;
 	font-size:				1em !important;
 }
 
-preference-rank > summary:before{
+preference-rank > .tag:before{
 	content:				'';
 }
 
@@ -1067,7 +1142,7 @@ preference-rank.no-transition {
 }
 
 
-preference-rank.nonempty > summary:before{
+preference-rank.nonempty > .tag:before{
 	counter-increment:		rank;
 	content:				counter(rank);
 }
@@ -1170,11 +1245,11 @@ preference-ranking.no-drag preference-option {
 }
 
 
-preference-option details {
+preference-option .content {
 	overflow:				hidden;
 }
 
-preference-option summary {
+preference-option .tag {
 	font-size:				1.6em;
 }
 
@@ -1187,6 +1262,7 @@ preference-option .title {
 	overflow:				hidden;
 	text-overflow:			ellipsis;
 	width:					100%;
+	max-height:				3.3em;
 }
 
 
@@ -1200,7 +1276,7 @@ preference-option .title {
 		height:					3.2em;
 	}
 
-	.compact preference-option details {
+	.compact preference-option .content {
 		display:				none;
 	}
 

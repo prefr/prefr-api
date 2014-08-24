@@ -81,7 +81,6 @@ function HTMLpreferenceRanking() {
 										//copy rankingModel
 										scope.ranking = JSON.parse(JSON.stringify(rankingModel)) || []
 
-										console.log(scope.ranking)
 
 										if(!content){
 											transclude(scope, function(clone){
@@ -101,23 +100,31 @@ function HTMLpreferenceRanking() {
 												y		=	event.pageY - element.offset().top,
 												width	=	element.innerWidth()
 												height	=	element.innerHeight(),
-												// fx, and fy determine from which point on dragging gets harder fy = 0.3 means: 
-												// if the cursor is within 30% width of the border horizontal dragging gets harder
-												fx		=	scope.rankingOrientation == 'vertical' ? 0.3 : 0,
-												fy		=	scope.rankingOrientation == 'horizonal' ? 0.3: 0
+												// fx, and fy determine from which point on dragging gets harder, fy = 0.3 means: 
+												// if the cursor is within 30% of the border vertical dragging gets harder
+												fx		=	scope.rankingOrientation == 'vertical' 	? 0.3 : 0,
+												fy		=	scope.rankingOrientation == 'horizonal' ? 0.3 : 0
 
-
-											
 											//movement outside the element counts far less than movement inside the element:
-											if(x < width*fx)		x = width*fx		- Math.pow(width*fx-x, 0.5)
-											if(x > width*(1-fx))	x = width*(1-fx) 	+ Math.pow(x-width*(1-fx), 0.5)
+											if(x < width*fx)		x = width*fx		- fx*Math.pow(width*fx-x, 0.75)
+											if(x > width*(1-fx))	x = width*(1-fx) 	+ fx*Math.pow(x-width*(1-fx), 0.75)
 
-											if(y < height*fy)		y = height*fy		- Math.pow(height*fy-y, 0.5)
-											if(y > height*(1-fy))	y = height*(1-fy) 	+ Math.pow(y-height*(1-fy), 0.5)	
+											if(y < height*fy)		y = height*fy		- fy*Math.pow(height*fy-y, 0.75)
+											if(y > height*(1-fy))	y = height*(1-fy) 	+ fy*Math.pow(y-height*(1-fy), 0.75)	
 											
 
+											var cx = x >= width		? width-1 	: x, 
+												cy = y >= height 	? height-1 	: y
 
-											var pos	=	{x:x, y:y}
+											cx = cx <= 0 ? 1 : cx
+											cy = cy <= 0 ? 1 : cy
+
+											var pos	=	{
+															x:	x, 
+															y:	y, 
+															cx: cx,
+															cy: cy
+														}
 
 
 											scope.$broadcast('dragging-position-update', pos)
@@ -139,7 +146,7 @@ function HTMLpreferenceRanking() {
 										ranks.each(function(index, rank_DOM){
 											var rank = $(rank_DOM)
 
-											over = pos && (_over(rank, pos, true, true, false) >= 1)
+											over = pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
 
 											if(over) scope.active_rank = rank
 
@@ -237,12 +244,14 @@ function HTMLpreferenceRanking() {
 										controller.evaluate()
 									}
 
+									scope.rankingOrientation = attrs.rankingOrientation
+
+
 									scope.$on('dragging-started', 			scope.startDragging)
 									scope.$on('dragging-position-update', 	scope.drag)		
 									scope.$on('dragging-position-update', 	scope.positionUpdate)		
 
 									
-
 
 									element.toggleClass('horizontal',	scope.rankingOrientation == 'horizontal')
 									element.toggleClass('vertical', 	scope.rankingOrientation != 'horizontal')
