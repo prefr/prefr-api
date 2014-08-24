@@ -63,11 +63,9 @@
                         
                     </label>                    
 
-                    <div class="ui-content ui-white">
-                        <h2>                        
-                            <span ng-if="!isAdmin">
-                                {{ballot.subject || '(no subject)'}} ({{ballot.id}})
-                            </span>
+                    <div>
+                        <h2 ng-if="!isAdmin">                        
+                            {{ballot.subject || '(no subject)'}} ({{ballot.id}})
                         </h2>
 
 
@@ -80,13 +78,15 @@
                                Instructions go here.
                              </small>
                         </p>
-
-                        <button ng-click="select('ballot-option', ballot.newOption())">
-                            Add new option
-                            <i class = "fa fa-plus-square fa-3x"></i>
-                        </button>
                     </div>
+                    <label ng-click="select('ballot-option', ballot.newOption())">                    
+                        Add new option
+                        <div class = "icons right">
+                            <i class = "fa fa-plus"></i>
+                        </div>
+                    </label>
                 </div>
+
 
                 <hr/>
 
@@ -142,15 +142,17 @@
 
                 <div
                     ng-repeat = "paper in ballot.papers"
-                    ng-if     =  "selectionEditMenu.value == 'ranking'"
+                    ng-if     = "selectionEditMenu.value == 'ranking'"
+                    class     = "ui-relative"
                 >
 
             		<preference-ranking
             			ranking-orientation =   "vertical"
                         ranking-model       =   "paper.ranking"
                         no-dragging         =   "paper.locked"
-                        ng-if               =   "selectionBallotPaper.value == paper"
-            		>			      
+                        ng-if               =   "selectionBallotPaper.value == paper"                        
+            		>	
+                        <h2 class = "ui-borders ui-corners-all">{{paper.participant || 'no name'}}</h2>
                         <preference-rank
                             ng-repeat   =   "rank in ranking"
                             class       =   "ui-panel left vertical ui-borders ui-corners-all"
@@ -216,14 +218,22 @@
             >
 
             <div class="ui-relative">
-                    <div class="ui-content ui-white">
+                    <div class="ui-white left right">
                         <h2>Participants</h2>
                         <p>
                             Enter your name below and arranged the options in the middle column according to your preference.
                         </p>
-                        <small>
-                            You can change preference ranking or name of yours or others' later on if you like. In order to edit a name click the lock to unlock the input field.
-                        </small>
+                        <p>
+                            <small>
+                                You can change preference ranking or name of yours or others' later on if you like. In order to edit a name click the lock to unlock the input field.
+                            </small>
+                        </p>
+                        <label ng-click = "select('ballot-paper', ballot.newPaper())">
+                            Add new particpant
+                            <div class = "icons right">
+                                <i class = "fa fa-plus"></i>
+                            </div>
+                        </label>
                     </div>
                     <hr/>
                     <div class="participants-overview left">
@@ -238,7 +248,7 @@
                                 class   = "name"
                                 ng-show = "paper.locked"
                             >
-                                {{paper.participant || 'Enter name'}}
+                                {{paper.participant || 'no name'}}
                             </span>
 
                             <input

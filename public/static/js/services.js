@@ -39,6 +39,9 @@ angular.module('services',[])
             this.ranking        = undefined
 
             this.importData = function(data){
+
+                data = data || {} 
+
                 this.id          = data.id          || this.id
                 this.participant = data.participant || this.participant
                 this.ranking     = data.ranking     || this.ranking
@@ -143,7 +146,12 @@ angular.module('services',[])
                 return new_option
             }
 
-            this.newPaper   = function(){ this.papers.unshift(new BallotPaper()) }
+            this.newPaper   = function(){                 
+                var ranking     = [this.options.map(function(option){ return option.tag })]
+                    new_paper   = new BallotPaper({ ranking :  ranking })
+                this.papers.push(new_paper) 
+                return new_paper
+            }
 
             this.removeOption = function(option){
 

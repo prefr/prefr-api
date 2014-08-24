@@ -3,8 +3,9 @@ var prefr   =   angular.module(
                             [
                                 'ng',
                                 'ngRoute',
+                                'ngAnimate',
                                 'prefrControllers',  
-                                'services'                             
+                                'services'                                                             
                             ]
                         )
 

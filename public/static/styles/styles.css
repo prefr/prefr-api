@@ -185,6 +185,10 @@ a {
 	text-decoration: 		none;
 }
 
+p{
+	padding: 0.5em;
+}
+
 ul,
 ol {
 	margin:					0;
@@ -197,8 +201,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h2{
-	font-size:				1.5em;
-	margin: 				1em 0;
+	font-size:				1.2em;
+	margin-bottom: 			1em;
+	background-color:		#647D8C;
+	padding:				1.5em 0.5em;
+	color:					#fff;
+	line-height:			2em;
 }
 
 h3{
@@ -1066,21 +1074,59 @@ label.selected .connector.left:after {
 }
 
 
+.ballot-box .edit-paper h2{
+	font-size:				1.2em;
+	display:				block;
+	text-align:				center;
+	white-space: 			nowrap;
+	text-overflow:			ellipsis;
+	color:					#666;
+	background-color:		rgba(245, 245, 240, 1);;
+	padding:				0;
+	overflow:				hidden;
+}
 
 
 /**prefernce ranking directives**/
 
 
 preference-ranking {
-	display: 				inline-block;
+	display: 				block;
 	background: 			transparent;
 	padding: 				0;
-	margin:					0;
+	margin:					auto;
 	width:					16em;
 	vertical-align: 		top;
 	overflow:				visible;
 
-	counter-reset:			rank;
+	counter-reset:			rank;	
+
+}
+
+preference-ranking.ng-enter {
+	font-size:				0;
+	opacity:				1;
+	transition-property:	font-size, opacity;
+	transition-duration:	400ms;
+	transition-timing-function: linear;	
+}
+
+preference-ranking.ng-enter.ng-enter-active {
+	font-size:				1em;
+	opacity:				1;
+}
+
+preference-ranking.ng-leave {
+	font-size:				1em;
+	opacity:				1;
+	transition-property:	font-size, opacity;
+	transition-duration:	400ms;
+	transition-timing-function: linear;	
+}
+
+preference-ranking.ng-leave.ng-leave-active {
+	font-size:				0;
+	opacity:				0;
 }
 
 
@@ -1089,9 +1135,14 @@ preference-ranking.compact {
 }
 
 
+preference-ranking.horizontal {
+	display:				inline-block;
+	margin:					0;
+}
+
 preference-ranking preference-rank {
 	position:				relative;
-	display:				block;
+	display:				inline-block;
 
 	min-width:				2em;
 	margin:					0;
@@ -1105,11 +1156,13 @@ preference-ranking preference-rank {
 
 	opacity:				1;
 
-	transition:				400ms ease-in-out;
+	transition-property:	margin, height, padding;
+	transition-duration:	300ms;
+	transition-timing-function: ease-in-out;
 }
 
 preference-ranking.vertical preference-rank {
-	display:				block;
+	display:				inline-block;
 	white-space:			normal;
 }
 
