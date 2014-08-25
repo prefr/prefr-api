@@ -64,11 +64,7 @@ function HTMLpreferenceRanking() {
 				scope		:	true,
 				transclude	:	true,
 
-				link		:	function(scope, element, attrs, controller, transclude) {								
-									element.css({
-										'position'		:	'relative'
-									})
-
+				link		:	function(scope, element, attrs, controller, transclude) {
 									var content
 
 

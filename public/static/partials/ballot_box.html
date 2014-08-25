@@ -199,15 +199,14 @@
 
                 <div
                     ng-repeat = "paper in ballot.papers"
-                    ng-if     = "selectionEditMenu.value == 'ranking'"
-                    class     = "ui-relative"
+                    ng-if     = "selectionBallotPaper.value == paper"
+                    class     = "paper"
                 >
 
             		<preference-ranking
             			ranking-orientation =   "vertical"
                         ranking-model       =   "paper.ranking"
-                        no-dragging         =   "paper.locked"
-                        ng-if               =   "selectionBallotPaper.value == paper"                        
+                        no-dragging         =   "paper.locked"                     
             		>	
                         <h2 class = "ui-borders ui-corners-all">{{paper.participant || 'no name'}}</h2>
 

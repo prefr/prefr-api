@@ -1105,9 +1105,7 @@ label.selected .connector.left:after {
 	overflow:				hidden;
 }
 
-
 /**prefernce ranking directives**/
-
 
 preference-ranking {
 	display: 				block;
@@ -1118,9 +1116,9 @@ preference-ranking {
 	vertical-align: 		top;
 	overflow:				visible;
 
-	counter-reset:			rank;	
-
-    -webkit-touch-callout: 	none;
+	counter-reset:			rank;
+	
+	-webkit-touch-callout: 	none;
     -webkit-user-select: 	none;
     -khtml-user-select: 	none;
     -moz-user-select: 		none;
