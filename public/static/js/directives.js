@@ -58,7 +58,7 @@ function HTMLextendable(){
 }
 
 
-function HTMLpreferenceRanking() {
+function HTMLpreferenceRanking() {	
 	return	{
 				restrict	:	'E',
 				scope		:	true,
@@ -127,18 +127,19 @@ function HTMLpreferenceRanking() {
 														}
 
 
-											scope.$broadcast('dragging-position-update', pos)
+											scope.drag(pos)
+											scope.positionUpdate(pos)
 
 											
 											//wait 20 milliseconds
 											scope.next_update = window.setTimeout(function() {
 																	window.clearInterval(scope.next_update)
 																	delete scope.next_update																	
-																}, 20)
+																}, 10)
 										}										
 									}
 
-									scope.positionUpdate = function(event, pos){
+									scope.positionUpdate = function(pos){
 										var over = false
 
 										var ranks = element.find('preference-rank')
@@ -146,15 +147,14 @@ function HTMLpreferenceRanking() {
 										ranks.each(function(index, rank_DOM){
 											var rank = $(rank_DOM)
 
-											over = pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
+											over = !over && pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
 
 											if(over) scope.active_rank = rank
+											
 
-											var is_active = scope.active_rank && scope.active_rank.get(0) == rank_DOM
-
-											rank.toggleClass('active',		is_active)
+											rank.toggleClass('active',		over)
 											rank.toggleClass('empty',		rank.find('preference-option').length == 0)	
-											rank.toggleClass('nonempty',	rank.find('preference-option').length != 0 || is_active)
+											rank.toggleClass('nonempty',	rank.find('preference-option').length != 0 || over)
 
 											rank.removeClass('no-transition')
 										})
@@ -198,7 +198,7 @@ function HTMLpreferenceRanking() {
 
 
 									//adjust position of the dragged option (keep it attached to the cursor)
-									scope.drag = function(event, pos) {	
+									scope.drag = function(pos) {	
 										if(pos.x != undefined) scope.dragged_option.css('left',	pos.x - scope.dragged_option.outerWidth(true)/2)
 										if(pos.y != undefined) scope.dragged_option.css('top', 	pos.y - scope.dragged_option.outerHeight(true)/2)											
 									}
@@ -269,7 +269,6 @@ function HTMLpreferenceRanking() {
 								},
 
 				controller	:	function($scope, $element, $attrs, $rootScope){
-
 									
 									var	self = this
 
@@ -307,9 +306,6 @@ function HTMLpreferenceRank() {
 				restrict	:	'E',
 
 				link		:	function(scope, element, attrs){
-
-									
-
 
 									if(element.parent().find('preference-rank').length <= 1)
 										scope.empty_rank.clone(true).insertBefore(element)
@@ -394,8 +390,7 @@ function HTMLpreferenceOption($scope) {
 }
 
 
-
-function HTMLtooltip($scope) {
+function HTMLtooltip($scope) {	
 	return	{
 				restrict	:	'E',
 
@@ -421,6 +416,42 @@ function HTMLtooltip($scope) {
 								}
 
 			}
+}
+
+function HTMLWalkthrough(walkthrough){
+	return {
+		restrict: 'AE',
+		controller: function($scope, $element, $attrs){
+			this.registerStep = function(tag, contents, done){
+				walkthrough.addStep($attrs.id, tag, contents)
+			}
+		}
+	}
+}
+
+function HTMLStep (){
+	return {
+		restrict: 'AE',
+		require: '^walkthrough',
+
+		link: function(scope, element, attrs, walkthroughCtrl, transclude){
+			walkthroughCtrl.registerStep(attrs.tag, element.html())	
+		}
+	}
+}
+
+function HTMLWalkthroughTag(walktrough){
+	return {
+		restrict: 'AE',
+		templateUrl: '/static/partials/walkthrough_tag.html',
+		controller: function($scope, $element, $attrs){
+			$element.addClass('point-'+$attrs.direction)
+
+			$scope.id 		= $attrs.walkthrough
+			$scope.tag 		= $attrs.step			
+			$scope.contents	= walktrough[$scope.id] && walktrough[$scope.id][$scope.tag] && walktrough[$scope.id][$scope.tag].contents
+		}
+	}
 }
 
 

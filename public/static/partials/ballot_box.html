@@ -1,3 +1,26 @@
+<walkthrough id = "new_ballot">
+    <step tag = "1">
+        Enter a subject matter to be decided on. (e.g. "What should be to on the weekend?")
+    </step>
+    <step tag = "2">
+        Anything else you would like to add? Maybe the subject line was too short.
+    </step>
+    <step tag = "3">
+         Enter a title for your first option.                                
+        <br/>
+        You can enter futher details for this option below.
+        <br/>
+    </step>
+    <step tag = "4">
+        Add another option to your ballot paper.
+        <br/>
+        You can remove it later – if you like – with the x button on the top right.
+        <br/>
+    </step>
+    <step tag = "5">
+        Enter a subject matter to be decided on. (e.g. "What should be to on the weekend?")
+    </step>
+</walkthrough>
 <div
 	class			=	"ballot-box"
 	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
@@ -43,7 +66,7 @@
             <td id="left-column" class="ballot-overview">
                 
 
-                <div class = "ui-white left right">
+                <div class = "left right ui-white">
 
                     <label ng-if = "isAdmin" class = "subject">
                         <span> Subject: </span>
@@ -51,7 +74,16 @@
                         <div class = "icons right">
                             <i class = "fa fa-pencil"></i>
                         </div>
+
+                        <walkthrough-tag 
+                            direction   = "left" 
+                            walkthrough = "new_ballot"
+                            step        = "1"
+                        >
+                        </walkthrough-tag>
                     </label>
+
+                    
 
                     <label ng-if = "isAdmin" class = "ui-white">
                         <span> Details: </span>
@@ -59,33 +91,52 @@
                             <i class = "fa fa-pencil"></i>
                         </div>
                          <br/>
-                        <textarea placeholder = "Enter details" extendable>{{ballot.details}}</textarea>
+                         <div class="wrapper">
+                            <textarea placeholder = "Enter details" extendable>{{ballot.details}}</textarea>
+                        </div>
                         
+                        <walkthrough-tag 
+                            direction   = "left" 
+                            walkthrough = "new_ballot"
+                            step        = "2"
+                        >
+                        </walkthrough-tag>
+
                     </label>                    
 
-                    <div>
-                        <h2 ng-if="!isAdmin">                        
-                            {{ballot.subject || '(no subject)'}} ({{ballot.id}})
-                        </h2>
+                    
+                    <h2 ng-if="!isAdmin">                        
+                        {{ballot.subject || '(no subject)'}} ({{ballot.id}})
+                    </h2>
 
 
-                        <p ng-if = "!isAdmin">
-                            {{ballot.details}}
-                        </p>
+                    <p ng-if = "!isAdmin">
+                        {{ballot.details}}
+                    </p>
 
-                        <p>
-                            <small>
-                               Instructions go here.
-                             </small>
-                        </p>
-                    </div>
+                    <p>
+                        <small>
+                           Instructions go here.
+                         </small>
+                    </p>
+                    
                     <label ng-click="select('ballot-option', ballot.newOption())">                    
                         Add new option
                         <div class = "icons right">
                             <i class = "fa fa-plus"></i>
                         </div>
-                    </label>
+
+                        <walkthrough-tag 
+                            direction   = "left" 
+                            walkthrough = "new_ballot"
+                            step        = "3"
+                        >
+                        </walkthrough-tag>
+
+                    </label>                    
                 </div>
+
+
 
 
                 <hr/>
@@ -120,6 +171,15 @@
                                 <i class = "fa fa-times" ng-click = "ballot.removeOption(option)"></i>
                             </div>
 
+                            <walkthrough-tag 
+                                ng-if       = "$first"
+                                direction   = "left" 
+                                walkthrough = "new_ballot"
+                                step        = "4"
+                            >
+                            </walkthrough-tag>
+                           
+
                         </label>
                         <div 
                             class   = "details ui-white"
@@ -129,12 +189,9 @@
                     </div>
                 </div>
 
-                <hr class="up"/>
                 
                 <!--
-                <div manage-options = "ballot.options">
-                    
-                </div>
+                    <hr class="up"/>                
                 -->
             </td>
 
@@ -153,6 +210,8 @@
                         ng-if               =   "selectionBallotPaper.value == paper"                        
             		>	
                         <h2 class = "ui-borders ui-corners-all">{{paper.participant || 'no name'}}</h2>
+
+
                         <preference-rank
                             ng-repeat   =   "rank in ranking"
                             class       =   "ui-panel left vertical ui-borders ui-corners-all"
@@ -217,64 +276,62 @@
                 single-select   = "{'overview-menu': 'papers'}"   
             >
 
-            <div class="ui-relative">
-                    <div class="ui-white left right">
-                        <h2>Participants</h2>
-                        <p>
-                            Enter your name below and arranged the options in the middle column according to your preference.
-                        </p>
-                        <p>
-                            <small>
-                                You can change preference ranking or name of yours or others' later on if you like. In order to edit a name click the lock to unlock the input field.
-                            </small>
-                        </p>
-                        <label ng-click = "select('ballot-paper', ballot.newPaper())">
-                            Add new particpant
-                            <div class = "icons right">
-                                <i class = "fa fa-plus"></i>
-                            </div>
-                        </label>
-                    </div>
-                    <hr/>
-                    <div class="participants-overview left">
-                        <label
-                            ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
-                            ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
-                            ng-click        = "select('ballot-paper', paper)"                
+                <div class="ui-white left right">
+                    <h2>Participants</h2>
+                    <p>
+                        Enter your name below and arranged the options in the middle column according to your preference.
+                    </p>
+                    <p>
+                        <small>
+                            You can change preference ranking or name of yours or others' later on if you like. In order to edit a name click the lock to unlock the input field.
+                        </small>
+                    </p>
+                    <label ng-click = "select('ballot-paper', ballot.newPaper())">
+                        Add new particpant
+                        <div class = "icons right">
+                            <i class = "fa fa-plus"></i>
+                        </div>
+                    </label>
+                </div>
+                <hr/>
+                <div class="participants-overview left">
+                    <label
+                        ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
+                        ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
+                        ng-click        = "select('ballot-paper', paper)"                
+                    >
+                        <div class="connector left"></div>
+
+                        <span 
+                            class   = "name"
+                            ng-show = "paper.locked"
                         >
-                            <div class="connector left"></div>
+                            {{paper.participant || 'no name'}}
+                        </span>
 
-                            <span 
-                                class   = "name"
-                                ng-show = "paper.locked"
-                            >
-                                {{paper.participant || 'no name'}}
-                            </span>
+                        <input
+                            type        = "text"                                 
+                            ng-model    = "paper.participant"
+                            placeholder = "Enter name"
+                            ng-show     = "!paper.locked"
+                        />
 
-                            <input
-                                type        = "text"                                 
-                                ng-model    = "paper.participant"
-                                placeholder = "Enter name"
-                                ng-show     = "!paper.locked"
-                            />
+                        <div class = "icons right shift">
+                            
+                            <i 
+                                class           = "fa fa-lock"
+                                ng-show         = "paper.locked"
+                                ng-click        = "paper.locked = false"
+                            ></i>
 
-                            <div class = "icons right shift">
-                                
-                                <i 
-                                    class           = "fa fa-lock"
-                                    ng-show         = "paper.locked"
-                                    ng-click        = "paper.locked = false"
-                                ></i>
+                            <i 
+                                class           = "fa fa-unlock-alt"                                    
+                                ng-hide         = "paper.locked"
+                                ng-click        = "paper.locked = true"
+                            ></i>
 
-                                <i 
-                                    class           = "fa fa-unlock-alt"                                    
-                                    ng-hide         = "paper.locked"
-                                    ng-click        = "paper.locked = true"
-                                ></i>
-
-                            </div> 
-                        </label>
-                    </div>
+                        </div> 
+                    </label>
                 </div>
             </td>
         	

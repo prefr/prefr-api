@@ -177,4 +177,18 @@ angular.module('services',[])
         return Ballot
     }
 ])
+.factory('walkthrough', [
+    function(){
+        var self = []
+
+        self.addStep = function(id, tag, contents){
+            self[id]        =   self[id] || []
+            self[id][tag]   =   {
+                                    contents: contents
+                                }
+        }
+
+        return self
+    }
+])
 

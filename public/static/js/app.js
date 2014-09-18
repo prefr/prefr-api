@@ -4,6 +4,7 @@ var prefr   =   angular.module(
                                 'ng',
                                 'ngRoute',
                                 'ngAnimate',
+                                'ngSanitize',
                                 'prefrControllers',  
                                 'services'                                                             
                             ]
@@ -58,13 +59,20 @@ prefr.config([
     }
 ])
 
+
+
 prefr.directive('manageOptions',        [manageOptions])
 
-prefr.directive('singleSelect',         HTMLsingleSelect)
+prefr.directive('singleSelect',         [HTMLsingleSelect])
 prefr.directive('tooltip',              [HTMLtooltip])
-prefr.directive('extendable',           HTMLextendable)
+prefr.directive('extendable',           [HTMLextendable])
 
 prefr.directive('preferenceRanking',    ['$compile', HTMLpreferenceRanking])
 prefr.directive('preferenceRank',       [HTMLpreferenceRank])
 prefr.directive('preferenceOption',     [HTMLpreferenceOption])
+
+                
+prefr.directive('walkthrough',          ['walkthrough', HTMLWalkthrough])
+prefr.directive('step',                 [HTMLStep])
+prefr.directive('walkthroughTag',       ['walkthrough', HTMLWalkthroughTag])
 

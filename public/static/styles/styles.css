@@ -14,7 +14,7 @@
 
 html {
 	font-size:				0.9em;
-	min-height:				100%;
+	height:					100%;
 }
 
 body {
@@ -23,7 +23,7 @@ body {
 	padding:				3.5em 0em 0em 0em;
 	margin:					0;
 	background-color:		rgba(245, 245, 240, 1);	
-	min-height:				100%;
+	height:					100%;
 }
 
 input,
@@ -152,7 +152,7 @@ nav.vertical {
 body > article {
 	display:				block;
 	width:					100%;
-	min-height:				10em;	
+	height:					100%;	
 
 	color:					#666;
 
@@ -192,6 +192,7 @@ p{
 ul,
 ol {
 	margin:					0;
+	padding:				0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -351,6 +352,10 @@ li {
 
 .ui-white {
 	background: 			#fff;
+}
+
+.ui-blue {
+	background: 			#647D8C;
 }
 
 .ui-relative {
@@ -538,8 +543,12 @@ textarea[extendable] {
 
 /* options */
 
-.options-overview .option {
-	margin-right:			10em;
+.options-overview {
+	max-width:				30em;
+	margin-left:			auto;
+}
+
+.options-overview .option {	
 }
 
 .options-overview .option label input {
@@ -760,7 +769,8 @@ textarea[extendable] {
 }
 
 .participants-overview{
-	padding:				1em 0;
+	padding:				2em 0;
+	max-width:				30em;
 }
 
 
@@ -859,14 +869,18 @@ label input{
 	cursor:					pointer;
 }
 
-label textarea{
+label .wrapper {
+	display:				block;
+}
 
+label .wrapper textarea{
+	width:					100%;
 }
 
 
-label input:focus,
-label textarea:focus {
-	background:				rgba(255,255,255,0.2);
+input:focus,
+textarea:focus {
+	background:				rgba(255,255,255,0.2) !important;
 	cursor: 				text;
 }
 
@@ -1024,13 +1038,13 @@ label.selected .connector.left:after {
 */
 
 
-.ballot_box #main {
+.ballot-box #main {
 	width: 					100%;
-	min-height:				100%;	
+	height:					100%;	
 }
 
 .ballot-box #left-column {
-    min-width:				30em;
+    min-width:				25em;
     width:					35%;
 
    	min-height:				100%;
@@ -1041,10 +1055,15 @@ label.selected .connector.left:after {
 	position:				relative;
 }
 
+.ballot-box #left-column > * > * {
+}
+
+
 
 .ballot-box .edit-paper {
 	min-width:				16em;
-	width:					40%;
+	width:					30%;
+	max-width:				20em;
 
 	min-height:				100%;
 
@@ -1052,7 +1071,7 @@ label.selected .connector.left:after {
 	top:					0;
 	bottom:					0;
 
-	padding:				2em 4em;
+	padding:				4em 4em;
 
 	vertical-align:			top;
 
@@ -1063,7 +1082,7 @@ label.selected .connector.left:after {
 
 .ballot-box #right-column {
 	min-width:				18em;
-	width:					25%;
+	width:					35%;
 
 	min-height:				100%;
 
@@ -1100,6 +1119,13 @@ preference-ranking {
 	overflow:				visible;
 
 	counter-reset:			rank;	
+
+    -webkit-touch-callout: 	none;
+    -webkit-user-select: 	none;
+    -khtml-user-select: 	none;
+    -moz-user-select: 		none;
+    -ms-user-select: 		none;
+    user-select: 			none;
 
 }
 
@@ -1162,7 +1188,7 @@ preference-ranking preference-rank {
 }
 
 preference-ranking.vertical preference-rank {
-	display:				inline-block;
+	display:				block;
 	white-space:			normal;
 }
 
@@ -1528,4 +1554,133 @@ preference-ranking.horizontal preference-rank.ng-enter{
 
 .ranking-source .tab {
 	margin-left:				3em;
+}
+
+
+
+
+
+
+
+/* walkthrough marker */
+
+walkthrough {
+	display:					none;
+}
+
+walkthrough-tag {
+	position:					absolute;
+	display:					block;
+
+	padding:					1em;
+	border-radius:				0.5em;
+	
+	z-index:					100;
+	opacity:					0.9;
+
+	color:						#bf9;
+	background:					#686;
+
+	box-shadow:					0 0 0.25em rgba(0,0,0,0.7);
+	white-space: 				normal;
+
+	width:						20em;
+	line-height:				1.2em;
+}
+
+walkthrough-tag button{
+	float:						right;
+	font-size:					0.9em;
+	background:					transparent;
+	color:						inherit;
+}
+
+walkthrough-tag.point-left {
+	top:						50%;
+	left:						100%;
+
+	padding-left:				2em;
+	margin-left:				-1em;
+}
+
+
+walkthrough-tag .marker {	
+	display:					block;
+	position:					absolute;
+
+	top:						0;
+	left:						0;
+
+	font-size:					2.3em;
+	height:						1.2em;
+	width:						1.2em;
+	margin:						-0.6em;
+
+	border-radius:				0.6em;
+	box-shadow:					0 0 0em 0.15em #bf9, 0 0 0 0.25em #686, 0 0 0.25em 0.25em rgba(0,0,0,0.5);
+	background-color:			#686;
+	color:						#bf9;
+	font-weight:				bold;
+	
+	text-align:					center;
+	line-height:				1.2em;	
+	
+
+}
+
+walkthrough-tag .marker:before{
+	content:					'';
+	position:					absolute;
+
+	height:						0;
+	width:						0;
+
+	font-size:					0.4em;
+
+	margin:						-1em;
+}
+
+
+walkthrough-tag.point-right .marker:before{
+
+	top:						50%;
+	left:						160%;
+
+	border-top:					solid 1em transparent;
+	border-bottom:				solid 1em transparent;
+	border-left:				solid 1em #8b6;
+}
+
+walkthrough-tag.point-left .marker:before{
+
+	top:						50%;
+	right:						160%;
+
+	border-top:					solid 1em transparent;
+	border-bottom:				solid 1em transparent;
+	border-right:				solid 1em #8b6;
+}
+
+walkthrough-tag.point-top .marker:before{
+
+	bottom:						160%;
+	left:						50%;
+
+	border-left:				solid 1em transparent;
+	border-right:				solid 1em transparent;
+	border-bottom:				solid 1em #8b6;
+}
+
+walkthrough-tag.point-top .marker:before{
+
+	top:						160%;
+	left:						50%;
+
+	border-left:				solid 1em transparent;
+	border-right:				solid 1em transparent;
+	border-top:					solid 1em #8b6;
+}
+
+walkthrough-tag .active {
+	box-shadow:					0 0 0.5em #0f0;
 }
