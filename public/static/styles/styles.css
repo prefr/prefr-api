@@ -238,7 +238,7 @@ button {
 	font-size:				1em;
 	height:					1.6em;
 	line-height:			1.6em;
-	padding:				0 0.5em;
+	padding:				0em;
 
 	border:					none;
 	width:					auto;
@@ -427,6 +427,11 @@ li {
 }
 
 
+.removed,
+[disabled] {
+	opacity:				0.6;
+	cursor:					default;
+}
 
 
 
@@ -800,6 +805,11 @@ label.ui-white{
 	color:					inherit;
 }
 
+label button {
+	background: 			transparent;
+	color:					inherit;
+}
+
 label + label {
 	margin-top:				0.5em;
 }
@@ -837,7 +847,7 @@ label .icons.right {
 }
 
 label .icons.right.shift {
-	right:					1em;
+	right:					0.25em;
 }
 
 label .tag {
@@ -1049,6 +1059,9 @@ label.selected .connector.left:after {
 
    	min-height:				100%;
 
+   	background-image: 		url("images/pixelate.png");
+    background-size: 		5em auto;
+
 	text-align:				left;
 	vertical-align:			top;
 
@@ -1085,6 +1098,9 @@ label.selected .connector.left:after {
 	width:					35%;
 
 	min-height:				100%;
+
+	background-image: 		url("images/pixelate.png");
+    background-size: 		5em auto;
 
 	text-align:				left;
 	vertical-align:			top;
@@ -1562,11 +1578,8 @@ preference-ranking.horizontal preference-rank.ng-enter{
 
 /* walkthrough marker */
 
-walkthrough {
-	display:					none;
-}
 
-walkthrough-tag {
+walkthrough {
 	position:					absolute;
 	display:					block;
 
@@ -1574,10 +1587,9 @@ walkthrough-tag {
 	border-radius:				0.5em;
 	
 	z-index:					100;
-	opacity:					0.9;
 
-	color:						#bf9;
-	background:					#686;
+	color:						#666;/*#bf9;*/
+	background:					#fff;/*#686;*/
 
 	box-shadow:					0 0 0.25em rgba(0,0,0,0.7);
 	white-space: 				normal;
@@ -1586,23 +1598,35 @@ walkthrough-tag {
 	line-height:				1.2em;
 }
 
-walkthrough-tag button{
+walkthrough button{
 	float:						right;
 	font-size:					0.9em;
 	background:					transparent;
-	color:						inherit;
+	color:						#f80;
 }
 
-walkthrough-tag.point-left {
+
+walkthrough.point-left {
 	top:						50%;
 	left:						100%;
 
 	padding-left:				2em;
+	padding-top:				2em;
+	margin-left:				-1em;
+}
+
+walkthrough.point-right {
+	top:						50%;
+	right:						100%;
+
+	padding-right:				2em;
+	padding-top:				2em;
 	margin-left:				-1em;
 }
 
 
-walkthrough-tag .marker {	
+
+walkthrough .marker {	
 	display:					block;
 	position:					absolute;
 
@@ -1615,9 +1639,9 @@ walkthrough-tag .marker {
 	margin:						-0.6em;
 
 	border-radius:				0.6em;
-	box-shadow:					0 0 0em 0.15em #bf9, 0 0 0 0.25em #686, 0 0 0.25em 0.25em rgba(0,0,0,0.5);
-	background-color:			#686;
-	color:						#bf9;
+	box-shadow:					0 0 0em 0.15em #f80, 0 0 0 0.25em #fff, 0 0 0.25em 0.25em rgba(0,0,0,0.5);/*0 0 0em 0.15em #bf9, 0 0 0 0.25em #686, 0 0 0.25em 0.25em rgba(0,0,0,0.5);*/
+	background-color:			#fff;/*#686;*/
+	color:						#f80;/*#bf9;*/
 	font-weight:				bold;
 	
 	text-align:					center;
@@ -1626,7 +1650,7 @@ walkthrough-tag .marker {
 
 }
 
-walkthrough-tag .marker:before{
+walkthrough .marker:before{
 	content:					'';
 	position:					absolute;
 
@@ -1639,46 +1663,46 @@ walkthrough-tag .marker:before{
 }
 
 
-walkthrough-tag.point-right .marker:before{
+walkthrough.point-right .marker:before{
 
 	top:						50%;
 	left:						160%;
 
 	border-top:					solid 1em transparent;
 	border-bottom:				solid 1em transparent;
-	border-left:				solid 1em #8b6;
+	border-left:				solid 1em #f80;
 }
 
-walkthrough-tag.point-left .marker:before{
+walkthrough.point-left .marker:before{
 
 	top:						50%;
 	right:						160%;
 
 	border-top:					solid 1em transparent;
 	border-bottom:				solid 1em transparent;
-	border-right:				solid 1em #8b6;
+	border-right:				solid 1em #f80;
 }
 
-walkthrough-tag.point-top .marker:before{
+walkthrough.point-top .marker:before{
 
 	bottom:						160%;
 	left:						50%;
 
 	border-left:				solid 1em transparent;
 	border-right:				solid 1em transparent;
-	border-bottom:				solid 1em #8b6;
+	border-bottom:				solid 1em #f80;
 }
 
-walkthrough-tag.point-top .marker:before{
+walkthrough.point-top .marker:before{
 
 	top:						160%;
 	left:						50%;
 
 	border-left:				solid 1em transparent;
 	border-right:				solid 1em transparent;
-	border-top:					solid 1em #8b6;
+	border-top:					solid 1em #f80;
 }
 
-walkthrough-tag .active {
+walkthrough .active {
 	box-shadow:					0 0 0.5em #0f0;
 }

@@ -67,6 +67,8 @@ function HTMLpreferenceRanking() {
 				link		:	function(scope, element, attrs, controller, transclude) {
 									var content
 
+									element.css('position', 'relative')
+
 
 									scope.$watch(attrs.rankingModel, function(rankingModel){
 										if(scope.dragged_option)
@@ -414,38 +416,26 @@ function HTMLtooltip($scope) {
 			}
 }
 
+
 function HTMLWalkthrough(walkthrough){
 	return {
 		restrict: 'AE',
-		controller: function($scope, $element, $attrs){
-			this.registerStep = function(tag, contents, done){
-				walkthrough.addStep($attrs.id, tag, contents)
-			}
-		}
-	}
-}
-
-function HTMLStep (){
-	return {
-		restrict: 'AE',
-		require: '^walkthrough',
-
-		link: function(scope, element, attrs, walkthroughCtrl, transclude){
-			walkthroughCtrl.registerStep(attrs.tag, element.html())	
-		}
-	}
-}
-
-function HTMLWalkthroughTag(walktrough){
-	return {
-		restrict: 'AE',
 		templateUrl: '/static/partials/walkthrough_tag.html',
+		transclude: true,
+
 		controller: function($scope, $element, $attrs){
 			$element.addClass('point-'+$attrs.direction)
 
-			$scope.id 		= $attrs.walkthrough
-			$scope.tag 		= $attrs.step			
-			$scope.contents	= walktrough[$scope.id] && walktrough[$scope.id][$scope.tag] && walktrough[$scope.id][$scope.tag].contents
+			$scope.path 	= $attrs.path
+			$scope.step 	= $attrs.step	
+			$scope.next		= $attrs.next
+			$scope.nextPath	= $attrs.nextPath
+
+			walkthrough.register($scope.path, $scope.step, $element)	
+
+			$scope.skip = function(){
+				walkthrough.goto($scope.nextPath, $scope.next)
+			}
 		}
 	}
 }

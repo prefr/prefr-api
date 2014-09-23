@@ -1,9 +1,11 @@
 <div class = "marker">
-    {{tag}}
+    {{step}}
 </div>
 
-<div ng-bind-html = "contents">
+<div ng-transclude>
 </div>
 
 
-<button> skip </button>
+<button ng-click = "skip(); $event.stopPropagation()"> skip </button>
+
+

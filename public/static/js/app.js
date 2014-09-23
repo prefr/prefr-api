@@ -11,7 +11,9 @@ var prefr   =   angular.module(
                         )
 
 prefr.run( function($rootScope) {    
-    $rootScope.isAdmin = true
+    $rootScope.isAdmin      = true
+    $rootScope.help         = {}
+    $rootScope.help.open    = function(){}
 })
 
 
@@ -73,6 +75,4 @@ prefr.directive('preferenceOption',     [HTMLpreferenceOption])
 
                 
 prefr.directive('walkthrough',          ['walkthrough', HTMLWalkthrough])
-prefr.directive('step',                 [HTMLStep])
-prefr.directive('walkthroughTag',       ['walkthrough', HTMLWalkthroughTag])
 

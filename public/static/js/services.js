@@ -18,6 +18,14 @@ angular.module('services',[])
                 return this
             }
 
+            this.exportData = function(){
+                return  {
+                            title:      this.title,
+                            details:    this.details,
+                            tag:        this.tag3
+                        }
+            }
+
             this.importData(data)
 
         }
@@ -47,6 +55,14 @@ angular.module('services',[])
                 this.ranking     = data.ranking     || this.ranking
 
                 return this
+            }
+
+            this.exportData = function(){
+                return  {
+                            id:             this.id,
+                            participant:    this.participant,
+                            ranking:        this.ranking
+                        }
             }
 
             this.addOption = function(tag){
@@ -83,13 +99,15 @@ angular.module('services',[])
 
     function(BallotPaper, BallotOption){
         function Ballot(data){
-            var self         = this
+            var self            = this
 
-            this.id          = undefined
-            this.subject     = undefined
-            this.details     = undefined
-            this.options     = []
-            this.papers      = []
+            this.id             = undefined
+            this.subject        = undefined
+            this.details        = undefined
+            this.options        = []
+            this.papers         = []
+            this.removedOptions = []
+            this.removedPapers  = []
 
             this.getOptionByTag = function(tag){
                 return this.options.filter(function(option){ return option.tag == tag })[0]    
@@ -115,13 +133,56 @@ angular.module('services',[])
 
                                     return paper.importData(paper_data)
                                 })
+
+                this.backup =   {
+                                    subject: data.subject
+                                }
+            }
+
+            this.exportData = function(){
+                return  {
+                            id:         this.id,
+                            subject:    this.subject,
+                            details:    this.details,
+                            options:    this.options.map(function(option){
+                                            return option.exportData()
+                                        }),
+                            papers:     this.papers.map(function(paper){
+                                            return paper.exportData()
+                                        })
+                        }
+            }
+
+            this.getDiff    = function(){
+                return  {
+                            id:             this.id ,
+
+                            subject:        this. backup.subject == this.subject 
+                                            ?   undefined
+                                            :   this.subject,
+
+                            options:        this.options.map(function(option){
+                                                return options.getDiff()
+                                            }),
+
+                            removedOptions: this.removedOptions.map(function(removed_option){
+                                                return  { tag: removed_option.tag }
+                                            }),
+
+                            papers:         undefined
+                        }
             }
 
             this.getNextAvailableTag = function(){
                 var base_tags   =   "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                     taken_tags  =   this.options.map(function(option){
                                         return option.tag
-                                    }),
+                                    })
+                                    .concat(
+                                        this.removedOptions.map(function(removed_option){
+                                        return removed_option.tag
+                                    })
+                                    ),
                     i           =   0,
                     next_tag    =   'A'
 
@@ -155,10 +216,14 @@ angular.module('services',[])
 
             this.removeOption = function(option){
 
+                //dont remove the last option:
                 if(this.options.length == 1)
                     return false
 
                 var tag = option.tag || option
+
+                this.removedOptions = this.removedOptions.concat( this.options.filter(function(option){ return option.tag == tag }) )
+
                 this.options = this.options.filter(function(option){ return option.tag != tag })
 
                 this.papers.forEach(function(paper){
@@ -166,9 +231,27 @@ angular.module('services',[])
                 })
             }
 
-            this.removePaper = function(paper){
-                var id = paper.id || paper
-                this.papers = this.papers.filter(function(paper){ return paper.id != id })
+            this.restoreOption = function(o){
+                var tag = o.tag || o
+
+                this.options = this.options.concat( this.removedOptions.filter(function(removed_option){ return removed_option.tag == tag }) )
+
+                this.removedOptions = this.removedOptions.filter(function(option){ return option.tag != tag })
+
+                this.papers.forEach(function(paper){
+                    paper.addOption(tag)
+                })
+            }
+
+            this.removePaper = function(p){
+                this.removedPapers  = this.removedPapers.concat( this.papers.filter(function(paper){ return paper == p }) )
+                this.papers         = this.papers.filter(function(paper){ return paper != p })
+                
+            }
+
+            this.restorePaper = function(p){
+                this.papers         = this.papers.concat( this.removedPapers.filter(function(removed_paper){ return removed_paper == p }) )
+                this.removedPapers  = this.removedPapers.filter(function(removed_paper){ return removed_paper != p })
             }
 
             this.importData(data)
@@ -178,15 +261,41 @@ angular.module('services',[])
     }
 ])
 .factory('walkthrough', [
-    function(){
-        var self = []
 
-        self.addStep = function(id, tag, contents){
-            self[id]        =   self[id] || []
-            self[id][tag]   =   {
-                                    contents: contents
-                                }
+    '$rootScope',
+
+    function($rootScope){
+        var self = [],
+            current_path,
+            current_step
+
+        self.register = function(path, step, element){
+            self[path]          =   self[path] || []
+            self[path][step]    =   element
+
+            if(path == current_path && step == current_step)
+                self[path] && self[path][step] && self[path][step].show()
+
+            element.hide()
         }
+
+        self.goto = function(path, step){
+            self[current_path] && self[current_path][current_step] && self[current_path][current_step].hide()
+
+            current_path = path || current_path
+            current_step = step
+
+            self[current_path] && self[current_path][current_step] && self[current_path][current_step].show()
+
+        }
+
+        self.gotoFn = function(path, step){
+            return  function(){
+                        self.goto(path, step)
+                    }
+        }
+
+        $rootScope.walkthrough = self
 
         return self
     }
