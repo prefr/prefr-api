@@ -91,6 +91,8 @@ angular.module('services',[])
             }
 
             this.addOption = function(tag){
+                if(this.ranking.length == 0)
+                    this.ranking.push([])
                 this.ranking[this.ranking.length-1].push(tag)
                 return this
             }
@@ -279,6 +281,10 @@ angular.module('services',[])
                 this.options.forEach(function(){
                     if(option.tag == tag)
                         delete option.removed
+                })
+
+                this.papers.forEach(function(paper){
+                    paper.addOption(tag)
                 })
             }
 

@@ -76,7 +76,7 @@
                         </div>
                          <br/>
                          <div class="wrapper">
-                            <textarea placeholder = "Enter details" extendable>{{ballot.details}}</textarea>
+                            <textarea placeholder = "Enter details" extendable ng-model = "ballot.details" placeholder = "Enter details"></textarea>
                         </div>
                         
                         <walkthrough 
@@ -184,7 +184,7 @@
                         <div 
                             class   = "details ui-white"
                         >
-                            <textarea extendable placeholder ="no further description" ng-model = "option.description"></textarea>
+                            <textarea extendable placeholder ="no further description" ng-model = "option.details" placeholder = "Enter details"></textarea>
                         </div>
                     </div>
                 </div>
