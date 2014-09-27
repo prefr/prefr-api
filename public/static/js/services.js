@@ -11,19 +11,39 @@ angular.module('services',[])
 
             this.importData = function(data){
                 data = data || {}
-                this.title      = data.title    || this.title
-                this.details    = data.details  || this.details
-                this.tag        = data.tag      || this.tag
+                this.title      = data.title    || this.title   || ''
+                this.details    = data.details  || this.details || ''
+                this.tag        = data.tag      || this.tag     || ''
+
+                this.backup     =   {
+                                        title:      String(this.title),
+                                        details:    String(this.details)
+                                    }
 
                 return this
             }
 
             this.exportData = function(){
                 return  {
-                            title:      this.title,
-                            details:    this.details,
-                            tag:        this.tag3
+                            title:      String(data.title),
+                            details:    String(data.details),
+                            tag:        String(data.tag)
                         }
+            }
+
+            this.diff = function(){
+                var diff = { tag : this.tag }
+
+                if(this.tile != this.backup.title)
+                    diff.title = this.title
+
+                if(this.details != this.backup.details)
+                    diff.details = this.details
+
+                if(this.removed)
+                    diff.removed = true
+
+                return diff
             }
 
             this.importData(data)
@@ -51,8 +71,13 @@ angular.module('services',[])
                 data = data || {} 
 
                 this.id          = data.id          || this.id
-                this.participant = data.participant || this.participant
-                this.ranking     = data.ranking     || this.ranking
+                this.participant = data.participant || this.participant || ''
+                this.ranking     = data.ranking     || this.ranking || ''
+
+                this.backup      =  {
+                                        participant :   String(data.participant),
+                                        ranking:        angular.extend([], data.ranking)
+                                    }
 
                 return this
             }
@@ -84,6 +109,23 @@ angular.module('services',[])
                 return this
             }           
 
+            this.diff = function(){
+                var diff = {}
+
+                if(this.id)
+                    diff.id = this.id
+
+                if(this.participant != this.backup.participant)
+                    diff.participant = this.participant
+
+                if(JSON.stringify(this.ranking) != JSON.stringify(this.backup.ranking))
+                    diff.ranking = this.ranking
+
+                if(this.removed)
+                    diff.removed = true
+
+                return diff
+            }
 
 
             this.importData(data)
@@ -145,31 +187,34 @@ angular.module('services',[])
                             subject:    this.subject,
                             details:    this.details,
                             options:    this.options.map(function(option){
-                                            return option.exportData()
+                                            return  option.removed
+                                                    ?   undefined
+                                                    :   option.exportData()
                                         }),
                             papers:     this.papers.map(function(paper){
-                                            return paper.exportData()
+                                            return  paper.removed
+                                                    ?   undefined
+                                                    :   paper.exportData()
                                         })
                         }
             }
 
-            this.getDiff    = function(){
+            this.diff    = function(){
                 return  {
-                            id:             this.id ,
+                            id:             this.id,
 
                             subject:        this. backup.subject == this.subject 
                                             ?   undefined
                                             :   this.subject,
 
                             options:        this.options.map(function(option){
-                                                return options.getDiff()
+                                                return option.diff()
                                             }),
 
-                            removedOptions: this.removedOptions.map(function(removed_option){
-                                                return  { tag: removed_option.tag }
+                            papers:         this.papers.map(function(paper){
+                                                return paper.diff()
                                             }),
 
-                            papers:         undefined
                         }
             }
 
@@ -214,44 +259,35 @@ angular.module('services',[])
                 return new_paper
             }
 
-            this.removeOption = function(option){
-
-                //dont remove the last option:
-                if(this.options.length == 1)
-                    return false
+            this.removeOption = function(option){                
 
                 var tag = option.tag || option
 
-                this.removedOptions = this.removedOptions.concat( this.options.filter(function(option){ return option.tag == tag }) )
-
-                this.options = this.options.filter(function(option){ return option.tag != tag })
+                this.options.forEach(function(option){
+                    if(option.tag == tag)
+                        option.removed = true
+                })
 
                 this.papers.forEach(function(paper){
                     paper.removeOption(tag)
                 })
             }
 
-            this.restoreOption = function(o){
-                var tag = o.tag || o
+            this.restoreOption = function(option){
+                var tag = option.tag || option
 
-                this.options = this.options.concat( this.removedOptions.filter(function(removed_option){ return removed_option.tag == tag }) )
-
-                this.removedOptions = this.removedOptions.filter(function(option){ return option.tag != tag })
-
-                this.papers.forEach(function(paper){
-                    paper.addOption(tag)
+                this.options.forEach(function(){
+                    if(option.tag == tag)
+                        delete option.removed
                 })
             }
 
-            this.removePaper = function(p){
-                this.removedPapers  = this.removedPapers.concat( this.papers.filter(function(paper){ return paper == p }) )
-                this.papers         = this.papers.filter(function(paper){ return paper != p })
-                
+            this.removePaper = function(paper){
+                paper.removed = true
             }
 
-            this.restorePaper = function(p){
-                this.papers         = this.papers.concat( this.removedPapers.filter(function(removed_paper){ return removed_paper == p }) )
-                this.removedPapers  = this.removedPapers.filter(function(removed_paper){ return removed_paper != p })
+            this.restorePaper = function(paper){
+                delete paper.removed
             }
 
             this.importData(data)

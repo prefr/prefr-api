@@ -13,6 +13,7 @@ var prefr   =   angular.module(
 prefr.run( function($rootScope) {    
     $rootScope.isAdmin      = true
     $rootScope.help         = {}
+    $rootScope.console      = window.console
     $rootScope.help.open    = function(){}
 })
 

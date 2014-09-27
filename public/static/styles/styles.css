@@ -211,8 +211,11 @@ h2{
 }
 
 h3{
-	display:				inline;
-	font-size:				1.4em;		
+	display:				block;
+	font-size:				1.4em;
+	border-bottom:			0.1em solid #666;		
+	margin:					1em 0;
+	padding:				0 1em;
 }
 
 table {
@@ -549,15 +552,20 @@ textarea[extendable] {
 /* options */
 
 .options-overview {
+	margin-left:			auto;
+}
+
+.options-overview .option {		
 	max-width:				30em;
 	margin-left:			auto;
 }
 
-.options-overview .option {	
-}
-
 .options-overview .option label input {
 	width:					75%;
+}
+
+.options-overview .option h3 {
+	text-align:				left;
 }
 
 
@@ -774,8 +782,15 @@ textarea[extendable] {
 }
 
 .participants-overview{
-	padding:				2em 0;
-	max-width:				30em;
+	padding:				2em 0;	
+}
+
+.participants-overview h3 {
+	text-align:				right;
+}
+
+.participants-overview label {
+	max-width:				23em;
 }
 
 

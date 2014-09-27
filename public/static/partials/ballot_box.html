@@ -1,3 +1,7 @@
+<button ng-click = "console.dir(ballot.diff())">
+ DIFF
+</button>
+
 <div
 	class			=	"ballot-box"
 	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
@@ -134,10 +138,11 @@
 
                 <!-- list of all ballot options start -->
 
-                <div class = "options-overview left right" ng-click = "select('ballot-option', null)">
+                <div class = "options-overview left right" ng-click = "select('ballot-option', null)">                   
+
                     <div 
                         class       = "option"
-                        ng-repeat   = "option in ballot.options | orderBy:'tag'" 
+                        ng-repeat   = "option in ballot.options | filter: {removed : '!'} | orderBy:'tag'" 
                         ng-click        = "select('ballot-option', option); $event.stopPropagation()" 
                         ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
                     >                       
@@ -191,14 +196,14 @@
 
                 <div 
                     class   = "options-overview  removed left right" ng-click = "select('ballot-option', null)"
-                    ng-if   = "ballot.removedOptions.length > 0"
+                    ng-if   = "(ballot.options  | filter: {removed : true}).length > 0"
                 >
                     <h3> Removed options </h3>
                     <br/>
 
                     <div 
                         class       = "option"
-                        ng-repeat   = "removed_option in ballot.removedOptions | orderBy:'tag'" 
+                        ng-repeat   = "removed_option in ballot.options  | filter: {removed : true} | orderBy:'tag'" 
                     >                       
                         <label>                            
                             <span class="tag">
@@ -330,7 +335,7 @@
                 <div class="participants-overview left">
                     <label
                         ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
-                        ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
+                        ng-repeat       = "paper in (ballot.papers | filter: {removed : '!'} | orderBy:'-id':true)"    
                         ng-click        = "select('ballot-paper', paper)"                
                     >
                         <div class="connector left"></div>
@@ -378,7 +383,7 @@
 
                 <div
                     class   = "participants-overview  removed left"
-                    ng-if   = "ballot.removedPapers.length > 0"
+                    ng-if   = "(ballot.papers | filter: {removed : true}).length > 0"
                 >
                     <h3> Removed Participants</h3>
                     <br/>
@@ -386,7 +391,7 @@
 
                     <label
                         ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
-                        ng-repeat       = "removed_paper in (ballot.removedPapers | orderBy:'-id':true)"    
+                        ng-repeat       = "removed_paper in ballot.papers | filter: {removed : true} | orderBy:'-id':true"    
                     >
                         <div class="connector left"></div>
 
