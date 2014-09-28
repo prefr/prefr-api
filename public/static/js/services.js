@@ -32,7 +32,10 @@ angular.module('services',[])
             }
 
             this.diff = function(){
-                var diff = { tag : this.tag }
+                var diff = {}
+
+                if(this.tag != this.backup.tag)
+                    diff.tag = this.tag
 
                 if(this.tile != this.backup.title)
                     diff.title = this.title
@@ -43,7 +46,9 @@ angular.module('services',[])
                 if(this.removed)
                     diff.removed = true
 
-                return diff
+                return  Object.keys(diff).length > 0 
+                        ?   diff
+                        :   null
             }
 
             this.importData(data)
@@ -126,7 +131,9 @@ angular.module('services',[])
                 if(this.removed)
                     diff.removed = true
 
-                return diff
+                return  Object.keys(diff).length > 0 
+                        ?   diff
+                        :   null
             }
 
 

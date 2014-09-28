@@ -359,6 +359,14 @@
                         />
 
                         <div class = "icons right shift">
+
+                            <button 
+                                class       = "inverted" 
+                                ng-if       = "!!paper.diff()"
+                                ng-click    = "savePaper(paper)" 
+                            >
+                                save
+                            </button>
                           
                             <button 
                                 ng-click        = "paper.locked = false"
@@ -366,6 +374,7 @@
                             >
                                 <i class = "fa fa-lock"></i>
                             </button>
+
 
                             <button                                    
                                 ng-hide         = "paper.locked"

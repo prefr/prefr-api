@@ -117,6 +117,29 @@ prefrControllers.controller(
 		    	})
 		    }
 
+		    $scope.savePaper = function(paper){
+		    	var diff 	= paper.diff,
+		    		promise = 	diff.removed
+		    					?	$http.delete('/api/paper/'+paper.id)
+			    				:	$http.put('/api/paper/'+paper.id, paper.diff())
+
+			    promise.then(function(result){
+			    	paper.import(paper.data)
+			    })
+
+		    	return	promise
+		    }
+
+		    $scope.updateBallotBox = function(){
+		    	var data = $scope.ballot.exportData()
+
+		    	return	$http.put('/api/ballotBox/'+data.id, {
+		    				subject:	data.subject,
+		    				details:	data.details,
+		    				option:		data.options
+		    			})
+		    }
+
 		    $scope.lockPapers = function() {
 		    	$scope.ballot.papers.forEach(function(paper){ paper.locked = true })		    
 		    }
