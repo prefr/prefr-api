@@ -93,7 +93,8 @@ angular.module('services',[])
                 return  {
                             id:             this.id,
                             participant:    this.participant,
-                            ranking:        this.ranking
+                            ranking:        this.ranking,
+                            removed:        this.removed
                         }
             }
 
@@ -128,7 +129,7 @@ angular.module('services',[])
                     diff.ranking = this.ranking
 
                 if(this.removed != this.backup.removed)
-                    diff.removed = true
+                    diff.removed = this.removed
 
                 return  Object.keys(diff).length > 0 
                         ?   diff
@@ -156,8 +157,6 @@ angular.module('services',[])
             this.details        = undefined
             this.options        = []
             this.papers         = []
-            this.removedOptions = []
-            this.removedPapers  = []
 
             this.getOptionByTag = function(tag){
                 return this.options.filter(function(option){ return option.tag == tag })[0]    
@@ -299,7 +298,7 @@ angular.module('services',[])
             }
 
             this.restorePaper = function(paper){
-                delete paper.removed
+                paper.removed = false
             }
 
             this.importData(data)

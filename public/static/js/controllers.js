@@ -120,13 +120,13 @@ prefrControllers.controller(
 		    	var diff 	= 	paper.diff()
 
 		    	if(!paper.id)
-		    		return	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', data.exportData())
+		    		return	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
 		    				.then(function(result){
 		    					paper.importData(result.data)
 		    				})
 
 		    	if(diff.removed)
-		    		return	$http.delete('/api/paper/'+paper.id)
+		    		return	$http.delete('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id)
     						.then(function(){
     							paper.importData(paper.exportData())
     						})
