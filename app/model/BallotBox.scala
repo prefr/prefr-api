@@ -76,7 +76,7 @@ case class BallotBox(
       val set = Json.obj("$set" -> (setRanking ++ setParticipant))
       BallotBox.col.update(query, set).map(_.updatedExisting)
     } else {
-      Future(false)
+      Future(true)
     }
   }
 
