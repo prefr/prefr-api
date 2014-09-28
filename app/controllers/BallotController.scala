@@ -55,7 +55,7 @@ object BallotController extends Controller with MongoController {
                   BallotBox.col.update(query, set).map {
                     lastError =>
                       if (lastError.updatedExisting) {
-                        Ok("vote added")
+                        Ok(paper.toJson)
                       } else {
                         NotFound("ballot not found")
                       }
