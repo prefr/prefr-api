@@ -339,7 +339,8 @@
                 <div class="participants-overview left">
                     <label
                         ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
-                        ng-repeat       = "paper in (ballot.papers | filter: {removed : '!'} | orderBy:'-id':true)"    
+                        ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
+                        ng-if           = "!paper.removed"
                         ng-click        = "select('ballot-paper', paper)"                
                     >
                         <div class="connector left"></div>
@@ -404,7 +405,8 @@
 
                     <label
                         ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
-                        ng-repeat       = "removed_paper in ballot.papers | filter: {removed : true} | orderBy:'-id':true"    
+                        ng-repeat       = "removed_paper in ballot.papers | orderBy:'-id':true"    
+                        ng-if           = "removed_paper.removed"
                     >
                         <div class="connector left"></div>
 

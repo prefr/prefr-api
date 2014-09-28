@@ -112,22 +112,31 @@ prefrControllers.controller(
 		    	$http.post('/api/ballotBox', $scope.ballot.exportData())
 		    	.then(function(result){
 		    		var ballot_data = result.data
-		    		console.log(ballot_data.id)
 		    		$location.path('/ballot_box/'+ballot_data.id)
 		    	})
 		    }
 
 		    $scope.savePaper = function(paper){
-		    	var diff 	= paper.diff,
-		    		promise = 	diff.removed
-		    					?	$http.delete('/api/paper/'+paper.id)
-			    				:	$http.put('/api/paper/'+paper.id, paper.diff())
+		    	var diff 	= 	paper.diff()
 
-			    promise.then(function(result){
-			    	paper.import(paper.data)
-			    })
+		    	if(!paper.id)
+		    		return	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', data.exportData())
+		    				.then(function(result){
+		    					paper.importData(result.data)
+		    				})
 
-		    	return	promise
+		    	if(diff.removed)
+		    		return	$http.delete('/api/paper/'+paper.id)
+    						.then(function(){
+    							paper.importData(paper.exportData())
+    						})
+
+		    	
+		   		return	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, diff)
+				    	.then(function(result){
+					    	paper.importData(paper.exportData())
+					    })
+
 		    }
 
 		    $scope.updateBallotBox = function(){
