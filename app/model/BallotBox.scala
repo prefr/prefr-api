@@ -26,6 +26,7 @@ case class BallotBox(
     adminSecret: String,
     lastResultCalculation: Date,
     createDate: Date) {
+
   def toJson: JsObject = {
     Json.toJson(this)(BallotBox.outputWrites).as[JsObject]
   }
@@ -77,6 +78,12 @@ case class BallotBox(
     } else {
       Future(false)
     }
+  }
+
+  def deletePaper(paperId: String): Future[Boolean] = {
+    val query = Json.obj("id" -> this.id)
+    val set = Json.obj("$pull" -> Json.obj("papers" -> Json.obj("id" -> paperId)))
+    BallotBox.col.update(query,set).map(_.updatedExisting)
   }
 
   def calculateResult: Future[Option[BallotBox]] = {

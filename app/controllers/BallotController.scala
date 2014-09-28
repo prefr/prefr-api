@@ -111,7 +111,6 @@ object BallotController extends Controller with MongoController {
             BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
               case None => Future(NotFound("ballot box id"))
               case Some(ballotBox) =>
-                Logger.debug("papers: " + ballotBox.papers)
                 ballotBox.papers.getOrElse(Seq()).find(_.id.equals(paperId)) match {
                   case None => Future(NotFound("invalid paper id"))
                   case Some(paper) =>
@@ -135,5 +134,16 @@ object BallotController extends Controller with MongoController {
     val unique = ranking.flatten.distinct.size == ranking.flatten.size
     val valid = ranking.flatten.forall(option => ballotOptions.exists(_.tag.equals(option)))
     valid && unique
+  }
+
+  def deletePaper(id: String, paperId: String) = Action.async{
+    BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
+      case None => Future(NotFound("ballot box id"))
+      case Some(ballotBox) =>
+        ballotBox.deletePaper(paperId).map {
+          case false => BadRequest("could not delete")
+          case true => Ok("deleted")
+        }
+    }
   }
 }

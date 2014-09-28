@@ -3,29 +3,29 @@
 # ~~~~
 
 # API
-GET         /api/                                        controllers.Application.index()
+GET           /api/                                        controllers.Application.index()
 
 # BALLOTS
-POST        /api/ballotBox                               controllers.BallotController.createBallotBox
-PUT         /api/ballotBox/:id                           controllers.BallotController.modifyBallotBox(id)
-GET         /api/ballotBox/:id                           controllers.BallotController.getBalloxBox(id)
-POST        /api/ballotBox/:id/paper                     controllers.BallotController.addPaper(id)
-PUT         /api/ballotBox/:id/paper/:paperId            controllers.BallotController.modifyPaper(id, paperId)
-#DELETE      /api/ballotBox/:id/paper/:paperId              controllers.BallotController.deletePaper(id, paperId)
-GET         /api/ballotBox/:id/result                    controllers.BallotController.getResult(id)
+POST          /api/ballotBox                               controllers.BallotController.createBallotBox
+PUT           /api/ballotBox/:id                           controllers.BallotController.modifyBallotBox(id)
+GET           /api/ballotBox/:id                           controllers.BallotController.getBalloxBox(id)
+POST          /api/ballotBox/:id/paper                     controllers.BallotController.addPaper(id)
+PUT           /api/ballotBox/:id/paper/:paperId            controllers.BallotController.modifyPaper(id, paperId)
+DELETE        /api/ballotBox/:id/paper/:paperId            controllers.BallotController.deletePaper(id, paperId)
+GET           /api/ballotBox/:id/result                    controllers.BallotController.getResult(id)
 
 # Export in preftools data format
-GET         /api/ballotBox/:id/preftoolCandidates        controllers.PreftoolController.getCandidates(id)
-GET         /api/ballotBox/:id/preftoolBallots           controllers.PreftoolController.getBallots(id)
-GET         /api/ballotBox/:id/preftoolResult            controllers.PreftoolController.getResult(id)
+GET           /api/ballotBox/:id/preftoolCandidates        controllers.PreftoolController.getCandidates(id)
+GET           /api/ballotBox/:id/preftoolBallots           controllers.PreftoolController.getBallots(id)
+GET           /api/ballotBox/:id/preftoolResult            controllers.PreftoolController.getResult(id)
 
-POST        /api/ballotBox/preftoolImport                controllers.PreftoolController.importPapers
+POST          /api/ballotBox/preftoolImport                controllers.PreftoolController.importPapers
 
 
 # calculation without saving to db
 #POST        /api/get_schulze_rank        controllers.directSchulze.direct()
 
 # The Webclient is static and resides in /public redirect all non-api calls there
-GET         /static/*file                                controllers.Assets.at(path="/public/static", file)
-GET         /*foo                                        controllers.Application.assets(path="/public", file="index.html", foo)
-GET         /                                            controllers.Assets.at(path="/public", file="index.html")
+GET           /static/*file                                controllers.Assets.at(path="/public/static", file)
+GET           /*foo                                        controllers.Application.assets(path="/public", file="index.html", foo)
+GET           /                                            controllers.Assets.at(path="/public", file="index.html")
