@@ -93,6 +93,7 @@ object PreftoolController extends Controller {
           None,
           None,
           Some(p),
+          None,
           res,
           IdHelper.generateAdminSecret(),
           new Date(),
@@ -100,8 +101,7 @@ object PreftoolController extends Controller {
         )
         BallotBox.col.insert(bb)
         Ok(bb.toJson)
-      }
-      else {
+      } else {
         BadRequest("Could not parse input")
       }
   }

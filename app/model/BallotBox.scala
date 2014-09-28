@@ -21,6 +21,7 @@ case class BallotBox(
     subject: Option[String],
     options: Option[Seq[BallotOption]],
     papers: Option[Seq[Paper]],
+    details: Option[String],
     result: Seq[Seq[String]],
     adminSecret: String,
     lastResultCalculation: Date,
@@ -37,22 +38,45 @@ case class BallotBox(
 
     val subjectJson = if (update.subject.isDefined) {
       Json.obj("subject" -> update.subject.get)
+    } else {
+      Json.obj()
     }
-    else {
+
+    val detailsJson = if (update.details.isDefined) {
+      Json.obj("details" -> update.details.get)
+    } else {
       Json.obj()
     }
 
     val optionsJson = if (update.options.isDefined) {
       Json.obj("options" -> update.options.get)
-    }
-    else {
+    } else {
       Json.obj()
     }
 
     val query = Json.obj("id" -> this.id)
-    val set = Json.obj("$set" -> (subjectJson ++ optionsJson))
+    val set = Json.obj("$set" -> (subjectJson ++ optionsJson ++ detailsJson))
 
     BallotBox.col.update(query, set)
+  }
+
+  def updatePaper(paperId: String, update: PaperUpdate): Future[Boolean] = {
+    if (update.ranking.isDefined || update.participant.isDefined) {
+      val query = Json.obj("id" -> this.id, "papers.id" -> paperId)
+
+      val setRanking = update.ranking match {
+        case None          => Json.obj()
+        case Some(ranking) => Json.obj("papers.$.ranking" -> ranking)
+      }
+      val setParticipant = update.participant match {
+        case None       => Json.obj()
+        case Some(part) => Json.obj("papers.$.participant" -> part)
+      }
+      val set = Json.obj("$set" -> (setRanking ++ setParticipant))
+      BallotBox.col.update(query, set).map(_.updatedExisting)
+    } else {
+      Future(false)
+    }
   }
 
   def calculateResult: Future[Option[BallotBox]] = {
@@ -63,8 +87,7 @@ case class BallotBox(
       lastError =>
         if (lastError.updatedExisting) {
           BallotBox.col.find(query).one[BallotBox]
-        }
-        else {
+        } else {
           Future(None)
         }
     }
@@ -82,6 +105,7 @@ object BallotBox {
     (__ \ 'subject).readNullable[String] and
     (__ \ 'options).readNullable[Seq[BallotOption]] and
     (__ \ 'papers).readNullable[Seq[Paper]](Reads.seq(Paper.inputReads)) and
+    (__ \ 'details).readNullable[String] and
     Reads.pure[Seq[Seq[String]]](Seq()) and
     Reads.pure[String](IdHelper.generateAdminSecret()) and
     Reads.pure[Date](new Date) and
@@ -92,6 +116,7 @@ object BallotBox {
     b =>
       Json.obj("id" -> b.id) ++
         Json.obj("subject" -> JsString(b.subject.getOrElse(""))) ++
+        Json.obj("details" -> JsString(b.details.getOrElse(""))) ++
         Json.obj("options" -> b.options.getOrElse(Seq()).map {
           _.toJson
         }) ++
@@ -112,6 +137,7 @@ object BallotBox {
 
 case class BallotBoxUpdate(adminSecret: String,
                            subject: Option[String],
+                           details: Option[String],
                            options: Option[Seq[BallotOption]])
 
 object BallotBoxUpdate {

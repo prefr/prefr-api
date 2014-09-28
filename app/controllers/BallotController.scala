@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc.{ Action, Controller }
 import play.modules.reactivemongo.MongoController
 import play.api.libs.json.{ Json, JsError }
-import model.{ BallotBoxUpdate, Paper, BallotBox }
+import model._
 
 import scala.concurrent.{ Future, ExecutionContext }
 import ExecutionContext.Implicits.global
@@ -38,35 +38,31 @@ object BallotController extends Controller with MongoController {
     }
   }
 
-  def addVote(id: String) = Action.async(parse.tolerantJson) {
+  def addPaper(id: String) = Action.async(parse.tolerantJson) {
     request =>
       request.body.validate[Paper](Paper.inputReads).map {
         paper =>
-          {
-            Logger.debug("Add vote to id: " + id + " pater: " + paper)
-
-            // check if vote is valid
-            paper.check match {
-              case false => Future(BadRequest("Invalid options"))
-              case true =>
-
-                // Add paper to ballot
-                val query = Json.obj("id" -> id)
-                val set = Json.obj("$push" -> Json.obj("papers" -> paper))
-
-                BallotBox.col.update(query, set).map {
-                  lastError =>
-                    if (lastError.updatedExisting) {
-                      Ok("vote added")
-                    }
-                    else {
-                      NotFound("ballot not found")
-                    }
-                }
-            }
+          BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
+            case None => Future(NotFound("ballot box"))
+            case Some(ballotBox) =>
+              // check if vote is valid
+              checkRanking(ballotBox.options.getOrElse(Seq()), paper.ranking) match {
+                case false => Future(BadRequest("Invalid options"))
+                case true =>
+                  // Add paper to ballot
+                  val query = Json.obj("id" -> id)
+                  val set = Json.obj("$push" -> Json.obj("papers" -> paper))
+                  BallotBox.col.update(query, set).map {
+                    lastError =>
+                      if (lastError.updatedExisting) {
+                        Ok("vote added")
+                      } else {
+                        NotFound("ballot not found")
+                      }
+                  }
+              }
           }
       }.recoverTotal(e => Future(BadRequest(JsError.toFlatJson(e))))
-
   }
 
   def modifyBallotBox(id: String) = Action.async(parse.tolerantJson) {
@@ -82,8 +78,7 @@ object BallotController extends Controller with MongoController {
                 case true =>
                   if (update.options.isEmpty && update.subject.isEmpty) {
                     Ok("nothing to update")
-                  }
-                  else {
+                  } else {
                     bb.update(update).map {
                       le =>
                         Logger.debug("Modfied Ballot: " + update)
@@ -106,5 +101,39 @@ object BallotController extends Controller with MongoController {
             Ok(resultBB.toResultJson)
         }
       }
+  }
+
+  def modifyPaper(id: String, paperId: String) = Action.async(parse.tolerantJson) {
+    request =>
+      request.body.validate[PaperUpdate](PaperUpdate.format).map {
+        paperUpdate =>
+          {
+            BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
+              case None => Future(NotFound("ballot box id"))
+              case Some(ballotBox) =>
+                Logger.debug("papers: " + ballotBox.papers)
+                ballotBox.papers.getOrElse(Seq()).find(_.id.equals(paperId)) match {
+                  case None => Future(NotFound("invalid paper id"))
+                  case Some(paper) =>
+                    paperUpdate.ranking.isEmpty || checkRanking(ballotBox.options.getOrElse(Seq()), paperUpdate.ranking.get) match {
+                      case false => Future(BadRequest("bad ranking"))
+                      case true =>
+                        ballotBox.updatePaper(paperId, paperUpdate).map {
+                          case false => BadRequest("bad update")
+                          case true => Ok("updated")
+                        }
+                    }
+                }
+            }
+          }
+      }.recoverTotal(e => Future(BadRequest(JsError.toFlatJson(e))))
+  }
+
+
+  def checkRanking(ballotOptions : Seq[BallotOption], ranking: Seq[Seq[String]]): Boolean = {
+    Logger.info("Checking: " + ballotOptions + ":" + ranking)
+    val unique = ranking.flatten.distinct.size == ranking.flatten.size
+    val valid = ranking.flatten.forall(option => ballotOptions.exists(_.tag.equals(option)))
+    valid && unique
   }
 }

@@ -7,9 +7,11 @@ GET         /api/                                        controllers.Application
 
 # BALLOTS
 POST        /api/ballotBox                               controllers.BallotController.createBallotBox
-POST        /api/ballotBox/:id                           controllers.BallotController.modifyBallotBox(id)
+PUT         /api/ballotBox/:id                           controllers.BallotController.modifyBallotBox(id)
 GET         /api/ballotBox/:id                           controllers.BallotController.getBalloxBox(id)
-POST        /api/ballotBox/:id/addVote                   controllers.BallotController.addVote(id)
+POST        /api/ballotBox/:id/paper                     controllers.BallotController.addPaper(id)
+PUT         /api/ballotBox/:id/paper/:paperId            controllers.BallotController.modifyPaper(id, paperId)
+#DELETE      /api/ballotBox/:id/paper/:paperId              controllers.BallotController.deletePaper(id, paperId)
 GET         /api/ballotBox/:id/result                    controllers.BallotController.getResult(id)
 
 # Export in preftools data format
