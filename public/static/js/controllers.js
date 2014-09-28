@@ -127,8 +127,8 @@ prefrControllers.controller(
 			if($scope.box_id != 'new'){
 				$http.get('/api/ballotBox/'+$scope.box_id)
 				.then(
-					function(data){
-						$scope.ballot	= new Ballot(data)
+					function(result){
+						$scope.ballot	= new Ballot(result.data)
 						$scope.lockPapers()
 					},
 					function(){

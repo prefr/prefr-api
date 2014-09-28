@@ -214,9 +214,13 @@
                                 {{removed_option.title}}
                             </span>
 
-                            <div class = "icons right"
+                            <div class = "icons right">
                                 <button ng-click = "ballot.restoreOption(removed_option); select('ballot-option', removed_option)">
                                     <i class = "fa fa-arrow-circle-up"></i>
+                                </button>
+
+                                <button ng-click = "deleteOption(removed_option)">
+                                    <i class = "fa fa-trash-o"></i>
                                 </button>
                             </div>                          
 
@@ -400,12 +404,16 @@
                         </span>
 
                         <div class = "icons right shift">
-                            <button>
+                            <button disabled>
                                 <i class = "fa fa-lock"></i>
                             </button>
 
-                            <button ng-click ="ballot.restorePaper(removed_paper); select('ballot-paper', removed_paper)">
+                            <button ng-click = "ballot.restorePaper(removed_paper); select('ballot-paper', removed_paper)">
                                 <i class = "fa fa-arrow-circle-up"></i>
+                            </button>
+
+                            <button ng-click = "deletePaper(removed_paper)">
+                                <i class = "fa fa-trash-o"></i>
                             </button>
                         </div> 
                     </label>
