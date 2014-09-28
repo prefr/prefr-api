@@ -125,18 +125,21 @@ prefrControllers.controller(
 		    					paper.importData(result.data)
 		    				})
 
-		    	if(diff.removed)
-		    		return	$http.delete('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id)
-    						.then(function(){
-    							paper.importData(paper.exportData())
-    						})
-
-		    	
 		   		return	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, diff)
-				    	.then(function(result){
-					    	paper.importData(paper.exportData())
-					    })
 
+		    }
+
+		    $scope.removePaper = function(paper){
+		    	$scope.ballot.removePaper(paper)
+		    	return	$http.delete('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id)	    	
+		    }
+
+		    $scope.restorePaper = function(paper){
+		    	$scope.ballot.restorePaper(paper)
+		    	return	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
+		    			.then(function(result){
+		    				paper.importData(result.data)
+		    			})
 		    }
 
 		    $scope.updateBallotBox = function(){

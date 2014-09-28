@@ -81,7 +81,6 @@ angular.module('services',[])
                 this.removed     = data.removed     || this.removed || false
 
                 this.backup      =  {
-                                        removed:        !!data.removed,
                                         participant :   String(data.participant),
                                         ranking:        angular.extend([], data.ranking)
                                     }
@@ -127,9 +126,6 @@ angular.module('services',[])
 
                 if(JSON.stringify(this.ranking) != JSON.stringify(this.backup.ranking))
                     diff.ranking = this.ranking
-
-                if(this.removed != this.backup.removed)
-                    diff.removed = this.removed
 
                 return  Object.keys(diff).length > 0 
                         ?   diff

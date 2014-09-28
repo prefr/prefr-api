@@ -430,6 +430,10 @@ li {
 }
 
 
+.locked {
+	opacity:				0.75;
+}
+
 .removed{
 	opacity:				0.6;
 }
@@ -832,8 +836,11 @@ label button.inverted {
 	border-radius:			0.25em;
 	color:					#647D8C;
 	background:				#fff;
-	padding:				0 0.25em;
-	line-height:			1em;
+
+	font-size:				0.9;
+
+	padding:				0.1em 0.4em;
+	line-height:			0.8em;
 	height:					1em;
 }
 
@@ -856,6 +863,7 @@ label + label {
 .selected label,
 label.selected {
 	background-color:		#5f98f7;
+	opacity:				1 !important;
 }
 
 .selected label button.inverted,
@@ -882,7 +890,7 @@ label .icons.right.shift {
 	right:					0.25em;
 }
 
-label .tag {
+label .tag {	
 	min-width: 				1.5em;
 	text-align:				center;
 }

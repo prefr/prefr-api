@@ -338,7 +338,7 @@
 
                 <div class="participants-overview left">
                     <label
-                        ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
+                        ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1, 'locked' : paper.locked}"
                         ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
                         ng-if           = "!paper.removed"
                         ng-click        = "select('ballot-paper', paper)"                
@@ -386,7 +386,7 @@
 
                             <button
                                 ng-disabled     = "paper.locked"   
-                                ng-click        = "ballot.removePaper(paper)"
+                                ng-click        = "removePaper(paper)"
                             >
                                 <i class = "fa fa-times"></i>
                             </button>
@@ -415,19 +415,11 @@
                         </span>
 
                         <div class = "icons right shift">
-                            <button 
-                                class       = "inverted" 
-                                ng-if       = "!!removed_paper.diff()"
-                                ng-click    = "savePaper(removed_paper)" 
-                            >
-                                delete
-                            </button>
-
                             <button disabled>
                                 <i class = "fa fa-lock"></i>
                             </button>
 
-                            <button ng-click = "ballot.restorePaper(removed_paper); select('ballot-paper', removed_paper)">
+                            <button ng-click = "restorePaper(removed_paper); select('ballot-paper', removed_paper)">
                                 <i class = "fa fa-arrow-circle-up"></i>
                             </button>
                         </div> 
