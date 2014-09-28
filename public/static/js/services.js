@@ -192,12 +192,12 @@ angular.module('services',[])
                                             return  option.removed
                                                     ?   undefined
                                                     :   option.exportData()
-                                        }),
+                                        }).filter(function(item){ return !!item}),
                             papers:     this.papers.map(function(paper){
                                             return  paper.removed
                                                     ?   undefined
                                                     :   paper.exportData()
-                                        })
+                                        }).filter(function(item){ return !!item})
                         }
             }
 
