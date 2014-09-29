@@ -67,27 +67,29 @@ object BallotController extends Controller with MongoController {
 
   def modifyBallotBox(id: String) = Action.async(parse.tolerantJson) {
     request =>
-      BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
-        case None => NotFound("ballot not found")
-        case Some(bb) =>
-          request.body.validate[BallotBoxUpdate].map {
-            update =>
+      request.body.validate[BallotBoxUpdate].map {
+        update =>
+          BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
+            case None => Future(NotFound("ballot not found"))
+            case Some(bb) =>
               // check secret
               update.adminSecret.equals(bb.adminSecret) match {
-                case false => Unauthorized("wrong admin secret")
+                case false => Future(Unauthorized("wrong admin secret"))
                 case true =>
                   if (update.options.isEmpty && update.subject.isEmpty) {
-                    Ok("nothing to update")
+                    Future(BadRequest("nothing to update"))
                   } else {
-                    bb.update(update).map {
+                    bb.update(update).flatMap {
                       le =>
-                        Logger.debug("Modfied Ballot: " + update)
+                        BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+                          case None          => InternalServerError("could not retrieve update")
+                          case Some(updated) => Ok(updated.toJson)
+                        }
                     }
-                    Ok("updated")
                   }
               }
-          }.recoverTotal(e => BadRequest(JsError.toFlatJson(e)))
-      }
+          }
+      }.recoverTotal(e => Future(BadRequest(JsError.toFlatJson(e))))
   }
 
   def getResult(id: String) = Action.async {
@@ -117,9 +119,15 @@ object BallotController extends Controller with MongoController {
                     paperUpdate.ranking.isEmpty || checkRanking(ballotBox.options.getOrElse(Seq()), paperUpdate.ranking.get) match {
                       case false => Future(BadRequest("bad ranking"))
                       case true =>
-                        ballotBox.updatePaper(paperId, paperUpdate).map {
-                          case false => BadRequest("bad update")
-                          case true => Ok("updated")
+                        ballotBox.updatePaper(paperId, paperUpdate).flatMap {
+                          case false => Future(BadRequest("bad update"))
+                          case true  =>
+                            BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+                              case None => InternalServerError("could not retrieve update")
+                              case Some(updatedBb) =>
+                                val updatedPaper = updatedBb.papers.get.find(_.id.equals(paperId)).get
+                                Ok(updatedPaper.toJson)
+                            }
                         }
                     }
                 }
@@ -128,21 +136,20 @@ object BallotController extends Controller with MongoController {
       }.recoverTotal(e => Future(BadRequest(JsError.toFlatJson(e))))
   }
 
-
-  def checkRanking(ballotOptions : Seq[BallotOption], ranking: Seq[Seq[String]]): Boolean = {
+  def checkRanking(ballotOptions: Seq[BallotOption], ranking: Seq[Seq[String]]): Boolean = {
     Logger.info("Checking: " + ballotOptions + ":" + ranking)
     val unique = ranking.flatten.distinct.size == ranking.flatten.size
     val valid = ranking.flatten.forall(option => ballotOptions.exists(_.tag.equals(option)))
     valid && unique
   }
 
-  def deletePaper(id: String, paperId: String) = Action.async{
+  def deletePaper(id: String, paperId: String) = Action.async {
     BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
       case None => Future(NotFound("ballot box id"))
       case Some(ballotBox) =>
         ballotBox.deletePaper(paperId).map {
           case false => BadRequest("could not delete")
-          case true => Ok("deleted")
+          case true  => Ok("deleted")
         }
     }
   }
