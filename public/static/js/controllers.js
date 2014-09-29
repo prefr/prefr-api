@@ -13,82 +13,10 @@ prefrControllers.controller(
 
 		function ($scope, $routeParams, $location, $http, Ballot){
 
-			//dummy:
-			var dummy	=	{
-							            id      :   "1",
-							            subject :   "example subject",
-							            options :   [
-							            				{
-								            				tag		:	"A",
-								                            title   :   "That government department",
-								                            details :   "Beschreibung"
-								                        }, 
-								                        {
-								            				tag		:	"B",
-								                            title   :   "Titel B",
-								                            details :   "Beschreibung"
-								                        }, 
-								                        {
-								            				tag		:	"C",
-								                            title   :   "Titel C",
-								                            details :   "Beschreibung"
-								                        }, 
-								                        {
-								            				tag		:	"D",
-								                            title   :   "Titel D",
-								                            details :   "Beschreibung"
-								                        }, 
-								                        {
-								            				tag		:	"E",
-								                            title   :   "Titel E",
-								                            details :   "Beschreibung"
-								                        }, 
-								                        {
-								            				tag		:	"F",
-								                            title   :   "Titel F",
-								                            details :   "Beschreibung"
-								                        }
-													], 
-							            papers  :   [
-														{
-							                                id          :   "1",
-							                                participant :   "user1",
-							                                ranking     :   [["A"], ["B", "C"], ["D", "E", "F"]]
-							                            },
-							                            {
-							                                id          :   "2",
-							                                participant :   "user2",
-							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
-							                            },
-							                            {
-							                                id          :   "3",
-							                                participant :   "A-user2",
-							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
-							                            },
-							                            {
-							                                id          :   "4",
-							                                participant :   "user2",
-							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
-							                            },
-							                            {
-							                                id          :   "5",
-							                                participant :   "user2",
-							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
-							                            },
-							                            {
-							                                id          :   "6",
-							                                participant :   "user2",
-							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
-							                            },
-							                            {
-							                                id          :   "7",
-							                                participant :   "user2",
-							                                ranking     :   [["B"], ["C", "A"], ["D"], ["E", "F"]]
-							                            }
-							                        ]
-									}
 								
-			$scope.isAdmin = true
+			$scope.adminSecret 	= $routeParams.admin_secret
+			$scope.box_id		= $routeParams.box_id
+			$scope.isAdmin 		= $scope.box_id == 'new' || !!$scope.adminSecret
 
 
 		    $scope.addResult = function(ranking) {
@@ -108,11 +36,11 @@ prefrControllers.controller(
 		    } 
 
 
-		    $scope.postBox = function() {
+		    $scope.saveBallotBox = function() {
 		    	$http.post('/api/ballotBox', $scope.ballot.exportData())
 		    	.then(function(result){
 		    		var ballot_data = result.data
-		    		$location.path('/ballot_box/'+ballot_data.id)
+		    		$location.path('/ballot_box/'+ballot_data.id+'/'+ballot_data.adminSecret)
 		    	})
 		    }
 
@@ -146,9 +74,10 @@ prefrControllers.controller(
 		    	var data = $scope.ballot.exportData()
 
 		    	return	$http.put('/api/ballotBox/'+data.id, {
-		    				subject:	data.subject,
-		    				details:	data.details,
-		    				option:		data.options
+		    				subject:		data.subject,
+		    				details:		data.details,
+		    				option:			data.options,
+		    				adminSecret:	$scope.adminSecret
 		    			})
 		    }
 
@@ -157,17 +86,12 @@ prefrControllers.controller(
 		    }
 
 
-			$scope.box_id		=	$routeParams.box_id
 
 			if($scope.box_id != 'new'){
 				$http.get('/api/ballotBox/'+$scope.box_id)
 				.then(
 					function(result){
 						$scope.ballot	= new Ballot(result.data)
-						$scope.lockPapers()
-					},
-					function(){
-						$scope.ballot	= new Ballot(dummy)
 						$scope.lockPapers()
 					}
 			    )
@@ -191,6 +115,7 @@ prefrControllers.controller(
 												]
 
 								})
+				$scope.saveBallotBox()
 			}
 
 

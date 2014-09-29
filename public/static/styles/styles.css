@@ -582,12 +582,13 @@ textarea[extendable] {
 	margin-bottom:			1.5em;
 	background-color:		#647d8c;
 	border-top:				0.1em solid rgba(245, 245, 240, 1);
+	color:					#fff;
 }
 
 .options-overview .option .details textarea{
 	background:				transparent;
 	overflow:				visible;
-	color:					#fff;
+	color:					inherit;
 
 	min-height:				3em;
 	width:					100%;

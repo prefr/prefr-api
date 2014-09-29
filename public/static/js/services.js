@@ -11,13 +11,14 @@ angular.module('services',[])
 
             this.importData = function(data){
                 data = data || {}
-                this.title      = data.title    || this.title   || ''
-                this.details    = data.details  || this.details || ''
-                this.tag        = data.tag      || this.tag     || ''
+                this.title      = data.title    || this.title  
+                this.details    = data.details  || this.details
+                this.tag        = data.tag      || this.tag    
 
                 this.backup     =   {
                                         title:      String(this.title),
-                                        details:    String(this.details)
+                                        details:    String(this.details),
+                                        tag:        String(this.tag)
                                     }
 
                 return this
@@ -25,9 +26,9 @@ angular.module('services',[])
 
             this.exportData = function(){
                 return  {
-                            title:      String(data.title),
-                            details:    String(data.details),
-                            tag:        String(data.tag)
+                            tag:        this.tag        || '',
+                            title:      this.title      || '',
+                            details:    this.details    || ''
                         }
             }
 
@@ -35,16 +36,13 @@ angular.module('services',[])
                 var diff = {}
 
                 if(this.tag != this.backup.tag)
-                    diff.tag = this.tag
+                    diff.tag = this.tag || ''
 
-                if(this.tile != this.backup.title)
-                    diff.title = this.title
+                if(this.title != this.backup.title)
+                    diff.title = this.title || ''
 
                 if(this.details != this.backup.details)
-                    diff.details = this.details
-
-                if(this.removed)
-                    diff.removed = true
+                    diff.details = this.details || ''
 
                 return  Object.keys(diff).length > 0 
                         ?   diff
@@ -81,7 +79,8 @@ angular.module('services',[])
                 this.removed     = data.removed     || this.removed || false
 
                 this.backup      =  {
-                                        participant :   String(data.participant),
+                                        id:             String(this.id),
+                                        participant :   String(this.participant),
                                         ranking:        angular.extend([], data.ranking)
                                     }
 
@@ -93,7 +92,6 @@ angular.module('services',[])
                             id:             this.id,
                             participant:    this.participant,
                             ranking:        this.ranking,
-                            removed:        this.removed
                         }
             }
 
@@ -120,6 +118,9 @@ angular.module('services',[])
 
             this.diff = function(){
                 var diff = {}
+
+                if(this.id != this.backup.id)
+                    diff.id = this.id
 
                 if(this.participant != this.backup.participant)
                     diff.participant = this.participant
@@ -163,8 +164,9 @@ angular.module('services',[])
             }
 
             this.importData = function(data){
-                this.id      = data.id      || this.id
-                this.subject = data.subject || this.subject
+                this.id      = data.id      || this.id      || ''
+                this.subject = data.subject || this.subject || ''
+                this.details = data.details || this.details || ''
 
 
                 this.options =  data.options.map(function(option_data){
@@ -180,7 +182,8 @@ angular.module('services',[])
                                 })
 
                 this.backup =   {
-                                    subject: data.subject
+                                    subject:    String(this.subject),
+                                    details:    String(this.details)
                                 }
             }
 
@@ -203,22 +206,24 @@ angular.module('services',[])
             }
 
             this.diff    = function(){
-                return  {
-                            id:             this.id,
+                var diff = {}
 
-                            subject:        this. backup.subject == this.subject 
-                                            ?   undefined
-                                            :   this.subject,
+                if(this.subject != this.backup.subject )
+                    diff.subject = this.diff
 
-                            options:        this.options.map(function(option){
-                                                return option.diff()
-                                            }),
+                if(this.details != this.backup.details)
+                    diff.details = this.details
 
-                            papers:         this.papers.map(function(paper){
-                                                return paper.diff()
-                                            }),
+                var options_diff =  this.options.map(function(option){
+                                        return option.diff()
+                                    }).filter(function(item){ return item })
 
-                        }
+                if(options_diff.length > 0)
+                    diff.options = options_diff
+
+                return  Object.keys(diff).length > 0
+                        ?   diff
+                        :   null
             }
 
             this.getNextAvailableTag = function(){
@@ -226,11 +231,6 @@ angular.module('services',[])
                     taken_tags  =   this.options.map(function(option){
                                         return option.tag
                                     })
-                                    .concat(
-                                        this.removedOptions.map(function(removed_option){
-                                        return removed_option.tag
-                                    })
-                                    ),
                     i           =   0,
                     next_tag    =   'A'
 
@@ -296,6 +296,15 @@ angular.module('services',[])
             this.restorePaper = function(paper){
                 paper.removed = false
             }
+
+            this.paperCount = function(){
+                return this.papers.filter(function(paper){ return !paper.removed }).length
+            }
+
+            this.optionCount = function(){
+                return this.options.filter(function(option){ return !option.removed }).length
+            }
+
 
             this.importData(data)
         }

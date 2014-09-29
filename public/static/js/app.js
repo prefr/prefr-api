@@ -29,7 +29,7 @@ prefr.config([
             }
         )
         .when(
-            '/ballot_box/:box_id',
+            '/ballot_box/:box_id/:admin_secret?',
             {
                 templateUrl :   'static/partials/ballot_box.html',
                 controller  :   'BallotBoxCtrl'

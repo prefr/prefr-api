@@ -1,7 +1,3 @@
-<button ng-click = "postBox()">
- DIFF
-</button>
-
 <div
 	class			=	"ballot-box"
 	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
@@ -92,7 +88,7 @@
 
                     
                     <h2 ng-if="!isAdmin">                        
-                        {{ballot.subject || '(no subject)'}} ({{ballot.id}})
+                        Subject: {{ballot.subject || '(no subject)'}}
                     </h2>
 
 
@@ -105,8 +101,16 @@
                            Instructions go here.
                          </small>
                     </p>
+
+                    <button
+                        class       = "inverted"
+                        ng-if       = "!!ballot.diff()"
+                        ng-click    = "updateBallotBox()"
+                    >
+                        save settings
+                    </button>
                     
-                    <label>
+                    <label ng-if = "isAdmin">
                         Add new option
                         <div class = "icons right">
                             <button ng-click="select('ballot-option', ballot.newOption())">
@@ -127,7 +131,9 @@
                             <br/>
                         </walkthrough>
 
-                    </label>                    
+                    </label>     
+
+                    <h2 ng-if = "!isAdmin">Options ({{ballot.optionCount()}})</h2>               
                 </div>
 
 
@@ -154,15 +160,17 @@
                             <input 
                                 name        = "title" 
                                 type        = "text"
-                                ng-disabled = "!isAdmin" 
+                                ng-if       = "isAdmin" 
                                 placeholder = "Enter title" 
                                 ng-model    = "option.title"
                                 max-size    
                             >
+
+                            <span ng-if = "!isAdmin">{{option.title || 'No title'}} </span>
                             <!--
                                 <div class="connector right"></div>
                             -->
-                            <div class = "icons right">
+                            <div class = "icons right" ng-if = "isAdmin">
                                 <i class = "fa fa-times" ng-click = "ballot.removeOption(option)"></i>
                             </div>
 
@@ -182,9 +190,17 @@
 
                         </label>
                         <div 
-                            class   = "details ui-white"
+                            class   = "details ui-blue"
                         >
-                            <textarea extendable placeholder ="no further description" ng-model = "option.details" placeholder = "Enter details"></textarea>
+                            <textarea 
+                                extendable 
+                                ng-model    = "option.details" 
+                                ng-if       = "isAdmin"
+                                placeholder = "Enter details"
+                            ></textarea>
+                            <div ng-if = "!isAdmin">
+                                {{option.details || 'No details'}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -318,7 +334,7 @@
             >
 
                 <div class="ui-white left right">
-                    <h2>Participants</h2>
+                    <h2>Participants ({{ballot.paperCount()}})</h2>
                     <p>
                         Enter your name below and arranged the options in the middle column according to your preference.
                     </p>
