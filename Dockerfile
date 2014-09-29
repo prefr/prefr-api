@@ -11,4 +11,4 @@ EXPOSE 9000
 
 WORKDIR /opt/app/
 
-ENTRYPOINT ["bin/prefr"]
+ENTRYPOINT ["bin/prefr","-Dconfig.file=/opt/app/conf/docker.conf","-mem","128"]
