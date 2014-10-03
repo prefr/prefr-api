@@ -6,47 +6,14 @@
 
     <table id = "main"> 
         <tr single-select   = "{'edit-menu' : 'ranking'}">
-
-        	<!-- selected ballot paper to edit start -->
-
-            <!--
-            <td class="edit-options">
-                <nav class="vertical">
-
-                    <a
-                        ng-click        = "select('edit-menu', 'source')"
-                        class           = "{{selectionEditMenu.value == 'source' ? 'current' : ''}}"
-                    >
-                        JSON-source
-                    </a>
-
-                    <a
-                        ng-click        = "select('edit-menu', 'ranking')"
-                        class           = "{{selectionEditMenu.value == 'ranking' ? 'current' : ''}} "
-                    >
-                        Ranking UI
-                    </a>        
-
-                    <i
-                        class       = "fa fa-lock  fa-rotate-90 fa-lg ui-clickable"
-                        ng-show     = "selectionBallotPaper.value.locked"
-                        ng-click    = "selectionBallotPaper.value.locked = false"
-                    ></i>   
-                    <i
-                        class       =  "fa fa-unlock-alt  fa-rotate-90 fa-lg ui-clickable"
-                        ng-hide     = "selectionBallotPaper.value.locked"                        
-                        ng-click    = "selectionBallotPaper.value.locked = true"
-                    ></i>                
-                </nav>
-            </td>
-            -->
-
             <td id="left-column" class="ballot-overview">
                 
 
                 <div class = "left right ui-white">
 
-                    <label ng-if = "isAdmin" class = "subject">
+                    <h2 ng-if = "isAdmin">Ballot settings</h2>
+
+                    <label ng-if = "isAdmin" class = "ui-white subject">
                         <span> Subject: </span>
                         <input type="text" ng-model = "ballot.subject" placeholder = "Enter subject">
                         <div class = "icons right">
@@ -63,15 +30,14 @@
                         </walkthrough>
                     </label>
 
-                    
 
                     <label ng-if = "isAdmin" class = "ui-white">
                         <span> Details: </span>
                         <div class = "icons right">
                             <i class = "fa fa-pencil"></i>
                         </div>
-                         <br/>
-                         <div class="wrapper">
+                        <br/>
+                        <div class="wrapper">
                             <textarea placeholder = "Enter details" extendable ng-model = "ballot.details" placeholder = "Enter details"></textarea>
                         </div>
                         
@@ -86,6 +52,19 @@
 
                     </label>                    
 
+                    <p ng-if = "adminSecret">
+                        Admin link: <br/>
+                        <small>
+                            <a href = "{{adminLink}}">{{adminLink}}</a><br/>             
+                        </small>
+
+                        <br/>
+
+                        Participant link: <br/>
+                        <small>
+                            <a href = "{{participantLink}}">{{participantLink}}</a>
+                        </small>
+                    </p>
                     
                     <h2 ng-if="!isAdmin">                        
                         Subject: {{ballot.subject || '(no subject)'}}
@@ -93,22 +72,27 @@
 
 
                     <p ng-if = "!isAdmin">
+                        Details:<br/>                        
                         {{ballot.details}}
                     </p>
 
-                    <p>
+                    <p ng-if = "isAdmin">
+                         <button
+                            ng-disabled = "!ballot.diff()"
+                            ng-click    = "updateBallotBox()"
+                            class       = "ui-float-right"
+                        >
+                            save settings
+                        </button>
+
                         <small>
-                           Instructions go here.
-                         </small>
+                           Add options to the ballot below. You may want to add a description alongside the title to your options if tittles of different options are too similar.  
+                           Any changes to ballot's options or settings will only take effect after saving.
+                        </small>                    
+
                     </p>
 
-                    <button
-                        class       = "inverted"
-                        ng-if       = "!!ballot.diff()"
-                        ng-click    = "updateBallotBox()"
-                    >
-                        save settings
-                    </button>
+
                     
                     <label ng-if = "isAdmin">
                         Add new option
@@ -130,10 +114,12 @@
                             You can remove it later – if you like – with the x button on the top right.
                             <br/>
                         </walkthrough>
-
                     </label>     
 
-                    <h2 ng-if = "!isAdmin">Options ({{ballot.optionCount()}})</h2>               
+                    <label ng-if = "!isAdmin">
+                        &nbsp;
+                    </label>
+
                 </div>
 
 
@@ -321,11 +307,7 @@
 
         	<!-- selected ballot paper to end -->
 
-
-
-
-
-        	
+      	
 
             <td
                 id              = "right-column"
@@ -334,15 +316,25 @@
             >
 
                 <div class="ui-white left right">
-                    <h2>Participants ({{ballot.paperCount()}})</h2>
+                    <h2>Participants ({{ballot.paperCount()||0}})</h2>
                     <p>
                         Enter your name below and arranged the options in the middle column according to your preference.
                     </p>
                     <p>
                         <small>
-                            You can change preference ranking or name of yours or others' later on if you like. In order to edit a name click the lock to unlock the input field.
+                            You can change preference ranking or the name of yours or another participant's later on if you like. In order to edit a name click the lock to unlock the input field.
                         </small>
                     </p>
+
+                    <p ng-if = "isAdmin">
+                        <button class = "ui-float-left" ng-click = "getSchulzeRanking()">
+                            Evaluate ballot
+                        </button>
+                        <small>
+                            When every participant has cast her vote, you can calculate the result. It will be visible to every participant as a new ballot paper below.
+                        </small>
+                    </p>
+
                     <label ng-click = "select('ballot-paper', ballot.newPaper())">
                         Add new particpant
                         <div class = "icons right">
@@ -353,6 +345,18 @@
                 <hr/>
 
                 <div class="participants-overview left">
+
+                    <label 
+                        ng-if       = "result"
+                        ng-class    = "{'selected' : selectionBallotPaper.value == result, 'result':  paper == result}"
+                        ng-click    = "select('ballot-paper', paper)" 
+                    >
+                        <div class="connector left"></div>
+
+                        <span class = "name"> {{result.participant || 'no name'}} </span>
+
+                    </label>
+
                     <label
                         ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1, 'locked' : paper.locked}"
                         ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    

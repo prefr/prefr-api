@@ -10,31 +10,31 @@ prefrControllers.controller(
 		'$location',
 		'$http',
 		'Ballot',
+		'BallotPaper',
 
-		function ($scope, $routeParams, $location, $http, Ballot){
+		function ($scope, $routeParams, $location, $http, Ballot, BallotPaper){
 
 								
-			$scope.adminSecret 	= $routeParams.admin_secret
-			$scope.box_id		= $routeParams.box_id
-			$scope.isAdmin 		= $scope.box_id == 'new' || !!$scope.adminSecret
+			$scope.adminSecret 		= $routeParams.admin_secret
+			$scope.box_id			= $routeParams.box_id
+			$scope.isAdmin 			= $scope.box_id == 'new' || !!$scope.adminSecret
+			$scope.adminLink 		= $location.absUrl()
+			$scope.participantLink	= $scope.adminLink.replace('/'+$scope.adminSecret, '')
 
-
-		    $scope.addResult = function(ranking) {
-		    	$scope.ballot_box.papers.unshift({
-		    		id			:	-1,
-		    		participant	:	'result',
-		    		ranking		:	ranking
-		    	})
-		    }
 
 			$scope.removeBallotPaper = function(paper_id) {
 		        if($scope.ballot_box.papers[paper_id]) delete $scope.ballot_box.papers[paper_id]
 		    }
 
-		    $scope.getSchulzeRanking = function(box_id) {
-		        return ["A", ["C", "D"], ["B", "E", "F"]]
+		    $scope.getSchulzeRanking = function() {
+		        $http.get('/api/ballotBox/'+$scope.box_id+'/result  ')
+		        .then(function(data){
+		        	$scope.result = new BallotPaper({
+		        		participant: 'Result',
+		        		ranking: data.result
+		        	})
+		        })
 		    } 
-
 
 		    $scope.saveBallotBox = function() {
 		    	$http.post('/api/ballotBox', $scope.ballot.exportData())

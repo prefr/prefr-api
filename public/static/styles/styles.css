@@ -43,7 +43,6 @@ textarea {
 }
 
 
-
 /* main header */
 
 body > header {
@@ -56,7 +55,7 @@ body > header {
 	line-height:			3.5rem;	
 
 	background-color:		rgba(245, 245, 240, 1);
-	box-shadow:				0 0 0.2rem rgba(0,0,0, 0.5);
+	box-shadow:				0 0 1rem rgba(0,0,0, 1);
 
 	z-index:				10;
 }
@@ -189,6 +188,10 @@ p{
 	padding: 0.5em;
 }
 
+p a {
+	color:					#647D8C;
+}
+
 ul,
 ol {
 	margin:					0;
@@ -202,12 +205,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h2{
-	font-size:				1.2em;
+	font-size:				1.4em;
 	margin-bottom: 			1em;
 	background-color:		#647D8C;
 	padding:				1.5em 0.5em;
 	color:					#fff;
-	line-height:			2em;
+	line-height:			1.2em;
 }
 
 h3{
@@ -234,7 +237,30 @@ button::-moz-focus-inner
     padding: 0;
 }
 
+
+
 button {
+	display:				inline-block;
+
+	width:					10em;
+
+	font-size:				1.2em;
+	height:					1.8em;
+	line-height:			1.4em;
+	padding:				0.2em;
+	text-align:				center;
+
+	color:					#fff;
+	background:				#647D8C;
+
+	border:					none;
+	box-shadow:				none;
+	border-radius:			none;
+	cursor:					pointer;
+
+}
+
+.icons button {
 	display:				inline-block;
 
 
@@ -326,7 +352,7 @@ li {
 
 
 .ui-medium-width {
-	width:					6.5em;
+	width:					8em;
 }
 
 .ui-medium-height{
@@ -365,6 +391,15 @@ li {
 	position:				relative;
 }
 
+.ui-float-right {
+	float:					right;
+	margin-left:			0.5em;
+}
+
+.ui-float-left {
+	float:					left;
+	margin-right:			0.5em;
+}
 
 
 
@@ -442,111 +477,6 @@ li {
 	opacity:				0.3;
 	cursor:					default;
 }
-
-
-
-.two-bar {
-	position:				relative;
-	display: 				block;
-
-	font-size:				1.4em;    
-    line-height: 			3em;
-    margin: 				0;
-    padding:				0;
-    position: 				relative;
-    text-align: 			left;    
-    vertical-align: 		middle;
-    white-space: 			nowrap;
-    overflow:				hidden;    
-    background-color:		#AAAAAA;    
-}
-
-.two-bar.inline{
-	display:				inline-block;
-	padding-right: 			1em;
-}
-
-.two-bar.small{
-	font-size:				1em;
-}
-
-.two-bar.white{
-	background-color: 		#fff;
-}
-
-.two-bar > * {
-	display:				inline-block;
-	white-space: 			nowrap;
-    height:					3em;
-	line-height:			3em;
-}
-
-.two-bar.multiline > * {
-	height:					auto;
-}
-
-.two-bar.multiline > * > *{
-	white-space:			normal;
-	height:					auto;
-	line-height:			1.4em;
-	font-size:				0.8em;
-	vertical-align:			top;	
-}
-
-
-.two-bar * {
-	vertical-align:			baseline;
-}
-
-.two-bar > *:first-child{	
-	position:				absolute;
-	width:					12em;	
-	top:					0;
-	bottom:					0;
-	left:					0;
-	padding:				0 1em;
-	text-align:				left;
-	background:				#647D8C;
-	color:					#fff;
-}
-
-.two-bar.white > *:first-child{
-	background-color:		#fff;
-}
-
-.two-bar.short > *:first-child{
-	width:					3em;
-	text-align:				center;
-	padding:				0;
-}
-
-.two-bar > *:last-child{
-	background:				transparent;
-	color:					#fff;		
-	display:				block;	
-	margin-left:			15em;
-}
-
-.two-bar.white > *:last-child{
-	color:					inherit;
-}
-
-.two-bar.short > *:last-child{
-	margin-left:			4em;
-}
-
-.two-bar input,
-.two-bar textarea {
-	font-size:				inherit;
-	background-color:		inherit;
-	padding:				0;
-	margin:					0;
-	border:					0;
-	color:					inherit;
-	width:					100%;	
-}
-
-
 
 
 textarea[extendable] {
@@ -737,11 +667,6 @@ textarea[extendable] {
  
 }
 
-.ballot-box .ballot-overview label.subject{
-	padding-top:			1.5em;
-	padding-bottom:			1.5em;
-}
-
 .ballot-box .ballot-overview label.subject input{
 	width:					75%;
 }
@@ -926,8 +851,15 @@ label .wrapper {
 
 label .wrapper textarea{
 	width:					100%;
+	font-size:				0.8333em;
 }
 
+
+.ui-white input:focus,
+.ui-white textarea:focus {
+	background:				rgba(155,155,155,0.1) !important;
+	cursor: 				text;
+}
 
 input:focus,
 textarea:focus {

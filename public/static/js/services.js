@@ -255,9 +255,9 @@ angular.module('services',[])
                 return new_option
             }
 
-            this.newPaper   = function(){                 
+            this.newPaper   = function(data){                 
                 var ranking     = [this.options.map(function(option){ return option.tag })]
-                    new_paper   = new BallotPaper({ ranking :  ranking })
+                    new_paper   = new BallotPaper(data || { ranking :  ranking })
                 this.papers.push(new_paper) 
                 return new_paper
             }
