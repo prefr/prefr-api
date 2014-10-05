@@ -9,10 +9,11 @@ prefrControllers.controller(
 		'$routeParams',
 		'$location',
 		'$http',
+		'$q',
 		'Ballot',
 		'BallotPaper',
 
-		function ($scope, $routeParams, $location, $http, Ballot, BallotPaper){
+		function ($scope, $routeParams, $location, $http, $q, Ballot, BallotPaper){
 
 								
 			$scope.adminSecret 		= $routeParams.admin_secret
@@ -28,11 +29,14 @@ prefrControllers.controller(
 
 		    $scope.getSchulzeRanking = function() {
 		        $http.get('/api/ballotBox/'+$scope.box_id+'/result  ')
-		        .then(function(data){
-		        	$scope.result = new BallotPaper({
-		        		participant: 'Result',
-		        		ranking: data.result
-		        	})
+		        .then(function(result){
+		        	$scope.result =	new BallotPaper({
+						        		participant: 'Result',
+						        		ranking: result.data.result
+						        	})
+		        	$scope.result.locked = true
+
+		        	console.dir($scope.result)
 		        })
 		    } 
 
@@ -45,29 +49,33 @@ prefrControllers.controller(
 		    }
 
 		    $scope.savePaper = function(paper){
-		    	var diff 	= 	paper.diff()
+		    	var diff 		=	paper.diff()
+		    		api_call	=	paper.id
+    								?	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, diff)
+    								:	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
 
-		    	if(!paper.id)
-		    		return	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
-		    				.then(function(result){
-		    					paper.importData(result.data)
-		    				})
-
-		   		return	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, diff)
-
+	    		return	api_call
+	    				.then(function(result){
+	    					paper.importData(result.data)
+	    				})
 		    }
 
 		    $scope.removePaper = function(paper){
 		    	$scope.ballot.removePaper(paper)
-		    	return	$http.delete('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id)	    	
+		    	return 	paper.id
+    					?	$http.delete('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id)	    	
+    					:	$q.when()
 		    }
 
 		    $scope.restorePaper = function(paper){
 		    	$scope.ballot.restorePaper(paper)
-		    	return	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
-		    			.then(function(result){
-		    				paper.importData(result.data)
-		    			})
+
+		    	return	paper.id
+		    			?	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
+			    			.then(function(result){
+			    				paper.importData(result.data)
+			    			})
+			    		:	$q.when()
 		    }
 
 		    $scope.updateBallotBox = function(){

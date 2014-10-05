@@ -321,14 +321,14 @@ angular.module('services',[])
             current_path,
             current_step
 
-        self.register = function(path, step, element){
+        self.register = function(path, step, scope){
             self[path]          =   self[path] || []
-            self[path][step]    =   element
+            self[path][step]    =   scope
 
             if(path == current_path && step == current_step)
                 self[path] && self[path][step] && self[path][step].show()
 
-            element.hide()
+            scope.hide()
         }
 
         self.goto = function(path, step){

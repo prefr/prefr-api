@@ -75,5 +75,5 @@ prefr.directive('preferenceRank',       [HTMLpreferenceRank])
 prefr.directive('preferenceOption',     [HTMLpreferenceOption])
 
                 
-prefr.directive('walkthrough',          ['walkthrough', HTMLWalkthrough])
+prefr.directive('walkthrough',          ['walkthrough', '$animate', HTMLWalkthrough])
 

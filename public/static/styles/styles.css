@@ -60,16 +60,21 @@ body > header {
 	z-index:				10;
 }
 
-body > header * {
+body > header > * {
 	display:				inline-block;
 	vertical-align: 		top;
 	height:					3.5rem;
+	line-height:			3.5rem;
 }
 
 nav {	
 	display:				inline-block;
 	line-height:			3.5rem;
 	white-space: 			nowrap;
+}
+
+nav * {
+	vertical-align:			middle;
 }
 
 nav a {
@@ -189,7 +194,11 @@ p{
 }
 
 p a {
-	color:					#647D8C;
+	color:					#A7C7DC;
+}
+
+p a:hover {
+	border-bottom:			1px solid #A7C7DC;
 }
 
 ul,
@@ -285,11 +294,11 @@ hr {
 
 	margin: 				0;
 	padding:				0;
-	height:					0.2em;
+	height:					0.5em;
 	width:					100%;
 
 	border:					none;
-	box-shadow:				0 0.2em 0.2rem -0.2em rgba(0, 0, 0, 0.5) inset;
+	box-shadow:				0 5.1em 0.5em -5.0em rgba(0, 0, 0, 1) inset
 }
 
 hr.up{
@@ -438,6 +447,15 @@ li {
 
 .ui-borders.thick {
 	border-width:			0.5em;
+}
+
+h2,
+.ui-border-bottom {
+	border-bottom:			0.3em solid rgba(0, 0, 0, 0.25);
+}
+
+.ui-border-top {
+	border-top:			0.3em solid rgba(0, 0, 0, 0.25);
 }
 
 .ui-inline {
@@ -753,15 +771,11 @@ label.ui-white{
 	color:					inherit;
 }
 
-label button {
-	background: 			transparent;
-	color:					inherit;
-}
 
 label button.inverted {
 	border-radius:			0.25em;
-	color:					#647D8C;
-	background:				#fff;
+	color:					#647D8C !important;
+	background:				#fff !important;
 
 	font-size:				0.9;
 
@@ -804,6 +818,11 @@ label > * {
 
 label .icons {
 	word-spacing: 			0.2em;
+}
+
+label .icons button{
+	color:					inherit;
+	background:				transparent;
 }
 
 label .icons.right {
@@ -911,6 +930,10 @@ label.selected .connector.left:after {
 	border-radius:			1em 0 0 1em;
 }
 
+
+label.result {
+	margin-bottom:			2em;
+}
 
 
 /*
@@ -1556,26 +1579,55 @@ walkthrough {
 	position:					absolute;
 	display:					block;
 
-	padding:					1em;
-	border-radius:				0.5em;
+	font-size:					0.833em;
+
+	padding:					0.5em;
 	
 	z-index:					100;
 
 	color:						#666;/*#bf9;*/
-	background:					#fff;/*#686;*/
+	background:					rgba(245, 245, 240, 1); /*#686;*/
 
-	box-shadow:					0 0 0.25em rgba(0,0,0,0.7);
+	box-shadow:					0 0 0.5em rgba(0,0,0,0.7);
 	white-space: 				normal;
 
 	width:						20em;
 	line-height:				1.2em;
+
 }
 
+walkthrough.ng-hide-add, 
+walkthrough.ng-hide-remove {
+  	transition:					0s ease all;
+  
+}
+
+walkthrough.ng-hide-add-active,
+walkthrough.ng-hide-remove-active {
+  	transition:					400ms ease all;
+}
+
+walkthrough.ng-hide-remove {
+	opacity:					0;
+}
+
+walkthrough.ng-hide-remove-active{
+	opacity:					1;
+}
+
+walkthrough.ng-hide-add {
+	opacity:					0;
+}
+
+walkthrough.ng-hide-add-active{
+	opacity:					0;
+}
+
+
 walkthrough button{
-	float:						right;
 	font-size:					0.9em;
-	background:					transparent;
-	color:						#f80;
+	float:						right;
+	margin-top:					1em;
 }
 
 

@@ -15,7 +15,6 @@ function HTMLsingleSelect() {
 										$scope[$scope.mask(select_as)].value = select_by										
 									}
 
-
 									if(typeof params == 'string'){
 										selection_map[$scope.mask(params)] = null
 									} 
@@ -431,11 +430,21 @@ function HTMLWalkthrough(walkthrough){
 			$scope.next		= $attrs.next
 			$scope.nextPath	= $attrs.nextPath
 
-			walkthrough.register($scope.path, $scope.step, $element)	
+
+			$scope.hide = function(){
+				$scope.active = false
+			}
+
+			$scope.show = function(){
+				$scope.active = true
+			}
 
 			$scope.skip = function(){
 				walkthrough.goto($scope.nextPath, $scope.next)
 			}
+
+
+			walkthrough.register($scope.path, $scope.step, $scope)	
 		}
 	}
 }

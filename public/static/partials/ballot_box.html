@@ -1,4 +1,5 @@
 <div
+    ng-if           =   "ballot"
 	class			=	"ballot-box"
 	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
 >
@@ -25,6 +26,7 @@
                             path        = "new_ballot"
                             step        = "1"
                             next        = "2" 
+                            ng-show     = "active"
                         >
                             Enter a subject matter to be decided on. (e.g. "What should we to on the weekend?")
                         </walkthrough>
@@ -46,6 +48,7 @@
                             path        = "new_ballot"
                             step        = "2"
                             next        = "3"
+                            ng-show     = "active"
                         >
                             Anything else you would like to add? Maybe the subject line was too short.
                         </walkthrough>
@@ -94,12 +97,14 @@
 
 
                     
-                    <label ng-if = "isAdmin">
+                    <label
+                        class       = "ui-border-top" 
+                        ng-if       = "isAdmin"
+                        ng-click    = "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
+                    >
                         Add new option
                         <div class = "icons right">
-                            <button ng-click="select('ballot-option', ballot.newOption())">
-                                <i class = "fa fa-plus"></i>
-                            </button>
+                            <i class = "fa fa-plus"></i>
                         </div>
 
                         <walkthrough
@@ -108,6 +113,7 @@
                             step        = "4"
                             next        = "A"
                             next-path   = "new-participant"
+                            ng-show     = "active"
                         >
                             Add another option to your ballot paper.
                             <br/>
@@ -116,7 +122,7 @@
                         </walkthrough>
                     </label>     
 
-                    <label ng-if = "!isAdmin">
+                    <label class = "ui-border-top" ng-if = "!isAdmin">
                         &nbsp;
                     </label>
 
@@ -135,8 +141,8 @@
                     <div 
                         class       = "option"
                         ng-repeat   = "option in ballot.options | filter: {removed : '!'} | orderBy:'tag'" 
-                        ng-click        = "select('ballot-option', option); $event.stopPropagation()" 
-                        ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
+                        ng-click    = "select('ballot-option', option);" 
+                        ng-class    = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
                     >                       
                         <label>                            
                             <span class="tag">
@@ -166,6 +172,7 @@
                                 path        = "new_ballot"
                                 step        = "3"
                                 next        = "4"
+                                ng-show     = "active"
                             >
                                 Enter a title for your first option.                                
                                 <br/>
@@ -197,8 +204,8 @@
                 <!-- list of removed ballot options start -->
 
                 <div 
-                    class   = "options-overview  removed left right" ng-click = "select('ballot-option', null)"
-                    ng-if   = "(ballot.options  | filter: {removed : true}).length > 0"
+                    class       = "options-overview  removed left right" 
+                    ng-if       = "(ballot.options  | filter: {removed : true}).length > 0"
                 >
                     <h3> Removed options </h3>
                     <br/>
@@ -220,10 +227,6 @@
                                 <button ng-click = "ballot.restoreOption(removed_option); select('ballot-option', removed_option)">
                                     <i class = "fa fa-arrow-circle-up"></i>
                                 </button>
-
-                                <button ng-click = "deleteOption(removed_option)">
-                                    <i class = "fa fa-trash-o"></i>
-                                </button>
                             </div>                          
 
                         </label>
@@ -242,7 +245,7 @@
         	<td class = "edit-paper ui-deep-shadow" >
 
                 <div
-                    ng-repeat = "paper in ballot.papers"
+                    ng-repeat = "paper in ballot.papers.concat([result])"
                     ng-if     = "selectionBallotPaper.value == paper"
                     class     = "paper"
                 >
@@ -335,7 +338,7 @@
                         </small>
                     </p>
 
-                    <label ng-click = "select('ballot-paper', ballot.newPaper())">
+                    <label class = "ui-border-top" ng-click = "select('ballot-paper', ballot.newPaper())">
                         Add new particpant
                         <div class = "icons right">
                             <i class = "fa fa-plus"></i>
@@ -348,18 +351,19 @@
 
                     <label 
                         ng-if       = "result"
-                        ng-class    = "{'selected' : selectionBallotPaper.value == result, 'result':  paper == result}"
-                        ng-click    = "select('ballot-paper', paper)" 
+                        class       = "result"
+                        ng-class    = "{'selected' : selectionBallotPaper.value == result}"
+                        ng-click    = "select('ballot-paper', result)" 
                     >
-                        <div class="connector left"></div>
+                        <div class = "connector left"></div>
 
                         <span class = "name"> {{result.participant || 'no name'}} </span>
 
                     </label>
 
                     <label
-                        ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1, 'locked' : paper.locked}"
-                        ng-repeat       = "paper in (ballot.papers | orderBy:'-id':true)"    
+                        ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'locked' : paper.locked}"
+                        ng-repeat       = "paper in (ballot.papers)"    
                         ng-if           = "!paper.removed"
                         ng-click        = "select('ballot-paper', paper)"                
                     >
@@ -424,7 +428,7 @@
                     <br/>
 
                     <label
-                        ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'result':  paper.id == -1}"
+                        ng-class        = "{'selected' : selectionBallotPaper.value == paper}"
                         ng-repeat       = "removed_paper in ballot.papers | orderBy:'-id':true"    
                         ng-if           = "removed_paper.removed"
                     >
