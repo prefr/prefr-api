@@ -30,11 +30,11 @@ object BallotController extends Controller with MongoController {
       }
   }
 
-  def getBalloxBox(id: String) = Action.async {
-    Logger.debug("Get Ballot: " + id)
+  def getBallotBox(id: String) = Action.async {
     BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
-      case None    => NotFound
-      case Some(b) => Ok(b.toJson)
+      case None                          => NotFound
+      case Some(b) if b.locked.isDefined => Ok(b.toJsonWithResult)
+      case Some(b)                       => Ok(b.toJson)
     }
   }
 
@@ -43,7 +43,8 @@ object BallotController extends Controller with MongoController {
       request.body.validate[Paper](Paper.inputReads).map {
         paper =>
           BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
-            case None => Future(NotFound("ballot box"))
+            case None                                          => Future(NotFound("ballot box"))
+            case Some(ballotBox) if ballotBox.locked.isDefined => Future(BadRequest("ballot box is locked"))
             case Some(ballotBox) =>
               // check if vote is valid
               checkRanking(ballotBox.options.getOrElse(Seq()), paper.ranking) match {
@@ -70,7 +71,8 @@ object BallotController extends Controller with MongoController {
       request.body.validate[BallotBoxUpdate].map {
         update =>
           BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
-            case None => Future(NotFound("ballot not found"))
+            case None                            => Future(NotFound("ballot not found"))
+            case Some(bb) if bb.locked.isDefined => Future(BadRequest("ballot box is locked"))
             case Some(bb) =>
               // check secret
               update.adminSecret.equals(bb.adminSecret) match {
@@ -92,16 +94,35 @@ object BallotController extends Controller with MongoController {
       }.recoverTotal(e => Future(BadRequest(JsError.toFlatJson(e))))
   }
 
+  def lockBallotBox(id: String) = Action.async(parse.tolerantJson) {
+    request =>
+      (request.body \ "adminSecret").asOpt[String] match {
+        case None => Future(Unauthorized("No admin secret"))
+        case Some(secret) =>
+          BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
+            case None => Future(NotFound("ballot not found"))
+            case Some(bb) =>
+              // check secret
+              secret.equals(bb.adminSecret) match {
+                case false => Future(Unauthorized("wrong admin secret"))
+                case true =>
+                  bb.lock().flatMap {
+                    le =>
+                      BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+                        case None          => InternalServerError("could not retrieve update")
+                        case Some(updated) => Ok(updated.toJson)
+                      }
+                  }
+              }
+          }
+      }
+  }
+
   def getResult(id: String) = Action.async {
     request =>
-      BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
-        case None => Future(NotFound("ballot not found"))
-        case Some(bb) => bb.calculateResult.map {
-          case None => InternalServerError("something went wrong :(")
-          case Some(resultBB) =>
-            Logger.debug("Ballot result: " + resultBB)
-            Ok(resultBB.toResultJson)
-        }
+      BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+        case None     => NotFound("ballot not found")
+        case Some(bb) => Ok(bb.toJsonWithResult)
       }
   }
 
@@ -111,7 +132,8 @@ object BallotController extends Controller with MongoController {
         paperUpdate =>
           {
             BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
-              case None => Future(NotFound("ballot box id"))
+              case None                                          => Future(NotFound("ballot box id"))
+              case Some(ballotBox) if ballotBox.locked.isDefined => Future(BadRequest("ballot box is locked"))
               case Some(ballotBox) =>
                 ballotBox.papers.getOrElse(Seq()).find(_.id.equals(paperId)) match {
                   case None => Future(NotFound("invalid paper id"))
@@ -121,7 +143,7 @@ object BallotController extends Controller with MongoController {
                       case true =>
                         ballotBox.updatePaper(paperId, paperUpdate).flatMap {
                           case false => Future(BadRequest("bad update"))
-                          case true  =>
+                          case true =>
                             BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
                               case None => InternalServerError("could not retrieve update")
                               case Some(updatedBb) =>
@@ -137,7 +159,6 @@ object BallotController extends Controller with MongoController {
   }
 
   def checkRanking(ballotOptions: Seq[BallotOption], ranking: Seq[Seq[String]]): Boolean = {
-    Logger.info("Checking: " + ballotOptions + ":" + ranking)
     val unique = ranking.flatten.distinct.size == ranking.flatten.size
     val valid = ranking.flatten.forall(option => ballotOptions.exists(_.tag.equals(option)))
     valid && unique

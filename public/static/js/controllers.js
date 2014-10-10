@@ -84,7 +84,7 @@ prefrControllers.controller(
 		    	return	$http.put('/api/ballotBox/'+data.id, {
 		    				subject:		data.subject,
 		    				details:		data.details,
-		    				option:			data.options,
+		    				options:			data.options,
 		    				adminSecret:	$scope.adminSecret
 		    			})
 		    }

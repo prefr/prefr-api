@@ -37,18 +37,14 @@ object PreftoolController extends Controller {
   }
 
   def getResult(id: String) = Action.async {
-
-    BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].flatMap {
-      case None => Future(NotFound)
-      case Some(b) => b.calculateResult.map {
-        case None => InternalServerError("something went wrong :(")
-        case Some(resultBB) =>
-          val result: Seq[String] = resultBB.result.zipWithIndex.map {
-            case (e, i) => e.mkString((i + 1) + ". ", "\n" + (i + 1) + ". ", "")
-          }
-          Ok(result.mkString("\n"))
-      }
-
+    BallotBox.col.find(Json.obj("id" -> id)).one[BallotBox].map {
+      case None => NotFound
+      case Some(b) =>
+        val result = Schulze.getSchulzeRanking(b.papers.getOrElse(Seq()))
+        val prefResult: Seq[String] = result.zipWithIndex.map {
+          case (e, i) => e.mkString((i + 1) + ". ", "\n" + (i + 1) + ". ", "")
+        }
+        Ok(prefResult.mkString("\n"))
     }
   }
 
@@ -94,9 +90,8 @@ object PreftoolController extends Controller {
           None,
           Some(p),
           None,
-          res,
+          None,
           IdHelper.generateAdminSecret(),
-          new Date(),
           new Date()
         )
         BallotBox.col.insert(bb)

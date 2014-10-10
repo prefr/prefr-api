@@ -8,7 +8,8 @@ GET           /api/                                        controllers.Applicati
 # BALLOTS
 POST          /api/ballotBox                               controllers.BallotController.createBallotBox
 PUT           /api/ballotBox/:id                           controllers.BallotController.modifyBallotBox(id)
-GET           /api/ballotBox/:id                           controllers.BallotController.getBalloxBox(id)
+GET           /api/ballotBox/:id                           controllers.BallotController.getBallotBox(id)
+POST          /api/ballotBox/:id/lock                      controllers.BallotController.lockBallotBox(id)
 POST          /api/ballotBox/:id/paper                     controllers.BallotController.addPaper(id)
 PUT           /api/ballotBox/:id/paper/:paperId            controllers.BallotController.modifyPaper(id, paperId)
 DELETE        /api/ballotBox/:id/paper/:paperId            controllers.BallotController.deletePaper(id, paperId)

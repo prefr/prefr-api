@@ -2,6 +2,7 @@ package model
 
 import java.util.Date
 import helper.{ Schulze, IdHelper }
+import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
@@ -22,17 +23,17 @@ case class BallotBox(
     options: Option[Seq[BallotOption]],
     papers: Option[Seq[Paper]],
     details: Option[String],
-    result: Seq[Seq[String]],
+    locked: Option[Date],
     adminSecret: String,
-    lastResultCalculation: Date,
     createDate: Date) {
 
   def toJson: JsObject = {
     Json.toJson(this)(BallotBox.outputWrites).as[JsObject]
   }
 
-  def toResultJson: JsObject = {
-    Json.toJson(this)(BallotBox.resultWrites).as[JsObject]
+  def toJsonWithResult: JsObject = {
+    val result = Schulze.getSchulzeRanking(this.papers.getOrElse(Seq()))
+    this.toJson ++ Json.obj("result" -> result)
   }
 
   def update(update: BallotBoxUpdate): Future[LastError] = {
@@ -58,6 +59,14 @@ case class BallotBox(
     val query = Json.obj("id" -> this.id)
     val set = Json.obj("$set" -> (subjectJson ++ optionsJson ++ detailsJson))
 
+    Logger.debug("SET: " + set)
+
+    BallotBox.col.update(query, set)
+  }
+
+  def lock(): Future[LastError] = {
+    val query = Json.obj("id" -> this.id)
+    val set = Json.obj("$set" -> Json.obj("locked" -> new Date))
     BallotBox.col.update(query, set)
   }
 
@@ -83,21 +92,7 @@ case class BallotBox(
   def deletePaper(paperId: String): Future[Boolean] = {
     val query = Json.obj("id" -> this.id)
     val set = Json.obj("$pull" -> Json.obj("papers" -> Json.obj("id" -> paperId)))
-    BallotBox.col.update(query,set).map(_.updatedExisting)
-  }
-
-  def calculateResult: Future[Option[BallotBox]] = {
-    val query = Json.obj("id" -> id)
-    val result = Schulze.getSchulzeRanking(this.papers.getOrElse(Seq()))
-    val set2 = Json.obj("$set" -> Json.obj("result" -> result, "lastResultCalculation" -> new Date))
-    BallotBox.col.update(query, set2).flatMap {
-      lastError =>
-        if (lastError.updatedExisting) {
-          BallotBox.col.find(query).one[BallotBox]
-        } else {
-          Future(None)
-        }
-    }
+    BallotBox.col.update(query, set).map(_.updatedExisting)
   }
 }
 
@@ -113,9 +108,8 @@ object BallotBox {
     (__ \ 'options).readNullable[Seq[BallotOption]] and
     (__ \ 'papers).readNullable[Seq[Paper]](Reads.seq(Paper.inputReads)) and
     (__ \ 'details).readNullable[String] and
-    Reads.pure[Seq[Seq[String]]](Seq()) and
+    Reads.pure[Option[Date]](None) and
     Reads.pure[String](IdHelper.generateAdminSecret()) and
-    Reads.pure[Date](new Date) and
     Reads.pure[Date](new Date)
   )(BallotBox.apply _)
 
@@ -124,22 +118,11 @@ object BallotBox {
       Json.obj("id" -> b.id) ++
         Json.obj("subject" -> JsString(b.subject.getOrElse(""))) ++
         Json.obj("details" -> JsString(b.details.getOrElse(""))) ++
-        Json.obj("options" -> b.options.getOrElse(Seq()).map {
-          _.toJson
-        }) ++
-        Json.obj("papers" -> b.papers.getOrElse(Seq()).map {
-          _.toJson
-        }) ++
-        Json.obj("createDate" -> b.createDate)
+        Json.obj("options" -> b.options.getOrElse(Seq()).map(_.toJson)) ++
+        Json.obj("papers" -> b.papers.getOrElse(Seq()).map(_.toJson)) ++
+        Json.obj("createDate" -> b.createDate) ++
+        b.locked.map(l => Json.obj("locked" -> l)).getOrElse(Json.obj())
   }
-
-  def resultWrites = Writes[BallotBox] {
-    b =>
-      Json.obj("id" -> b.id) ++
-        Json.obj("result" -> b.result) ++
-        Json.obj("lastResultCalculation" -> b.lastResultCalculation)
-  }
-
 }
 
 case class BallotBoxUpdate(adminSecret: String,
