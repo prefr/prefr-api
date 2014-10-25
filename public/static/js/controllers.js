@@ -28,15 +28,13 @@ prefrControllers.controller(
 		    }
 
 		    $scope.getSchulzeRanking = function() {
-		        $http.get('/api/ballotBox/'+$scope.box_id+'/result  ')
+		        $http.get('/api/ballotBox/'+$scope.box_id+'/result')
 		        .then(function(result){
 		        	$scope.result =	new BallotPaper({
 						        		participant: 'Result',
 						        		ranking: result.data.result
 						        	})
-		        	$scope.result.locked = true
-
-		        	console.dir($scope.result)
+		        	$scope.result.lock()
 		        })
 		    } 
 
@@ -44,8 +42,22 @@ prefrControllers.controller(
 		    	$http.post('/api/ballotBox', $scope.ballot.exportData())
 		    	.then(function(result){
 		    		var ballot_data = result.data
-		    		$location.path('/ballot_box/'+ballot_data.id+'/'+ballot_data.adminSecret)
+		    		$location
+		    		.path('/ballot_box/'+ballot_data.id+'/'+ballot_data.adminSecret)
+		    		.replace()
 		    	})
+		    }
+
+		    $scope.lockBallotBox = function(){
+		    	$http.post('/api/ballotBox/'+$scope.box_id+'/lock',{
+		        	'adminSecret' : $scope.adminSecret
+		        })
+		        .then(function(result){
+		        	$scope.ballot.importData(result.data)
+		        	if($scope.ballot.locked)
+						$scope.getSchulzeRanking()
+					$scope.lockPapers()
+		        })
 		    }
 
 		    $scope.savePaper = function(paper){
@@ -84,13 +96,22 @@ prefrControllers.controller(
 		    	return	$http.put('/api/ballotBox/'+data.id, {
 		    				subject:		data.subject,
 		    				details:		data.details,
-		    				options:			data.options,
+		    				options:		data.options,
 		    				adminSecret:	$scope.adminSecret
+		    			})
+		    			.then(function(result){
+		    				console.dir(result)
+		    				$scope.ballot
+		    				.importSettings(result.data)
+		    				.importOptions(result.data.options)
+
+		    				if($scope.ballot.locked)
+								$scope.getSchulzeRanking()
 		    			})
 		    }
 
 		    $scope.lockPapers = function() {
-		    	$scope.ballot.papers.forEach(function(paper){ paper.locked = true })		    
+		    	$scope.ballot.papers.forEach(function(paper){ paper.lock()})		    
 		    }
 
 
@@ -100,7 +121,11 @@ prefrControllers.controller(
 				.then(
 					function(result){
 						$scope.ballot	= new Ballot(result.data)
+
 						$scope.lockPapers()
+
+						if($scope.ballot.papers.length == 0)
+							$scope.ballot.newPaper()
 					}
 			    )
 			} else {
@@ -108,19 +133,18 @@ prefrControllers.controller(
 									id: 		undefined,
 									subject: 	undefined,
 									options:	[
+													{									
+														tag:		"0",
+														title:		"All of the above and none of the below",
+														details: 	"This is a special option. You may delete it if you like. It is useful though if you want to allow your participants to reject an option altogether. They can do that by ranking the disliked option lower than this one. If in the end this option ('All of the above and none of the below') wins the ballot all options have been rejected.",
+													},
 													{
 														tag:		"A",
-														title:		undefined,
-														details: 	undefined,
+														title:		"First option",
+														details: 	"",
 													}
 												],
-									papers:		[
-													{
-														id:				undefined,
-														participant:	undefined,
-														ranking:		[["A"]]
-													}
-												]
+									papers:		[]
 
 								})
 				$scope.saveBallotBox()

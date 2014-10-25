@@ -55,7 +55,7 @@ body > header {
 	line-height:			3.5rem;	
 
 	background-color:		rgba(245, 245, 240, 1);
-	box-shadow:				0 0 1rem rgba(0,0,0, 1);
+	box-shadow:				0 0 1rem rgba(0,0,0, 0.5);
 
 	z-index:				10;
 }
@@ -156,7 +156,6 @@ nav.vertical {
 body > article {
 	display:				block;
 	width:					100%;
-	height:					100%;	
 
 	color:					#666;
 
@@ -174,10 +173,12 @@ body > article:after {
 	clear:					both;
 }
 
+
 body > footer {	
-	background-color:		rgba(245, 245, 240, 1);
-	box-shadow:				0 0 0.2em rgba(0, 0, 0, 0.5);
 	z-index:				10;	
+	min-height:				20em;
+	box-shadow:				0 0 1rem rgba(0,0,0, 0.5);
+
 }
 
 
@@ -191,6 +192,7 @@ a {
 
 p{
 	padding: 0.5em;
+	text-align:				justify;
 }
 
 p a {
@@ -251,7 +253,7 @@ button::-moz-focus-inner
 button {
 	display:				inline-block;
 
-	width:					10em;
+	width:					12em;
 
 	font-size:				1.2em;
 	height:					1.8em;
@@ -294,7 +296,7 @@ hr {
 
 	margin: 				0;
 	padding:				0;
-	height:					0.5em;
+	height:					0.7em;
 	width:					100%;
 
 	border:					none;
@@ -388,6 +390,10 @@ li {
 	cursor:					pointer;
 }
 
+.ui-dark-white {
+	background:				rgba(245, 245, 240, 1);
+}
+
 .ui-white {
 	background: 			#fff;
 }
@@ -410,6 +416,13 @@ li {
 	margin-right:			0.5em;
 }
 
+.ui-bottom {
+	position:				absolute;
+	bottom:					0;
+	left:					0;
+	right:					0;
+	z-index:				-1;
+}
 
 
 .ui-corners-all {
@@ -468,6 +481,11 @@ h2,
 
 .ui-deep-shadow {	
 	box-shadow:				0 0 1em rgba(0, 0, 0, 0.6) inset;
+}
+
+.ui-pixelate {
+   	background-image: 		url("images/pixelate.png");
+    background-size: 		5em auto;
 }
 
 .ui-box {
@@ -764,6 +782,13 @@ label {
 	border-radius:			1em;
 
 	cursor:					pointer;
+
+	-webkit-touch-callout: 	none;
+    -webkit-user-select: 	none;
+    -khtml-user-select: 	none;
+    -moz-user-select: 		none;
+    -ms-user-select: 		none;
+    user-select: 			none;
 }
 
 label.ui-white{
@@ -780,8 +805,9 @@ label button.inverted {
 	font-size:				0.9;
 
 	padding:				0.1em 0.4em;
-	line-height:			0.8em;
-	height:					1em;
+	line-height:			1em;
+	height:					1.2em;
+	vertical-align:			middle;
 }
 
 label + label {
@@ -853,15 +879,14 @@ label input{
 	margin-left:			0.25em;
 	padding:				0 0.25em;
 
-
-	margin-top:				0.4em;
-	margin-bottom:			0.4em;
 	border:					none;
 
 	overflow:				hidden;
 	text-overflow:			ellipsis;
 
 	cursor:					pointer;
+
+	vertical-align:			middle;
 }
 
 label .wrapper {
@@ -933,6 +958,12 @@ label.selected .connector.left:after {
 
 label.result {
 	margin-bottom:			2em;
+}
+
+
+
+.fa-warning {
+	color:					#ff8800;
 }
 
 
@@ -1049,14 +1080,13 @@ label.result {
 	height:					100%;	
 }
 
+
 .ballot-box #left-column {
     min-width:				25em;
     width:					35%;
 
    	min-height:				100%;
-
-   	background-image: 		url("images/pixelate.png");
-    background-size: 		5em auto;
+   	padding-bottom:			20em;
 
 	text-align:				left;
 	vertical-align:			top;
@@ -1072,7 +1102,7 @@ label.result {
 .ballot-box .edit-paper {
 	min-width:				16em;
 	width:					30%;
-	max-width:				20em;
+	max-width:				15em;
 
 	left:					0;
 	top:					0;
@@ -1092,9 +1122,8 @@ label.result {
 	width:					35%;
 
 	min-height:				100%;
+   	padding-bottom:			15em;
 
-	background-image: 		url("images/pixelate.png");
-    background-size: 		5em auto;
 
 	text-align:				left;
 	vertical-align:			top;
@@ -1112,6 +1141,8 @@ label.result {
 	color:					#666;
 	background-color:		rgba(245, 245, 240, 1);;
 	padding:				0;
+	margin:					0;
+	border:					none;
 	overflow:				hidden;
 }
 
@@ -1328,7 +1359,7 @@ preference-option {
 
 
 preference-ranking.no-drag preference-option {
-	cursor:					auto !important;
+	cursor:					pointer !important;
 }
 
 

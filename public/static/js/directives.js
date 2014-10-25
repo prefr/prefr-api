@@ -44,14 +44,20 @@ function HTMLsingleSelect() {
 
 }
 
-function HTMLextendable(){
+function HTMLextendable($timeout){
 	return{
 		restrict: 'AE',
 		link: function(scope, element){
-			element.on('input keydown keyup change', function() {
-  				element[0].style.height = "";
+			function refresh(){
+				element[0].style.height = "auto";
   				element[0].style.height = element[0].scrollHeight + "px";
-			})
+			}
+
+			element.on('input keydown keyup change', refresh)
+
+			refresh()
+
+			$timeout(refresh, 500)
 		}
 	}
 }
@@ -365,7 +371,7 @@ function HTMLpreferenceOption($scope) {
 									scope.init = function(event) {
 										scope.waitForDrag(event)	
 											event.preventDefault()
-											event.stopImmediatePropagation() //is this necessary
+											event.stopImmediatePropagation()
 
 											$(document).one('mouseup click', scope.stopWaitingForDrag)
 									}

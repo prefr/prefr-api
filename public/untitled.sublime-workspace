@@ -27,7 +27,7 @@
 			"file": "static/partials/options.html",
 			"settings":
 			{
-				"buffer_size": 1845,
+				"buffer_size": 2513,
 				"line_ending": "Unix"
 			}
 		},
@@ -35,7 +35,7 @@
 			"file": "static/styles/styles.css",
 			"settings":
 			{
-				"buffer_size": 18927,
+				"buffer_size": 26966,
 				"line_ending": "Unix"
 			}
 		},
@@ -43,7 +43,7 @@
 			"file": "static/js/app.js",
 			"settings":
 			{
-				"buffer_size": 2052,
+				"buffer_size": 2308,
 				"line_ending": "Unix"
 			}
 		},
@@ -51,7 +51,7 @@
 			"file": "static/js/controllers.js",
 			"settings":
 			{
-				"buffer_size": 6072,
+				"buffer_size": 3761,
 				"line_ending": "Unix"
 			}
 		},
@@ -59,7 +59,7 @@
 			"file": "static/js/directives.js",
 			"settings":
 			{
-				"buffer_size": 19590,
+				"buffer_size": 13704,
 				"line_ending": "Unix"
 			}
 		},
@@ -67,7 +67,31 @@
 			"file": "static/partials/ballot_box.html",
 			"settings":
 			{
-				"buffer_size": 10938,
+				"buffer_size": 19064,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "static/js/services.js",
+			"settings":
+			{
+				"buffer_size": 11639,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 1985,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "static/partials/walkthrough_tag.html",
+			"settings":
+			{
+				"buffer_size": 144,
 				"line_ending": "Unix"
 			}
 		}
@@ -104,6 +128,7 @@
 	},
 	"file_history":
 	[
+		"/home/lemure/Workspace/projects/prefr/conf/routes",
 		"/home/lemure/Workspace/projects/prefr/public/static/js/services.js",
 		"/home/lemure/Workspace/projects/prefr/public/static/js/controllers.js",
 		"/home/lemure/Workspace/projects/cameoServer/public/test/unit/shared/cmAuth.spec.js",
@@ -230,8 +255,7 @@
 		"/home/lemure/Workspace/projects/cameoServer/public/test/unit/comps/conversations/cmConversationFactory.fix.spec.js",
 		"/home/lemure/Workspace/projects/cameoServer/public/test/unit/shared/cmCrypt.fix.spec.js",
 		"/home/lemure/Workspace/projects/cameoServer/public/app/comps/user/key-pair-drtv.js",
-		"/home/lemure/Workspace/projects/cameoServer/public/test/unit/shared/cmNotify.fix.spec.js",
-		"/home/lemure/Workspace/projects/cameoServer/public/test/unit/shared/ui/nav-tabs-drtv.fix.spec.js"
+		"/home/lemure/Workspace/projects/cameoServer/public/test/unit/shared/cmNotify.fix.spec.js"
 	],
 	"find":
 	{
@@ -258,6 +282,30 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"arra",
+			"main",
+			".paper",
+			"edit-paper",
+			"single-",
+			"inverted",
+			"label",
+			"walkthrough",
+			"walkth",
+			"hr",
+			"h2",
+			"button",
+			"buttom",
+			"button",
+			"preference-rank",
+			"result",
+			"adminS",
+			"textarea",
+			"alert",
+			"disabled",
+			"right",
+			"button",
+			"h2",
+			"focus",
 			".comp",
 			"short",
 			"creat",
@@ -361,33 +409,9 @@
 			"summa",
 			"small",
 			"contro",
-			"pckUi",
-			"smallChildren",
-			"pckUi",
-			"form-contro",
-			"form-control",
-			"btn",
-			".btn",
-			"btn",
-			"5em",
-			"px",
-			"getSize",
-			"this.raw",
-			"console",
-			"encrypt",
-			"cmUtil",
-			".fileId",
-			".id",
-			"ready",
-			"delete",
-			"line",
-			"remove",
-			"delete",
-			"(){\n",
-			"cmLogger",
-			"Raw"
+			"pckUi"
 		],
-		"highlight": true,
+		"highlight": false,
 		"in_selection": false,
 		"preserve_case": false,
 		"regex": false,
@@ -416,7 +440,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 5,
 			"sheets":
 			[
 				{
@@ -424,15 +448,15 @@
 					"file": "static/partials/options.html",
 					"settings":
 					{
-						"buffer_size": 1845,
+						"buffer_size": 2513,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1162,
-								1162
+								0,
+								0
 							]
 						],
 						"settings":
@@ -453,15 +477,15 @@
 					"file": "static/styles/styles.css",
 					"settings":
 					{
-						"buffer_size": 18927,
+						"buffer_size": 26966,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								12805,
-								12805
+								15609,
+								15609
 							]
 						],
 						"settings":
@@ -470,7 +494,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 15886.0,
+						"translation.y": 19409.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -480,15 +504,15 @@
 					"file": "static/js/app.js",
 					"settings":
 					{
-						"buffer_size": 2052,
+						"buffer_size": 2308,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1865,
-								1865
+								2288,
+								2288
 							]
 						],
 						"settings":
@@ -498,7 +522,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 855.0,
+						"translation.y": 741.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -508,15 +532,15 @@
 					"file": "static/js/controllers.js",
 					"settings":
 					{
-						"buffer_size": 6072,
+						"buffer_size": 3761,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								2817,
+								2817
 							]
 						],
 						"settings":
@@ -525,7 +549,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1919.0,
+						"translation.y": 1494.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -535,15 +559,15 @@
 					"file": "static/js/directives.js",
 					"settings":
 					{
-						"buffer_size": 19590,
+						"buffer_size": 13704,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								19217,
-								19217
+								496,
+								496
 							]
 						],
 						"settings":
@@ -552,7 +576,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 11514.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -562,25 +586,107 @@
 					"file": "static/partials/ballot_box.html",
 					"settings":
 					{
-						"buffer_size": 10938,
+						"buffer_size": 19064,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5108,
-								5108
+								12902,
+								12902
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/HTML/HTML.tmLanguage",
 							"tab_size": 4,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5672.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "static/js/services.js",
+					"settings":
+					{
+						"buffer_size": 11639,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								11211,
+								11211
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2451.0,
+						"translation.y": 5325.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 1985,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1563,
+								1563
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/AngularJS/AngularJS.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 285.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "static/partials/walkthrough_tag.html",
+					"settings":
+					{
+						"buffer_size": 144,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								124,
+								124
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/AngularJS/AngularJS.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

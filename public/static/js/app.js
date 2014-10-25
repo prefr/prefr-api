@@ -68,7 +68,7 @@ prefr.directive('manageOptions',        [manageOptions])
 
 prefr.directive('singleSelect',         [HTMLsingleSelect])
 prefr.directive('tooltip',              [HTMLtooltip])
-prefr.directive('extendable',           [HTMLextendable])
+prefr.directive('extendable',           ['$timeout', HTMLextendable])
 
 prefr.directive('preferenceRanking',    ['$compile', HTMLpreferenceRanking])
 prefr.directive('preferenceRank',       [HTMLpreferenceRank])

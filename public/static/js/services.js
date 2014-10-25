@@ -10,14 +10,15 @@ angular.module('services',[])
             this.tag        = undefined
 
             this.importData = function(data){
+
                 data = data || {}
-                this.title      = data.title    || this.title  
-                this.details    = data.details  || this.details
-                this.tag        = data.tag      || this.tag    
+                this.title      = typeof data.title     == 'string'   ? data.title    : this.title
+                this.details    = typeof data.details   == 'string'   ? data.details  : this.details
+                this.tag        = data.tag      || this.tag
 
                 this.backup     =   {
-                                        title:      String(this.title),
-                                        details:    String(this.details),
+                                        title:      String(this.title || ''),
+                                        details:    String(this.details || ''),
                                         tag:        String(this.tag)
                                     }
 
@@ -44,9 +45,16 @@ angular.module('services',[])
                 if(this.details != this.backup.details)
                     diff.details = this.details || ''
 
+                if(this.removed)
+                    diff.removed = true
+
                 return  Object.keys(diff).length > 0 
                         ?   diff
                         :   null
+            }
+
+            this.apply = function(){
+                this.importData(this.exportData())
             }
 
             this.importData(data)
@@ -133,6 +141,18 @@ angular.module('services',[])
                         :   null
             }
 
+            this.apply = function(){
+                this.importData(this.exportData())
+            }
+
+            this.lock = function(){
+                this.locked = true
+            }
+
+            this.unlock = function(){
+                this.locked = false
+            }
+
 
             this.importData(data)
         }
@@ -152,6 +172,7 @@ angular.module('services',[])
             this.id             = undefined
             this.subject        = undefined
             this.details        = undefined
+            this.locked         = undefined
             this.options        = []
             this.papers         = []
 
@@ -163,23 +184,42 @@ angular.module('services',[])
                 return this.papers.filter(function(paper){ return paper.id == id })[0]     
             }
 
-            this.importData = function(data){
-                this.id      = data.id      || this.id      || ''
-                this.subject = data.subject || this.subject || ''
-                this.details = data.details || this.details || ''
+            this.importOptions = function(data){
+                this.options =  data.map(function(option_data){
+                    var option = self.getOptionByTag(option_data.tag) || new BallotOption(option_data)
 
+                    return option.importData(option_data)
+                })
 
-                this.options =  data.options.map(function(option_data){
-                                    var option = self.getOptionByTag(option_data.tag) || new BallotOption(option_data)
+                return this
+            }
 
-                                    return option.importData(option_data)
-                                })
-
-                this.papers  =  data.papers.map(function(paper_data){
+            this.importPapers = function(data){
+                this.papers  =  data.map(function(paper_data){
                                     var paper = self.getPaperById(paper_data.id) || new BallotPaper(paper_data)
 
                                     return paper.importData(paper_data)
                                 })
+
+                return this
+            }
+
+            this.importSettings = function(data){
+                this.id      = data.id      || this.id      || ''
+                this.subject = data.subject || this.subject || ''
+                this.details = data.details || this.details || ''
+                this.locked  = data.locked  || this.locked  || false
+
+                return this
+            }
+
+
+            this.importData = function(data){
+
+                this
+                .importSettings(data)
+                .importOptions(data.options)
+                .importPapers(data.papers)
 
                 this.backup =   {
                                     subject:    String(this.subject),
@@ -226,6 +266,7 @@ angular.module('services',[])
                         :   null
             }
 
+
             this.getNextAvailableTag = function(){
                 var base_tags   =   "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                     taken_tags  =   this.options.map(function(option){
@@ -242,11 +283,15 @@ angular.module('services',[])
                     next_tag =  number2Tag(i)                    
                     i++
                 }
+
                 return next_tag
 
             }
 
             this.newOption  =   function(){
+                if(this.locked)
+                    return false
+
                 var new_option = new BallotOption( {tag : self.getNextAvailableTag()} )
                 this.options.push(new_option)
                 this.papers.forEach(function(paper){
@@ -255,14 +300,20 @@ angular.module('services',[])
                 return new_option
             }
 
-            this.newPaper   = function(data){                 
+            this.newPaper   = function(data){    
+                if(this.locked)
+                    return false
+
                 var ranking     = [this.options.map(function(option){ return option.tag })]
                     new_paper   = new BallotPaper(data || { ranking :  ranking })
                 this.papers.push(new_paper) 
                 return new_paper
             }
 
-            this.removeOption = function(option){                
+            this.removeOption = function(option){    
+                if(this.locked)
+                    return false
+
 
                 var tag = option.tag || option
 
@@ -277,6 +328,9 @@ angular.module('services',[])
             }
 
             this.restoreOption = function(option){
+                if(this.locked)
+                    return false
+
                 var tag = option.tag || option
 
                 this.options.forEach(function(){
@@ -290,10 +344,16 @@ angular.module('services',[])
             }
 
             this.removePaper = function(paper){
+                if(this.locked)
+                    return false
+
                 paper.removed = true
             }
 
             this.restorePaper = function(paper){
+                if(this.locked)
+                    return false
+
                 paper.removed = false
             }
 
