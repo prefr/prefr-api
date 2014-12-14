@@ -295,7 +295,8 @@ function HTMLpreferenceRanking() {
 
 										if(JSON.stringify(ranking) != JSON.stringify(rankingModel)){																					
 											while(rankingModel.length) rankingModel.pop()
-											rankingModel.push.apply(rankingModel, ranking)	
+											rankingModel.push.apply(rankingModel, ranking)
+											$scope.$apply()	
 										}				
 										
 									}
@@ -391,36 +392,6 @@ function HTMLpreferenceOption($scope) {
 								}
 			}
 }
-
-
-function HTMLtooltip($scope) {	
-	return	{
-				restrict	:	'E',
-
-				link		:	function(scope, element, attrs) {
-									var marker = $('<div></div>')
-
-									element.append(marker).addClass(scope.$eval(attrs.class))
-
-									marker.css({
-										"transform"	:	"rotate(-45deg)",
-										"position"	:	"absolute",	
-										"width"		:	"1em",
-										"height"	:	"1em"
-									})
-
-									element.css({
-										"position"	:	"absolute"
-									})
-
-									scope.$watch(attrs.class, function(){
-										marker.class = scope.$eval(attrs.class)
-									})
-								}
-
-			}
-}
-
 
 function HTMLWalkthrough(walkthrough){
 	return {

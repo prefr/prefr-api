@@ -505,6 +505,29 @@ h2,
 	opacity:				0.75;
 }
 
+.locked.selected .fa-lock{
+  animation-duration: 		1000ms;
+  animation-iteration-count:1;
+  animation-name: 			locked;
+}
+
+@keyframes locked {
+  0% {
+  	text-shadow:			#000 0 0 0em;
+  }
+
+  50% {
+  	text-shadow:			#000 0 0 1em;
+  }
+
+ 
+  100% {
+  	text-shadow:			rgba(1,1,1,0) 0 0 2em;
+  }
+}
+
+
+
 .removed{
 	opacity:				0.6;
 }
@@ -513,6 +536,31 @@ h2,
 	opacity:				0.3;
 	cursor:					default;
 }
+
+
+
+.pulsing{
+  opacity:					0;
+
+  animation-duration: 		1000ms;
+  animation-iteration-count:infinite;
+  animation-name: 			pulse;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 				0;
+  }
+
+  50%{
+  	opacity:				1;
+  }
+
+  100% {
+    opacity: 				0;
+  }
+}
+
 
 
 textarea[extendable] {
@@ -1594,9 +1642,6 @@ preference-ranking.horizontal preference-rank.ng-enter{
 .ranking-source .tab {
 	margin-left:				3em;
 }
-
-
-
 
 
 

@@ -77,20 +77,29 @@ angular.module('services',[])
             this.participant    = undefined
             this.ranking        = undefined
 
-            this.importData = function(data){
+            this.importData = function(data, skip_backup){
 
                 data = data || {} 
 
-                this.id          = data.id          || this.id
-                this.participant = data.participant || this.participant || ''
-                this.ranking     = data.ranking     || this.ranking || ''
-                this.removed     = data.removed     || this.removed || false
+                this.id             = 'id'             in data ? data.id           : this.id
+                this.participant    = 'participant'    in data ? data.participant  : this.participant || ''
+                this.removed        = 'removed'        in data ? data.removed      : this.removed || false
+                this.ranking        = 'ranking'        in data ? JSON.parse(JSON.stringify(data.ranking))      : this.ranking || ''
 
-                this.backup      =  {
-                                        id:             String(this.id),
-                                        participant :   String(this.participant),
-                                        ranking:        angular.extend([], data.ranking)
-                                    }
+
+                if(!skip_backup){
+
+                    this.backup         =   {
+                                                participant :   String(this.participant),
+                                                ranking:        JSON.parse(JSON.stringify(this.ranking))
+                                            }
+
+
+                    this.backup_zero    =   this.backup_zero ||     {
+                                                                        participant :   String(this.participant),
+                                                                        ranking:        JSON.parse(JSON.stringify(this.ranking))
+                                                                    }
+                }
 
                 return this
             }
@@ -124,16 +133,14 @@ angular.module('services',[])
                 return this
             }           
 
-            this.diff = function(){
-                var diff = {}
+            this.diff = function(zero){
+                var diff = {},
+                    backup = zero ? this.backup_zero : (this.id ? this.backup : {})
 
-                if(this.id != this.backup.id)
-                    diff.id = this.id
-
-                if(this.participant != this.backup.participant)
+                if(this.participant != backup.participant)
                     diff.participant = this.participant
 
-                if(JSON.stringify(this.ranking) != JSON.stringify(this.backup.ranking))
+                if(JSON.stringify(this.ranking) != JSON.stringify(backup.ranking))
                     diff.ranking = this.ranking
 
                 return  Object.keys(diff).length > 0 
@@ -141,8 +148,9 @@ angular.module('services',[])
                         :   null
             }
 
-            this.apply = function(){
-                this.importData(this.exportData())
+            this.revert = function(){
+                this.importData(this.backup_zero, true)
+
             }
 
             this.lock = function(){
@@ -306,7 +314,7 @@ angular.module('services',[])
 
                 var ranking     = [this.options.map(function(option){ return option.tag })]
                     new_paper   = new BallotPaper(data || { ranking :  ranking })
-                this.papers.push(new_paper) 
+                this.papers.unshift(new_paper) 
                 return new_paper
             }
 

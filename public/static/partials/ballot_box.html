@@ -87,7 +87,6 @@
                         >
                             <i ng-if ="!!ballot.diff()" class = "fa fa-warning"> </i>
                             apply
-
                         </button>
 
                         <small>
@@ -165,7 +164,12 @@
                                 <div class="connector right"></div>
                             -->
                             <div class = "icons right" ng-if = "isAdmin">
-                                <i class = "fa fa-times" ng-mousedown = "ballot.removeOption(option)"></i>
+                                <button 
+                                    ng-mousedown    = "ballot.removeOption(option)"
+                                    title           = "move to trash"
+                                >
+                                    <i class = "fa fa-times"></i>
+                                </button>
                             </div>
 
                             <walkthrough
@@ -233,7 +237,7 @@
                             </label>
 
                             <div class = "details">
-                                <textarea extendable disabled placeholder ="no further description">{{removed_option.description}}</textarea>
+                                <textarea extendable disabled placeholder ="no further description">{{removed_option.details}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -290,7 +294,7 @@
             				<preference-option 
             					class		    = "ui-panel right ui-corners-left"
                                 ng-class        = "{'selected': selectionBallotOption.value == ballot.getOptionByTag(tag)}"
-            					ng-repeat	    = "tag in rank"
+            					ng-repeat	    = "tag in rank | orderBy"
             					value		    = "{{tag}}"
                                 ng-click    = "select('ballot-option', ballot.getOptionByTag(tag))"
             				>
@@ -417,18 +421,26 @@
 
                         <div class = "icons right shift">
 
-                            <button 
-                                class       = "inverted" 
-                                ng-if       = "!!paper.diff()"
-                                ng-mousedown    = "savePaper(paper)" 
+                            <button
+                                disabled
+                                ng-if   = "!!paper.diff()"
+                                title   = "saving"     
                             >
-                                <i class = "fa fa-warning"></i>
-                                save
+                                <i class = "fa fa-upload pulsing"></i>
+                            </button>
+
+                            <button 
+                                ng-disabled     = "paper.locked || !paper.diff(true)"
+                                ng-mousedown    = "paper.revert()" 
+                                title           = "undo all changes"
+                            >
+                                <i class = "fa fa-undo"></i>
                             </button>
                           
                             <button 
                                 ng-mousedown    = "paper.unlock()"
                                 ng-show         = "paper.locked"
+                                title           = "enable editing"
                             >
                                 <i class = "fa fa-lock"></i>
                             </button>
@@ -436,14 +448,16 @@
 
                             <button                                    
                                 ng-hide         = "paper.locked"
-                                ng-mousedown        = "paper.lock()"
+                                ng-mousedown    = "paper.lock()"
+                                title           = "disable editing"
                             >
                                 <i class = "fa fa-unlock-alt"></i>
                             </button>
 
                             <button
                                 ng-disabled     = "paper.locked"   
-                                ng-mousedown        = "removePaper(paper)"
+                                ng-mousedown    = "removePaper(paper)"
+                                title           = "move to trash"                                
                             >
                                 <i class = "fa fa-times"></i>
                             </button>
@@ -472,11 +486,10 @@
                         </span>
 
                         <div class = "icons right shift">
-                            <button disabled>
-                                <i class = "fa fa-lock"></i>
-                            </button>
-
-                            <button ng-mousedown = "restorePaper(removed_paper); select('ballot-paper', removed_paper)">
+                            <button 
+                                ng-mousedown    = "restorePaper(removed_paper); select('ballot-paper', removed_paper)"
+                                title           = "restore"
+                            >
                                 <i class = "fa fa-arrow-circle-up"></i>
                             </button>
                         </div> 

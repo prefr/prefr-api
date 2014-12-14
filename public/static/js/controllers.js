@@ -10,10 +10,11 @@ prefrControllers.controller(
 		'$location',
 		'$http',
 		'$q',
+		'$timeout',
 		'Ballot',
 		'BallotPaper',
 
-		function ($scope, $routeParams, $location, $http, $q, Ballot, BallotPaper){
+		function ($scope, $routeParams, $location, $http, $q, $timeout, Ballot, BallotPaper){
 
 								
 			$scope.adminSecret 		= $routeParams.admin_secret
@@ -61,15 +62,25 @@ prefrControllers.controller(
 		    }
 
 		    $scope.savePaper = function(paper){
-		    	var diff 		=	paper.diff()
-		    		api_call	=	paper.id
-    								?	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, diff)
-    								:	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
+    			if(paper.scheduledSave)
+	    			$timeout.cancel(paper.scheduledSave)
+	    		
 
-	    		return	api_call
-	    				.then(function(result){
-	    					paper.importData(result.data)
-	    				})
+				paper.scheduledSave	=	$timeout(function(){
+											var diff = paper.diff()
+
+									    	if(!diff) return $q.reject()
+
+					    					return 	paper.id
+				    								?	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, diff)
+    												:	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
+
+						   				}, 2000)    								
+
+	    		return	paper.scheduledSave
+						.then(function(result){
+							paper.importData(result.data)
+						})
 		    }
 
 		    $scope.removePaper = function(paper){
@@ -100,7 +111,6 @@ prefrControllers.controller(
 		    				adminSecret:	$scope.adminSecret
 		    			})
 		    			.then(function(result){
-		    				console.dir(result)
 		    				$scope.ballot
 		    				.importSettings(result.data)
 		    				.importOptions(result.data.options)
@@ -115,7 +125,6 @@ prefrControllers.controller(
 		    }
 
 
-
 			if($scope.box_id != 'new'){
 				$http.get('/api/ballotBox/'+$scope.box_id)
 				.then(
@@ -126,6 +135,14 @@ prefrControllers.controller(
 
 						if($scope.ballot.papers.length == 0)
 							$scope.ballot.newPaper()
+
+
+
+						$scope.$watch('ballot', function(){
+							$scope.ballot.papers.forEach(function(paper){
+								$scope.savePaper(paper)
+							})
+						}, true)
 					}
 			    )
 			} else {
@@ -151,7 +168,6 @@ prefrControllers.controller(
 			}
 
 
-			$scope.original_ballot 	= angular.extend({}, $scope.ballot)
 
 		}
 	]
