@@ -29,7 +29,14 @@ prefr.config([
             }
         )
         .when(
-            '/ballot_box/:box_id/:admin_secret?',
+            '/ballotBox/new',
+            {
+                templateUrl :   'static/partials/new_ballot_box.html',
+                controller  :   'NewBallotBoxCtrl'
+            }
+        )
+        .when(
+            '/ballotBox/:box_id/:admin_secret?',
             {
                 templateUrl :   'static/partials/ballot_box.html',
                 controller  :   'BallotBoxCtrl'
@@ -74,5 +81,3 @@ prefr.directive('preferenceRank',       [HTMLpreferenceRank])
 prefr.directive('preferenceOption',     [HTMLpreferenceOption])
 
                 
-prefr.directive('walkthrough',          ['walkthrough', '$animate', HTMLWalkthrough])
-

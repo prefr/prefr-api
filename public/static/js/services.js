@@ -380,44 +380,27 @@ angular.module('services',[])
         return Ballot
     }
 ])
-.factory('walkthrough', [
+.service('api', [
 
-    '$rootScope',
+    '$http',
 
-    function($rootScope){
-        var self = [],
-            current_path,
-            current_step
+    function($http){
+        return {
+            saveBallot: function(ballot){
+                return $http.post('/api/ballotBox', ballot.exportData())
+                        .then(function(result){
+                            return result.data
+                        })                    
+            },
 
-        self.register = function(path, step, scope){
-            self[path]          =   self[path] || []
-            self[path][step]    =   scope
-
-            if(path == current_path && step == current_step)
-                self[path] && self[path][step] && self[path][step].show()
-
-            scope.hide()
-        }
-
-        self.goto = function(path, step){
-            self[current_path] && self[current_path][current_step] && self[current_path][current_step].hide()
-
-            current_path = path || current_path
-            current_step = step
-
-            self[current_path] && self[current_path][current_step] && self[current_path][current_step].show()
+            getBallot: function(box_id){
+                return  $http.get('/api/ballotBox/'+box_id)
+                        .then(function(result){
+                            return result.data
+                        })
+            }
 
         }
-
-        self.gotoFn = function(path, step){
-            return  function(){
-                        self.goto(path, step)
-                    }
-        }
-
-        $rootScope.walkthrough = self
-
-        return self
     }
 ])
 

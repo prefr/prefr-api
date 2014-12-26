@@ -1,0 +1,156 @@
+<article class = "ui-white left right ui-deep-shadow-ex">
+    <h2> new prefr </h2>
+
+    <div ng-if = "step == 0">
+        <h3>What is the matter to be decided?</h3>        
+        <label>
+            <input type = "text" value = "{{ballot.subject}}">
+        </label>
+
+        <h3>Anything you would like to add, to make the matter clearer to other particpants?</h3>
+        <label>
+            <textarea
+                extendable
+                ng-model = "ballot.details"
+            >
+            </textarea>
+        </label>
+
+        <div>
+            <button ng-click = "next()">next</button>
+        </div>
+    </div>
+
+    <div ng-if = "step == 1">
+        
+        <h3>Options</h3>
+        <p>
+            Options represent the possible outcomes of the decision to be made. Each participant will rank these options according to her preference.
+        </p>
+
+        <p>
+            You can add as many as you like and you can add, remove and edit options later on. But be aware that some participants may not notice later changes and therefore won't be able to update their rankings to be in line with the changes.
+        </p>
+
+        <label
+            class       = "ui-border-top" 
+            ng-mousedown    = "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
+        >
+            Add new option
+            <div class = "icons right">
+                <i class = "fa fa-plus"></i>
+            </div>
+        </label>     
+
+
+        <hr/>
+
+        <div class = "options-overview left right ui-dark-white ui-pixelate">                   
+
+            <div 
+                class           = "option"
+                ng-repeat       = "option in ballot.options | filter: {removed : '!'} | orderBy:'tag'" 
+                ng-mousedown    = "select('ballot-option', option); $event.stopPropagation()" 
+                ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
+            >                       
+                <label>                            
+                    <span class="tag">
+                        {{option.tag}}
+                    </span>
+
+                    <input 
+                        name        = "title" 
+                        type        = "text"
+                        placeholder = "Enter title" 
+                        ng-model    = "option.title"
+                        max-size    
+                    >
+
+                    <div class = "icons right">
+                        <button 
+                            ng-mousedown    = "ballot.removeOption(option)"
+                            title           = "move to trash"
+                        >
+                            <i class = "fa fa-times"></i>
+                        </button>
+                    </div>
+                </label>
+
+                 <div 
+                    class   = "details ui-blue"
+                >
+                    <textarea 
+                        extendable 
+                        ng-model    = "option.details" 
+                        ng-if       = "isAdmin"
+                        placeholder = "Enter details"
+                    ></textarea>
+                    <div ng-if = "!isAdmin">
+                        {{option.details || 'No details'}}
+                    </div>
+                </div>
+            </div>
+            <div
+                class       = "removed"
+                ng-if       = "(ballot.options  | filter: {removed : true}).length > 0"
+            >
+                <h4> Removed options </h4>
+                <br/>
+
+                <div 
+                    class       = "option"
+                    ng-repeat   = "removed_option in ballot.options  | filter: {removed : true} | orderBy:'tag'" 
+                >                       
+                    <label>                            
+                        <span class="tag">
+                            {{removed_option.tag}}
+                        </span>
+
+                        <span>
+                            {{removed_option.title}}
+                        </span>
+
+                        <div class = "icons right">
+                            <button ng-mousedown = "ballot.restoreOption(removed_option); select('ballot-option', removed_option)">
+                                <i class = "fa fa-arrow-circle-up"></i>
+                            </button>
+                        </div>                          
+
+                    </label>
+
+                    <div class = "details">
+                        <textarea extendable disabled placeholder ="no further description">{{removed_option.details}}</textarea>
+                    </div>
+                </div>
+            </div>        
+        </div>
+
+        <div class = "ui-border-top ui-extended-height ui-blue">
+        </div>
+        
+        <div>
+            <button ng-click = "previous()">back</button>
+            <button ng-click = "saveBallot()">next</button>
+        </div>
+    </div>
+
+    <div ng-if ="step == 2">
+        <h3>How to participate</h3>
+
+        <p>
+            Admin link: <br/>
+            <small>
+                <a href = "{{adminLink}}">{{adminLink}}</a><br/>             
+            </small>
+
+            <br/>
+
+            Participant link: <br/>
+            <small>
+                <a href = "{{participantLink}}">{{participantLink}}</a>
+            </small>
+        </p>
+    </div>
+
+
+</article>

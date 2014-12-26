@@ -393,40 +393,6 @@ function HTMLpreferenceOption($scope) {
 			}
 }
 
-function HTMLWalkthrough(walkthrough){
-	return {
-		restrict: 'AE',
-		templateUrl: '/static/partials/walkthrough_tag.html',
-		transclude: true,
-
-		controller: function($scope, $element, $attrs){
-			$element.addClass('point-'+$attrs.direction)
-
-			$scope.path 	= $attrs.path
-			$scope.step 	= $attrs.step	
-			$scope.next		= $attrs.next
-			$scope.nextPath	= $attrs.nextPath
-
-
-			$scope.hide = function(){
-				$scope.active = false
-			}
-
-			$scope.show = function(){
-				$scope.active = true
-			}
-
-			$scope.skip = function(){
-				walkthrough.goto($scope.nextPath, $scope.next)
-			}
-
-
-			walkthrough.register($scope.path, $scope.step, $scope)	
-		}
-	}
-}
-
-
 function manageOptions(){
 	return {	
 		restrict: 'A',

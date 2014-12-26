@@ -1,5 +1,64 @@
 var prefrControllers = angular.module('prefrControllers', []);
+
+
+function saveBallotBox(ballot){
+
+}
  
+prefrControllers.controller(
+	'NewBallotBoxCtrl',
+	[
+		'$scope',
+		'$location',
+		'Ballot',
+		'api',
+
+		function($scope, $location, Ballot, api){
+
+			$scope.step = 0
+
+			$scope.ballot =	new Ballot({
+									id: 		undefined,
+									subject: 	undefined,
+									options:	[
+													{									
+														tag:		"0",
+														title:		"All of the above and none of the below",
+														details: 	"This is a special option. You may delete it if you like. It is useful though if you want to allow your participants to reject an option altogether. They can do that by ranking the disliked option lower than this one. If in the end this option ('All of the above and none of the below') wins the ballot all options have been rejected.",
+													},
+													{
+														tag:		"A",
+														title:		"First option",
+														details: 	"",
+													}
+												],
+									papers:		[]
+
+								})
+
+			$scope.next = function(){
+				$scope.step++
+			}
+
+			$scope.previous = function(){				
+				$scope.step == 0 
+				?	$scope.step = 0
+				:	$scope.step --
+			}
+
+			$scope.saveBallot = function(){
+				return 	api.saveBallot($scope.ballot)
+						.then(function(data){
+							var url = $location.absUrl()
+
+							$scope.participantLink	= url.replace(/#.*/, '#/ballotBox/'+data.id)
+							$scope.adminLink		= url.replace(/#.*/, '#/ballotBox/'+data.id+'/'+data.adminSecret)
+							$scope.next()
+						})
+			}			
+		}
+	]
+) 
 
 prefrControllers.controller(
 
@@ -13,16 +72,16 @@ prefrControllers.controller(
 		'$timeout',
 		'Ballot',
 		'BallotPaper',
+		'api',
 
-		function ($scope, $routeParams, $location, $http, $q, $timeout, Ballot, BallotPaper){
+		function ($scope, $routeParams, $location, $http, $q, $timeout, Ballot, BallotPaper, api){
 
 								
 			$scope.adminSecret 		= $routeParams.admin_secret
 			$scope.box_id			= $routeParams.box_id
-			$scope.isAdmin 			= $scope.box_id == 'new' || !!$scope.adminSecret
+			$scope.isAdmin 			= !!$scope.adminSecret
 			$scope.adminLink 		= $location.absUrl()
 			$scope.participantLink	= $scope.adminLink.replace('/'+$scope.adminSecret, '')
-
 
 			$scope.removeBallotPaper = function(paper_id) {
 		        if($scope.ballot_box.papers[paper_id]) delete $scope.ballot_box.papers[paper_id]
@@ -38,16 +97,6 @@ prefrControllers.controller(
 		        	$scope.result.lock()
 		        })
 		    } 
-
-		    $scope.saveBallotBox = function() {
-		    	$http.post('/api/ballotBox', $scope.ballot.exportData())
-		    	.then(function(result){
-		    		var ballot_data = result.data
-		    		$location
-		    		.path('/ballot_box/'+ballot_data.id+'/'+ballot_data.adminSecret)
-		    		.replace()
-		    	})
-		    }
 
 		    $scope.lockBallotBox = function(){
 		    	$http.post('/api/ballotBox/'+$scope.box_id+'/lock',{
@@ -125,50 +174,22 @@ prefrControllers.controller(
 		    }
 
 
-			if($scope.box_id != 'new'){
-				$http.get('/api/ballotBox/'+$scope.box_id)
-				.then(
-					function(result){
-						$scope.ballot	= new Ballot(result.data)
+			api.getBallot($scope.box_id)
+			.then(function(data){
+				$scope.ballot	= new Ballot(data)
 
-						$scope.lockPapers()
+				$scope.lockPapers()
 
-						if($scope.ballot.papers.length == 0)
-							$scope.ballot.newPaper()
+				if($scope.ballot.papers.length == 0)
+					$scope.ballot.newPaper()
 
 
-
-						$scope.$watch('ballot', function(){
-							$scope.ballot.papers.forEach(function(paper){
-								$scope.savePaper(paper)
-							})
-						}, true)
-					}
-			    )
-			} else {
-				$scope.ballot =	new Ballot({
-									id: 		undefined,
-									subject: 	undefined,
-									options:	[
-													{									
-														tag:		"0",
-														title:		"All of the above and none of the below",
-														details: 	"This is a special option. You may delete it if you like. It is useful though if you want to allow your participants to reject an option altogether. They can do that by ranking the disliked option lower than this one. If in the end this option ('All of the above and none of the below') wins the ballot all options have been rejected.",
-													},
-													{
-														tag:		"A",
-														title:		"First option",
-														details: 	"",
-													}
-												],
-									papers:		[]
-
-								})
-				$scope.saveBallotBox()
-			}
-
-
-
+				$scope.$watch('ballot', function(){
+					$scope.ballot.papers.forEach(function(paper){
+						$scope.savePaper(paper)
+					})
+				}, true)
+			})
 		}
 	]
 )

@@ -82,25 +82,14 @@ nav a {
 	display:				inline-block;
 	text-decoration: 		none;
 	color:					#666;
-	padding:				0;
+	padding:				0 0.5em;
 	margin:					0 1em;
 	cursor:					pointer;
+	transition:				all 200ms;
 }
 
-nav a:after {
-	content:				'';
-	position:				absolute;
-
-
-	height:					0em;
-	bottom:					0;
-	left:					-0.5em;
-	right:					-0.5em;
-
-	box-shadow:				0 -0.05rem 0.01em #000000;
-	background-color: 		#666;
-	outline: 				0;
-	transition:				height 100ms ease-out;
+nav a:hover {
+	background-color:		rgba(200, 200, 200, 0.5);
 }
 
 nav a:hover:after,
@@ -153,7 +142,7 @@ nav.vertical {
 /* main content */
 
 
-body > article {
+body > section {
 	display:				block;
 	width:					100%;
 
@@ -163,14 +152,22 @@ body > article {
 	padding:				0;
 	text-align:				center;
 
-	
+	background-color:		#444;
+	background-image:		url('images/stripes.png');
+	background-size:		1em;	
 
 }
 
-body > article:after {
+body > section:after {
 	content:				'';
 	display:				block;
 	clear:					both;
+}
+
+body > section > article {
+	position:				relative;
+	margin:					auto;
+	width:					40em;
 }
 
 
@@ -191,7 +188,7 @@ a {
 }
 
 p{
-	padding: 0.5em;
+	padding: 				0.5em 1em;
 	text-align:				justify;
 }
 
@@ -225,6 +222,11 @@ h2{
 }
 
 h3{
+	font-variant: 			small-caps;
+	font-size:				1.3em;
+}
+
+h4{
 	display:				block;
 	font-size:				1.4em;
 	border-bottom:			0.1em solid #666;		
@@ -300,12 +302,12 @@ hr {
 	width:					100%;
 
 	border:					none;
-	box-shadow:				0 5.1em 0.5em -5.0em rgba(0, 0, 0, 1) inset
+	box-shadow:				0 5.15em 0.5em -5.0em rgba(0, 0, 0, 1) inset
 }
 
 hr.up{
-	margin-top:				-0.2;
-	box-shadow:				0 -0.2em 0.2rem -0.2em rgba(0, 0, 0, 0.5) inset;	
+	margin-top:				-0.7em;	
+	box-shadow:				0 -5.15em 0.5em -5.0em rgba(0, 0, 0, 1) inset
 }
 
 li {
@@ -483,9 +485,13 @@ h2,
 	box-shadow:				0 0 1em rgba(0, 0, 0, 0.6) inset;
 }
 
+.ui-deep-shadow-ex{
+	box-shadow:				0 0 1em rgba(0, 0, 0, 0.6);	
+}
+
 .ui-pixelate {
    	background-image: 		url("images/pixelate.png");
-    background-size: 		5em auto;
+    background-size: 		10em auto;
 }
 
 .ui-box {
@@ -499,6 +505,12 @@ h2,
 	text-align:				center;
 	vertical-align:			baseline;
 }
+
+
+
+
+
+
 
 
 .locked {
@@ -578,15 +590,18 @@ textarea[extendable] {
 
 .options-overview .option {		
 	max-width:				30em;
+}
+
+.options-overview.right .option {
 	margin-left:			auto;
+}
+
+.options-overview.left .option{
+	margin-right:			auto;
 }
 
 .options-overview .option label input {
 	width:					75%;
-}
-
-.options-overview .option h3 {
-	text-align:				left;
 }
 
 
@@ -802,10 +817,6 @@ textarea[extendable] {
 	padding:				2em 0;	
 }
 
-.participants-overview h3 {
-	text-align:				right;
-}
-
 .participants-overview label {
 	max-width:				23em;
 }
@@ -947,14 +958,14 @@ label .wrapper textarea{
 }
 
 
-.ui-white input:focus,
-.ui-white textarea:focus {
+.ui-white > input:focus,
+.ui-white > textarea:focus {
 	background:				rgba(155,155,155,0.1) !important;
 	cursor: 				text;
 }
 
 input:focus,
-textarea:focus {
+textarea:focus{
 	background:				rgba(255,255,255,0.2) !important;
 	cursor: 				text;
 }
@@ -1159,10 +1170,6 @@ label.result {
 	padding:				4em 4em;
 
 	vertical-align:			top;
-
-	background-color:		#444;
-	background-image:		url('images/stripes.png');
-	background-size:		4px 4px;
 }
 
 .ballot-box #right-column {
@@ -1644,164 +1651,3 @@ preference-ranking.horizontal preference-rank.ng-enter{
 }
 
 
-
-
-/* walkthrough marker */
-
-
-walkthrough {
-	position:					absolute;
-	display:					block;
-
-	font-size:					0.833em;
-
-	padding:					0.5em;
-	
-	z-index:					100;
-
-	color:						#666;/*#bf9;*/
-	background:					rgba(245, 245, 240, 1); /*#686;*/
-
-	box-shadow:					0 0 0.5em rgba(0,0,0,0.7);
-	white-space: 				normal;
-
-	width:						20em;
-	line-height:				1.2em;
-
-}
-
-walkthrough.ng-hide-add, 
-walkthrough.ng-hide-remove {
-  	transition:					0s ease all;
-  
-}
-
-walkthrough.ng-hide-add-active,
-walkthrough.ng-hide-remove-active {
-  	transition:					400ms ease all;
-}
-
-walkthrough.ng-hide-remove {
-	opacity:					0;
-}
-
-walkthrough.ng-hide-remove-active{
-	opacity:					1;
-}
-
-walkthrough.ng-hide-add {
-	opacity:					0;
-}
-
-walkthrough.ng-hide-add-active{
-	opacity:					0;
-}
-
-
-walkthrough button{
-	font-size:					0.9em;
-	float:						right;
-	margin-top:					1em;
-}
-
-
-walkthrough.point-left {
-	top:						50%;
-	left:						100%;
-
-	padding-left:				2em;
-	padding-top:				2em;
-	margin-left:				-1em;
-}
-
-walkthrough.point-right {
-	top:						50%;
-	right:						100%;
-
-	padding-right:				2em;
-	padding-top:				2em;
-	margin-left:				-1em;
-}
-
-
-
-walkthrough .marker {	
-	display:					block;
-	position:					absolute;
-
-	top:						0;
-	left:						0;
-
-	font-size:					2.3em;
-	height:						1.2em;
-	width:						1.2em;
-	margin:						-0.6em;
-
-	border-radius:				0.6em;
-	box-shadow:					0 0 0em 0.15em #f80, 0 0 0 0.25em #fff, 0 0 0.25em 0.25em rgba(0,0,0,0.5);/*0 0 0em 0.15em #bf9, 0 0 0 0.25em #686, 0 0 0.25em 0.25em rgba(0,0,0,0.5);*/
-	background-color:			#fff;/*#686;*/
-	color:						#f80;/*#bf9;*/
-	font-weight:				bold;
-	
-	text-align:					center;
-	line-height:				1.2em;	
-	
-
-}
-
-walkthrough .marker:before{
-	content:					'';
-	position:					absolute;
-
-	height:						0;
-	width:						0;
-
-	font-size:					0.4em;
-
-	margin:						-1em;
-}
-
-
-walkthrough.point-right .marker:before{
-
-	top:						50%;
-	left:						160%;
-
-	border-top:					solid 1em transparent;
-	border-bottom:				solid 1em transparent;
-	border-left:				solid 1em #f80;
-}
-
-walkthrough.point-left .marker:before{
-
-	top:						50%;
-	right:						160%;
-
-	border-top:					solid 1em transparent;
-	border-bottom:				solid 1em transparent;
-	border-right:				solid 1em #f80;
-}
-
-walkthrough.point-top .marker:before{
-
-	bottom:						160%;
-	left:						50%;
-
-	border-left:				solid 1em transparent;
-	border-right:				solid 1em transparent;
-	border-bottom:				solid 1em #f80;
-}
-
-walkthrough.point-top .marker:before{
-
-	top:						160%;
-	left:						50%;
-
-	border-left:				solid 1em transparent;
-	border-right:				solid 1em transparent;
-	border-top:					solid 1em #f80;
-}
-
-walkthrough .active {
-	box-shadow:					0 0 0.5em #0f0;
-}

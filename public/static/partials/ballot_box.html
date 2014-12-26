@@ -3,7 +3,6 @@
 	class			=	"ballot-box"
 	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
 >
-    {{help.open = walkthrough.gotoFn('new_ballot', 1)}}
 
     <table id = "main"> 
         <tr single-select   = "{'edit-menu' : 'ranking'}">
@@ -21,15 +20,6 @@
                             <i class = "fa fa-pencil"></i>
                         </div>
 
-                        <walkthrough
-                            direction   = "left" 
-                            path        = "new_ballot"
-                            step        = "1"
-                            next        = "2" 
-                            ng-show     = "active"
-                        >
-                            Enter a subject matter to be decided on. (e.g. "What should we to on the weekend?")
-                        </walkthrough>
                     </label>
 
 
@@ -43,16 +33,7 @@
                             <textarea placeholder = "Enter details" extendable ng-model = "ballot.details" placeholder = "Enter details"></textarea>
                         </div>
                         
-                        <walkthrough 
-                            direction   = "left" 
-                            path        = "new_ballot"
-                            step        = "2"
-                            next        = "3"
-                            ng-show     = "active"
-                        >
-                            Anything else you would like to add? Maybe the subject line was too short.
-                        </walkthrough>
-
+         
                     </label>                    
 
                     <p ng-if = "adminSecret">
@@ -108,19 +89,7 @@
                             <i class = "fa fa-plus"></i>
                         </div>
 
-                        <walkthrough
-                            direction   = "left" 
-                            path        = "new_ballot"
-                            step        = "4"
-                            next        = "A"
-                            next-path   = "new-participant"
-                            ng-show     = "active"
-                        >
-                            Add another option to your ballot paper.
-                            <br/>
-                            You can remove it later – if you like – with the x button on the top right.
-                            <br/>
-                        </walkthrough>
+                      
                     </label>     
 
                     <label class = "ui-border-top" ng-if = "!isAdmin">
@@ -172,19 +141,6 @@
                                 </button>
                             </div>
 
-                            <walkthrough
-                                ng-if       = "$index == 1"
-                                direction   = "left" 
-                                path        = "new_ballot"
-                                step        = "3"
-                                next        = "4"
-                                ng-show     = "active"
-                            >
-                                Enter a title for your first option.                                
-                                <br/>
-                                You can enter futher details for this option below.
-                                <br/>
-                            </walkthrough>
                            
 
                         </label>
@@ -212,7 +168,7 @@
                         class       = "removed"
                         ng-if       = "(ballot.options  | filter: {removed : true}).length > 0"
                     >
-                        <h3> Removed options </h3>
+                        <h4> Removed options </h4>
                         <br/>
 
                         <div 
@@ -470,7 +426,7 @@
                     class   = "participants-overview  removed left"
                     ng-if   = "(ballot.papers | filter: {removed : true}).length > 0"
                 >
-                    <h3> Removed Participants</h3>
+                    <h4> Removed Participants</h4>
                     <br/>
                     <br/>
 
