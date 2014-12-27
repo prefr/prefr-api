@@ -47,7 +47,9 @@ function HTMLsingleSelect() {
 function HTMLextendable($timeout){
 	return{
 		restrict: 'AE',
-		link: function(scope, element){
+		priotity: 1000,
+
+		link: function(scope, element, atrrs){
 			function refresh(){
 				element[0].style.height = "auto";
   				element[0].style.height = element[0].scrollHeight + "px";
@@ -57,7 +59,7 @@ function HTMLextendable($timeout){
 
 			refresh()
 
-			$timeout(refresh, 500)
+			$timeout(refresh, 0)
 		}
 	}
 }

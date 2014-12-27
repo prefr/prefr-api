@@ -1,27 +1,110 @@
 <article class = "ui-white left right ui-deep-shadow-ex">
     <h2> new prefr </h2>
 
+
+
+
     <div ng-if = "step == 0">
-        <h3>What is the matter to be decided?</h3>        
-        <label>
-            <input type = "text" value = "{{ballot.subject}}">
-        </label>
+        <h3>Introduction</h3>        
 
-        <h3>Anything you would like to add, to make the matter clearer to other particpants?</h3>
-        <label>
-            <textarea
-                extendable
-                ng-model = "ballot.details"
-            >
-            </textarea>
-        </label>
+        <p>
+            Pick a question or matter to be decided by a group. <em>(e.g. "What should we do this weekend?")</em>        
+            Then provide potential answers or options to be ranked, something like this:
+        </p>        
 
-        <div>
-            <button ng-click = "next()">next</button>
-        </div>
+        <ul class ="ui-extensive-width">
+            <li><i class = "fa fa-caret-right"></i> Have a LAN party.</li>
+            <li><i class = "fa fa-caret-right"></i> Play some board games.</li>
+            <li><i class = "fa fa-caret-right"></i> Go see a movie.</li>
+            <li><i class = "fa fa-caret-right"></i> Keep coding.</li>
+        </ul>   
+        <p>
+            After that invite friends or colleagues to participate by ranking your options and have this app calculate the group's collective preference ranking by a method of your choice (only <a href="http://en.wikipedia.org/wiki/Schulze_method">schulze method</a> available at the moment).
+        </p>
+
+        <br/>
+
+        <button 
+            class       = "left"
+            ng-click    = "next()"
+        >
+                Get started
+                <i class = "fa fa-chevron-right "></i>
+        </button>
+
+
+        
     </div>
 
+
+
+
+
     <div ng-if = "step == 1">
+        <h3>Subject matter</h3>
+
+        <p>
+            Now, ask a question or pick a subject matter:
+        </p>
+
+        <label class = "ui-white subject">
+            <span> Subject: </span>
+            <input 
+                type        = "text" 
+                ng-model    = "ballot.subject" 
+                placeholder = "Enter subject"
+                class       = "ui-extensive-width"
+            >
+            <div class = "icons right">
+                <i class = "fa fa-pencil"></i>
+            </div>
+
+        </label>
+
+        <p>
+            You may want to add further details if the subject line was too short to put all the information into. <em>(e.g. "We'll be at least 6 people at 3pm. Two more may join until 6pm. There is no limited on the budget. Food will be provided.")</em>
+        </p>
+
+        <label class = "ui-white">
+            <span> Details: </span>
+            <div class = "icons right">
+                <i class = "fa fa-pencil"></i>
+            </div>
+            <br/>
+            <div class="wrapper">
+                <textarea placeholder = "Enter details" extendable ng-model = "ballot.details" placeholder = "Enter details"></textarea>
+            </div>
+        </label>  
+
+        <p>
+            You can change the subject and details later on if you like. But keep in mind that your participants may not notice in time and will be unable to update their ranking accordingly.
+        </p>
+
+
+        <div class = "ui-extended-height"></div>
+
+        <button 
+            class       = "right"
+            ng-click    = "previous()"
+        >
+            Back (introduction)
+            <i class = "fa fa-chevron-left "></i>
+        </button>
+
+        <button 
+            class       = "left"
+            ng-click    = "next()"
+        >
+            Next (options)
+            <i class = "fa fa-chevron-right "></i>
+        </button>
+    </div>
+
+
+
+
+
+    <div ng-if = "step == 2">
         
         <h3>Options</h3>
         <p>
@@ -29,7 +112,7 @@
         </p>
 
         <p>
-            You can add as many as you like and you can add, remove and edit options later on. But be aware that some participants may not notice later changes and therefore won't be able to update their rankings to be in line with the changes.
+            You can add as many as you like and you can add, remove and edit options later on. But be aware that some participants may not notice later changes and therefore won't be able to update their rankings to be in line with your changes.
         </p>
 
         <label
@@ -48,7 +131,7 @@
         <div class = "options-overview left right ui-dark-white ui-pixelate">                   
 
             <div 
-                class           = "option"
+                class           = "option ui-blue"
                 ng-repeat       = "option in ballot.options | filter: {removed : '!'} | orderBy:'tag'" 
                 ng-mousedown    = "select('ballot-option', option); $event.stopPropagation()" 
                 ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
@@ -125,17 +208,44 @@
             </div>        
         </div>
 
-        <div class = "ui-border-top ui-extended-height ui-blue">
-        </div>
+        <hr class = "up"/>
+        <div class = "ui-border-bottom ui-medium-height ui-blue"></div>
         
+        <div class = "ui-extended-height ui-white"></div>
+
         <div>
-            <button ng-click = "previous()">back</button>
-            <button ng-click = "saveBallot()">next</button>
-        </div>
+            <button 
+                class       = "right"
+                ng-click    = "previous()"
+            >
+                <i class = "fa fa-chevron-left"></i>
+                Back (subject)
+            </button>
+            
+            <button 
+                class       = "left"
+                ng-click    = "saveBallot()"
+            >
+                <i class = "fa fa-chevron-right"></i>
+                Submit
+            </button>
+        </div>        
     </div>
 
-    <div ng-if ="step == 2">
+
+
+
+
+    <div ng-if ="step == 3">
         <h3>How to participate</h3>
+
+        <p>
+            It is done. Your ballot is online.
+        </p>
+
+        <p>
+            To cast a vote use either of the two links below. The first one ist your admin link. With it you can make changes to the ballot. The second one is the link for others to cast their vote - you should give it to those you want to participate.
+        </p>
 
         <p>
             Admin link: <br/>
@@ -150,7 +260,13 @@
                 <a href = "{{participantLink}}">{{participantLink}}</a>
             </small>
         </p>
+
+        <p>
+            Both links allow you to add as many new partcipants as you like. You can even remove or change the votes of others.
+        </p>
     </div>
 
+    <div class = "ui-extended-height ui-white"></div>
+    <div class = "ui-border-top ui-extended-height ui-blue"></div>        
 
 </article>

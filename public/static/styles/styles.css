@@ -32,14 +32,16 @@ textarea {
 	border:					none;
 	padding:				0;
 	margin:					0;
-	color:					#666;
+	color:					inherit;
 	font-size:				inherit;
+	background-color:		inherit;
 	outline:				none;
 }
 
 textarea {
 	display:				block;
-	resize:					none;	
+	resize:					none;
+	min-height: 			3em;	
 }
 
 
@@ -82,8 +84,8 @@ nav a {
 	display:				inline-block;
 	text-decoration: 		none;
 	color:					#666;
-	padding:				0 0.5em;
-	margin:					0 1em;
+	padding:				0 1em;
+	margin:					0 0;
 	cursor:					pointer;
 	transition:				all 200ms;
 }
@@ -188,23 +190,30 @@ a {
 }
 
 p{
-	padding: 				0.5em 1em;
+	padding: 				0.5em 2em;
 	text-align:				justify;
 }
 
 p a {
-	color:					#A7C7DC;
+	color:					#647D8C;
+	border-bottom:			1px solid #647D8C;
 }
 
 p a:hover {
-	border-bottom:			1px solid #A7C7DC;
+	border-width:			2px;
 }
 
 ul,
 ol {
-	margin:					0;
-	padding:				0;
+	margin:					auto;
+	padding:				0;	
 }
+
+li {
+	list-style: 			none;
+	text-align:				left;
+}
+
 
 h1, h2, h3, h4, h5, h6 {
 	margin-top:				0;
@@ -270,8 +279,31 @@ button {
 	box-shadow:				none;
 	border-radius:			none;
 	cursor:					pointer;
-
+	transition:				all 200ms;
 }
+
+button.left {
+	text-align:				left;
+	padding-left:			0.5em;
+	padding-right:			0.5em;
+}
+
+button.left i {
+	float:					right;
+	line-height:			inherit;
+}
+
+button.right {
+	text-align:				right;
+	padding-left:			0.5em;
+	padding-right:			0.5em;
+}
+
+button.right i{
+	float:					left;
+	line-height:			inherit;
+}
+
 
 .icons button {
 	display:				inline-block;
@@ -310,9 +342,6 @@ hr.up{
 	box-shadow:				0 -5.15em 0.5em -5.0em rgba(0, 0, 0, 1) inset
 }
 
-li {
-	list-style: none;
-}
 
 
 ::-webkit-input-placeholder { /* WebKit browsers */
@@ -423,7 +452,7 @@ li {
 	bottom:					0;
 	left:					0;
 	right:					0;
-	z-index:				-1;
+	z-index:				0;
 }
 
 
@@ -577,6 +606,8 @@ h2,
 
 textarea[extendable] {
 	resize:					none;
+	overflow:				hidden;
+	transition:				all 200ms;
 }
 
 
@@ -616,7 +647,6 @@ textarea[extendable] {
 
 .options-overview .option .details textarea{
 	background:				transparent;
-	overflow:				visible;
 	color:					inherit;
 
 	min-height:				3em;
@@ -809,8 +839,8 @@ textarea[extendable] {
 }
 
 .options-overview {
-	padding-top: 			2em;
-	padding-bottom:			0.5em;
+	padding-top: 			3em;
+	padding-bottom:			1.5em;
 }
 
 .participants-overview{
@@ -950,22 +980,25 @@ label input{
 
 label .wrapper {
 	display:				block;
+	padding-bottom:			0.5em;
 }
 
 label .wrapper textarea{
 	width:					100%;
-	font-size:				0.8333em;
+	font-size:				0.8333em;		
 }
 
 
-.ui-white > input:focus,
-.ui-white > textarea:focus {
+.ui-white  input:focus,
+.ui-white  textarea:focus {
 	background:				rgba(155,155,155,0.1) !important;
 	cursor: 				text;
 }
 
 input:focus,
-textarea:focus{
+textarea:focus,
+.ui-blue input:focus,
+.ui-blue textarea:focus{
 	background:				rgba(255,255,255,0.2) !important;
 	cursor: 				text;
 }

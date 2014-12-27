@@ -9,15 +9,18 @@ prefrControllers.controller(
 	'NewBallotBoxCtrl',
 	[
 		'$scope',
+		'$rootScope',
 		'$location',
 		'Ballot',
 		'api',
 
-		function($scope, $location, Ballot, api){
+		function($scope, $rootScope, $location, Ballot, api){
 
-			$scope.step = 0
+			$scope.step = $location.search().step || 0
 
-			$scope.ballot =	new Ballot({
+			$scope.ballot =	$scope.ballot
+								||
+								new Ballot({
 									id: 		undefined,
 									subject: 	undefined,
 									options:	[
@@ -38,12 +41,15 @@ prefrControllers.controller(
 
 			$scope.next = function(){
 				$scope.step++
+				//$location.search('step', $scope.step)
 			}
 
 			$scope.previous = function(){				
 				$scope.step == 0 
 				?	$scope.step = 0
 				:	$scope.step --
+
+				//$location.search('step', $scope.step)
 			}
 
 			$scope.saveBallot = function(){

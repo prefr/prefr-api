@@ -6,10 +6,10 @@
 
     <table id = "main"> 
         <tr single-select   = "{'edit-menu' : 'ranking'}">
-            <td id="left-column" class="ballot-overview">
+            <td id="left-column" class="ballot-overview ui-white">
                 
 
-                <div class = "left right ui-white">
+                <div class = "left right">
 
                     <h2 ng-if = "isAdmin">Ballot settings</h2>
 
@@ -199,6 +199,12 @@
                     </div>
                 
                 </div>
+
+                <hr class = "up" />
+
+                <div class = "ui-border-bottom ui-extended-height ui-blue"></div>
+
+                <div class = "ui-extended-height ui-white"></div>              
                 
                 <div class = "ui-border-top ui-extended-height ui-blue ui-bottom"></div>
             </td>
@@ -305,11 +311,11 @@
 
             <td
                 id              = "right-column"
-                class           = ""
+                class           = "ui-white"
                 single-select   = "{'overview-menu': 'papers'}"   
             >
 
-                <div class="ui-white left right">
+                <div class="left right">
                     <h2>Participants ({{ballot.paperCount()||0}})</h2>
                     <p>
                         Enter your name below and arrange the options in the middle column according to your preference.
@@ -372,7 +378,7 @@
                             type        = "text"                                 
                             ng-model    = "paper.participant"
                             placeholder = "Enter name"
-                            ng-show     = "!paper.locked"
+                            ng-if       = "!paper.locked"
                         />
 
                         <div class = "icons right shift">
@@ -394,20 +400,10 @@
                             </button>
                           
                             <button 
-                                ng-mousedown    = "paper.unlock()"
-                                ng-show         = "paper.locked"
-                                title           = "enable editing"
+                                ng-mousedown    = "paper.locked ? paper.unlock() : paper.lock()"
+                                title           = "{{paper.locked ? 'enable editing' : 'disable editing'}}"
                             >
-                                <i class = "fa fa-lock"></i>
-                            </button>
-
-
-                            <button                                    
-                                ng-hide         = "paper.locked"
-                                ng-mousedown    = "paper.lock()"
-                                title           = "disable editing"
-                            >
-                                <i class = "fa fa-unlock-alt"></i>
+                                <i class = "fa" ng-class ="{'fa-lock': paper.locked, 'fa-unlock-alt' : !paper.locked}"></i>
                             </button>
 
                             <button
@@ -452,6 +448,10 @@
                     </label>
                 </div>
 
+                <hr class = "up" />
+
+                <div class = "ui-border-bottom ui-extended-height ui-blue"></div>
+                <div class = "ui-extended-height ui-white"></div>
                 <div class = "ui-border-top ui-extended-height ui-blue ui-bottom"></div>
 
             </td>
