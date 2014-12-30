@@ -180,6 +180,9 @@ function HTMLpreferenceRanking() {
 										.addClass('no-transition')
 										.addClass('active')
 
+										if(element.find('preference-rank').length == 3) //one regular rank two new/invisble onces
+											element.addClass('first')
+
 										if(empty && prev_empty && next_empty){
 											parent_rank.prev().remove()
 											parent_rank.next().remove()
@@ -218,6 +221,7 @@ function HTMLpreferenceRanking() {
 										.removeClass('active')
 										.removeClass('empty')
 
+										element.removeClass('first')
 
 										scope.dragged_option
 										.appendTo(scope.active_rank)

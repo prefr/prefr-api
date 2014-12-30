@@ -26,8 +26,8 @@ prefrControllers.controller(
 									options:	[
 													{									
 														tag:		"0",
-														title:		"All of the above and none of the below",
-														details: 	"This is a special option. You may delete it if you like. It is useful though if you want to allow your participants to reject an option altogether. They can do that by ranking the disliked option lower than this one. If in the end this option ('All of the above and none of the below') wins the ballot all options have been rejected.",
+														title:		"Any of the above and none of the below",
+														details: 	"This is a special option. You may delete it if you like. It is useful though if you want to allow your participants to reject an option altogether. They can do that by ranking the disliked option lower than this one. If in the end this option ('Any of the above and none of the below') wins the ballot all options have been rejected.",
 													},
 													{
 														tag:		"A",
@@ -51,14 +51,21 @@ prefrControllers.controller(
 
 				//$location.search('step', $scope.step)
 			}
+			$scope.gotoBallot = function(){
+				console.log($scope.adminPath)
+				$location.path($scope.adminPath)
+			}
 
 			$scope.saveBallot = function(){
 				return 	api.saveBallot($scope.ballot)
 						.then(function(data){
 							var url = $location.absUrl()
 
-							$scope.participantLink	= url.replace(/#.*/, '#/ballotBox/'+data.id)
-							$scope.adminLink		= url.replace(/#.*/, '#/ballotBox/'+data.id+'/'+data.adminSecret)
+							$scope.participantPath 	= '/ballotBox/'+data.id
+							$scope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
+
+							$scope.participantLink	= url.replace(/#.*/, '#'+ $scope.participantPath)
+							$scope.adminLink		= url.replace(/#.*/, '#'+ $scope.adminPath)
 							$scope.next()
 						})
 			}			
@@ -120,17 +127,34 @@ prefrControllers.controller(
     			if(paper.scheduledSave)
 	    			$timeout.cancel(paper.scheduledSave)
 	    		
-
 				paper.scheduledSave	=	$timeout(function(){
 											var diff = paper.diff()
 
 									    	if(!diff) return $q.reject()
 
-					    					return 	paper.id
-				    								?	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, diff)
-    												:	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
+									    	var data = 	paper.id
+									    				?	diff
+									    				:	paper.exportData()
 
-						   				}, 2000)    								
+
+									    	var api_call = 	paper.id
+						    								?	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, data)
+		    												:	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', data)
+
+					    					return 	api_call
+					    							.catch(function(){
+									   					console.log('catch')
+									   					return  api.getBallot($scope.ballot.id)
+									   							.then(function(data){
+									   								$scope.ballot
+									   								.importSettings(data)		
+									   								.importOptions(data.options)
+
+									   								return $scope.savePaper(paper)
+									   							})
+									   				})    			
+						   				}, 2000)
+						   									
 
 	    		return	paper.scheduledSave
 						.then(function(result){
@@ -159,16 +183,17 @@ prefrControllers.controller(
 		    $scope.updateBallotBox = function(){
 		    	var data = $scope.ballot.exportData()
 
-		    	return	$http.put('/api/ballotBox/'+data.id, {
+		    	return	api.updateBallot({
+		    				id:				$scope.box_id,
 		    				subject:		data.subject,
 		    				details:		data.details,
 		    				options:		data.options,
 		    				adminSecret:	$scope.adminSecret
 		    			})
-		    			.then(function(result){
+		    			.then(function(data){
 		    				$scope.ballot
-		    				.importSettings(result.data)
-		    				.importOptions(result.data.options)
+		    				.importSettings(data)
+		    				.importOptions(data.options)
 
 		    				if($scope.ballot.locked)
 								$scope.getSchulzeRanking()

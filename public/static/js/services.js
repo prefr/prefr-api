@@ -115,7 +115,16 @@ angular.module('services',[])
             this.addOption = function(tag){
                 if(this.ranking.length == 0)
                     this.ranking.push([])
-                this.ranking[this.ranking.length-1].push(tag)
+
+                console.log(tag)
+
+                //check if option is already present:
+                this.ranking.reduce(function(options, rank){
+                    return Array.concat.apply(options, rank)
+                }).indexOf(tag) == -1
+                ?   this.ranking[this.ranking.length-1].push(tag)   
+                :   this.ranking
+                
                 return this
             }
 
@@ -194,10 +203,10 @@ angular.module('services',[])
 
             this.importOptions = function(data){
                 this.options =  data.map(function(option_data){
-                    var option = self.getOptionByTag(option_data.tag) || new BallotOption(option_data)
+                                    var option = self.getOptionByTag(option_data.tag) || new BallotOption(option_data)
 
-                    return option.importData(option_data)
-                })
+                                    return option.importData(option_data)
+                                })
 
                 return this
             }
@@ -386,6 +395,14 @@ angular.module('services',[])
 
     function($http){
         return {
+
+            getBallot: function(box_id){
+                return  $http.get('/api/ballotBox/'+box_id)
+                        .then(function(result){
+                            return result.data
+                        })
+            },
+
             saveBallot: function(ballot){
                 return $http.post('/api/ballotBox', ballot.exportData())
                         .then(function(result){
@@ -393,8 +410,8 @@ angular.module('services',[])
                         })                    
             },
 
-            getBallot: function(box_id){
-                return  $http.get('/api/ballotBox/'+box_id)
+            updateBallot: function(data){
+                return  $http.put('/api/ballotBox/'+data.id, data)
                         .then(function(result){
                             return result.data
                         })

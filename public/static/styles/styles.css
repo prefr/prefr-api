@@ -1309,7 +1309,7 @@ preference-ranking preference-rank {
 
 	opacity:				1;
 
-	transition-property:	margin, height, padding;
+	transition-property:	margin, height, padding, opacity;
 	transition-duration:	300ms;
 	transition-timing-function: ease-in-out;
 }
@@ -1358,6 +1358,10 @@ preference-ranking preference-rank.empty {
 	opacity:				0;
 }
 
+preference-ranking.dragging.first preference-rank.empty {
+	opacity:				0.5;
+}
+
 
 preference-ranking.dragging preference-rank.empty {
 	opacity:				0;
@@ -1371,18 +1375,22 @@ preference-ranking.horizontal preference-rank.empty {
 	margin:					0 1.05em;
 }
 
+preference-ranking.vertical.dragging.first preference-rank.empty,
 preference-ranking.vertical preference-rank.empty.active {
 	margin:					2.5em 0;
 }
 
+preference-ranking.horizontal.dragging.first preference-rank.empty,
 preference-ranking.horizontal preference-rank.empty.active {
 	margin:					0 2.5em;
 }
 
+preference-ranking.vertical.dragging.first preference-rank.empty,
 preference-ranking.vertical preference-rank.active {
 	padding-bottom:			4.1em;
 }
 
+preference-ranking.horizontal.dragging.first preference-rank.empty,
 preference-ranking.horizontal preference-rank.active {
 	padding-right:			2em;
 }
@@ -1397,7 +1405,7 @@ preference-ranking.horizontal preference-rank.emptyactive {
 
 
 preference-ranking preference-rank.empty.active {
-	opacity:				1;
+	opacity:				1 !important;
 }
 
 
