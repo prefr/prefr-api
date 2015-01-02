@@ -688,11 +688,6 @@ textarea[extendable] {
 	padding-right:			16em;
 }
 
-
-	.ui-panel > .ui-panel {
-		margin:					0.5em;
-	}
-
 	.ui-panel.horizontal > .ui-panel {
 		display:				inline-block;
 	}
@@ -1192,9 +1187,8 @@ label.result {
 
 
 .ballot-box .edit-paper {
-	min-width:				16em;
+	min-width:				28em;
 	width:					30%;
-	max-width:				15em;
 
 	left:					0;
 	top:					0;
@@ -1241,7 +1235,7 @@ preference-ranking {
 	background: 			transparent;
 	padding: 				0;
 	margin:					auto;
-	width:					16em;
+	width:					28em;
 	vertical-align: 		top;
 	overflow:				visible;
 
@@ -1304,7 +1298,7 @@ preference-ranking preference-rank {
 	font-size:				1em;
 
 	vertical-align: 		middle;
-	text-align:				center;
+	text-align:				left;
 	background:				#444;
 
 	opacity:				1;
@@ -1312,6 +1306,10 @@ preference-ranking preference-rank {
 	transition-property:	margin, height, padding, opacity;
 	transition-duration:	300ms;
 	transition-timing-function: ease-in-out;
+}
+
+preference-ranking preference-rank {
+	padding:				0.5em;
 }
 
 preference-ranking.vertical preference-rank {
@@ -1439,12 +1437,12 @@ preference-ranking preference-rank.active:after {
 
 
 preference-option {
-	display:				inline-block;
+	display:				inline-block !important;
 	position:				relative;
 
 	line-height:			3.6em;
 	width:					8em;
-	margin:					0.5em;
+	margin:					0.3em 0.6em;
 
 	text-align:				center;
 

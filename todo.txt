@@ -1,0 +1,1 @@
+- Backend nimmt kaputte rankings an und korrigiert sie.

@@ -104,6 +104,8 @@
 
 
 
+
+
     <div ng-if = "step == 2">
         
         <h3>Options</h3>
@@ -127,6 +129,7 @@
 
 
         <hr/>
+
 
         <div class = "options-overview left right ui-dark-white ui-pixelate">                   
 
@@ -224,10 +227,10 @@
             
             <button 
                 class       = "left"
-                ng-click    = "saveBallot()"
+                ng-click    = "next()"
             >
                 <i class = "fa fa-chevron-right"></i>
-                Submit
+                Next (Status Quo)
             </button>
         </div>        
     </div>
@@ -236,7 +239,125 @@
 
 
 
-    <div ng-if ="step == 3">
+
+
+
+
+    <div ng-if = "step == 3">
+        
+        <h3>Special option: Status Quo (optional)</h3>
+       
+        <p>
+           This is a special option. You can use it in your prfr ballot if you like, but you don't have to. It is useful though if you want to allow your participants to reject options altogether. They can do that by ranking the disliked option lower than the Status Quo. If in the end the status quo wins the ballot all options have been rejected.
+        </p>
+
+        <div class = "ui-medium-height"></div>
+
+        <button ng-click = "use_status_quo = !use_status_quo" class = "right">
+            use Status Quo
+            <i class = "fa" ng-class = "{'fa-check-square-o' : use_status_quo, 'fa-square-o': !use_status_quo}"></i> 
+        </button>
+
+        <div class = "ui-medium-height"></div>
+
+
+        <div class = "ui-border-top ui-medium-height ui-blue"></div>
+
+        <hr/>
+
+        <div class = "options-overview left right ui-dark-white ui-pixelate">                   
+
+            <div class = "option ui-blue">
+
+                <label>                            
+                    <span class="tag">
+                        {{status_quo.tag}}
+                    </span>
+
+                    <input 
+                        name        = "title" 
+                        type        = "text"
+                        placeholder = "Enter title" 
+                        ng-model    = "status_quo.title"
+                        max-size    
+                    >
+                </label>
+
+                 <div 
+                    class   = "details ui-blue"
+                >
+                    <textarea 
+                        extendable 
+                        ng-model    = "status_quo.details" 
+                        ng-if       = "isAdmin"
+                        placeholder = "Enter details"
+                    ></textarea>
+                    <div ng-if = "!isAdmin">
+                        {{status_quo.details || 'No details'}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class = "up"/>
+        <div class = "ui-border-bottom ui-medium-height ui-blue"></div>
+
+        <div class = "ui-extended-height"></div>
+
+        <div>
+            <button 
+                class       = "right"
+                ng-click    = "previous()"
+            >
+                <i class = "fa fa-chevron-left"></i>
+                Back (subject)
+            </button>
+            
+            <button 
+                class       = "left"
+                ng-click    = "saveBallot(use_status_quo)"
+            >
+                <i class = "fa fa-chevron-right"></i>
+                Submit
+            </button>
+        </div>        
+        
+        <div class = "ui-extended-height"></div>
+    
+        <p>
+        You can rename the Staus Quo option to whatever you like. And you should do so depending on your subject, e.g.:  
+        <br/>
+        <br/>
+        <em>What should we do on the weekend?</em> 
+        <br/> <i class = "fa fa-caret-right"></i> Status Quo: "Don't do any of the suggested activities."
+        <br/>
+        <br/>
+        <em>What should paint the shack with?</em> 
+        <br/> <i class = "fa fa-caret-right"></i> Status Quo:  "Keep the current color."
+        </p>
+
+        <p>
+            You can also change the details – So what makes this options special? <br/>
+            It is the way we treat it internally. That is if somehow someone hasn't ranked an option at all, it will be treated as if it was ranked as high as the Status Quo. (This can happen if the admin adds a new option after someone has already posted her ranking.)
+        </p>
+        <p>
+            If no Status Quo option is provided, every unranked option is considered to be ranked below all other options.
+        </p>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div ng-if ="step == 4">
         <h3>How to participate</h3>
 
         <p>

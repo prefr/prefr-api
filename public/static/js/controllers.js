@@ -11,64 +11,94 @@ prefrControllers.controller(
 		'$scope',
 		'$rootScope',
 		'$location',
+		'$window',
 		'Ballot',
+		'BallotOption',
 		'api',
 
-		function($scope, $rootScope, $location, Ballot, api){
+		function($scope, $rootScope, $location, $window, Ballot, BallotOption, api){
 
-			$scope.step = $location.search().step || 0
 
-			$scope.ballot =	$scope.ballot
-								||
-								new Ballot({
-									id: 		undefined,
-									subject: 	undefined,
-									options:	[
-													{									
-														tag:		"0",
-														title:		"Any of the above and none of the below",
-														details: 	"This is a special option. You may delete it if you like. It is useful though if you want to allow your participants to reject an option altogether. They can do that by ranking the disliked option lower than this one. If in the end this option ('Any of the above and none of the below') wins the ballot all options have been rejected.",
-													},
-													{
-														tag:		"A",
-														title:		"First option",
-														details: 	"",
-													}
-												],
-									papers:		[]
+			$scope.setup = function(){				
+				$rootScope.step = $location.search().step || 0
 
-								})
+				$rootScope.ballot =		$rootScope.ballot
+										||
+										new Ballot({
+											id: 		undefined,
+											subject: 	undefined,
+											options:	[
+															{
+																tag:		"A",
+																title:		"",
+																details: 	"",
+															}
+														],
+											papers:		[]
+
+										})
+
+				$rootScope.status_quo = $rootScope.status_quo 
+										|| new BallotOption({									
+											tag:		"0",
+											title:		"Status Quo / do nothing.",
+											details: 	"This options represents the status quo. Anything ranked above this option is considered acceptable. Everything ranked lower than this option is considered rejected.",
+										})
+			}
+
+			$scope.clear = function(){
+				delete $rootScope.step
+				delete $rootScope.ballot
+				delete $rootScope.status_quo
+				delete $rootScope.use_status_quo
+			}
+
 
 			$scope.next = function(){
-				$scope.step++
-				//$location.search('step', $scope.step)
+				$rootScope.step++
+				$location.search('step', $rootScope.step)
 			}
 
 			$scope.previous = function(){				
-				$scope.step == 0 
-				?	$scope.step = 0
-				:	$scope.step --
+				$window.history.back()
+				// $rootScope.step == 0 
+				// ?	$rootScope.step = 0
+				// :	$rootScope.step --
 
-				//$location.search('step', $scope.step)
+				// $location.search('step', $rootScope.step)
 			}
 			$scope.gotoBallot = function(){
-				console.log($scope.adminPath)
-				$location.path($scope.adminPath)
+				$location.path($rootScope.adminPath)
 			}
 
-			$scope.saveBallot = function(){
-				return 	api.saveBallot($scope.ballot)
+			$scope.saveBallot = function(use_status_quo){
+
+				if(use_status_quo)
+					$rootScope.ballot.options.push($rootScope.status_quo)
+
+				return 	api.saveBallot($rootScope.ballot)
 						.then(function(data){
 							var url = $location.absUrl()
 
-							$scope.participantPath 	= '/ballotBox/'+data.id
-							$scope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
+							$rootScope.participantPath 	= '/ballotBox/'+data.id
+							$rootScope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
 
-							$scope.participantLink	= url.replace(/#.*/, '#'+ $scope.participantPath)
-							$scope.adminLink		= url.replace(/#.*/, '#'+ $scope.adminPath)
+							$rootScope.participantLink	= url.replace(/#.*/, '#'+ $rootScope.participantPath)
+							$rootScope.adminLink		= url.replace(/#.*/, '#'+ $rootScope.adminPath)
 							$scope.next()
+
+							$scope.clear()
 						})
-			}			
+			}		
+
+
+			if($location.search().step == undefined){
+				$scope.clear()
+				$location.search('step', 0)
+			}else {
+				$scope.setup()	
+			}
+
 		}
 	]
 ) 
@@ -143,15 +173,25 @@ prefrControllers.controller(
 
 					    					return 	api_call
 					    							.catch(function(){
-									   					console.log('catch')
-									   					return  api.getBallot($scope.ballot.id)
-									   							.then(function(data){
-									   								$scope.ballot
-									   								.importSettings(data)		
-									   								.importOptions(data.options)
+									   					console.log('catch!')
 
-									   								return $scope.savePaper(paper)
-									   							})
+									   					var ranked_options = paper.getRankedOptions()
+
+									   					console.log(ranked_options)
+									   					
+									   					ranked_options
+									   					.forEach(function(tag){
+									   						if($scope.ballot.options.every(function(option){ return option.tag != tag }))
+									   							paper.removeOption(tag)
+									   					})
+
+									   					$scope.ballot.options
+									   					.forEach(function(option){
+									   						if(ranked_options.indexOf(options.tag) == -1)
+									   							paper.addOptions(options.tag)
+									   					})
+
+									   					return $q.when(paper.exportData())
 									   				})    			
 						   				}, 2000)
 						   									
@@ -192,8 +232,7 @@ prefrControllers.controller(
 		    			})
 		    			.then(function(data){
 		    				$scope.ballot
-		    				.importSettings(data)
-		    				.importOptions(data.options)
+		    				.importData(data)
 
 		    				if($scope.ballot.locked)
 								$scope.getSchulzeRanking()

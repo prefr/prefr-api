@@ -157,6 +157,12 @@ angular.module('services',[])
                         :   null
             }
 
+            this.getRankedOptions = function(){
+                return  this.ranking.reduce(function(options, rank){
+                            return Array.concat.apply(options, rank) 
+                        }, [])
+            }
+
             this.revert = function(){
                 this.importData(this.backup_zero, true)
 
@@ -311,9 +317,6 @@ angular.module('services',[])
 
                 var new_option = new BallotOption( {tag : self.getNextAvailableTag()} )
                 this.options.push(new_option)
-                this.papers.forEach(function(paper){
-                    paper.addOption(new_option.tag)
-                })
                 return new_option
             }
 
@@ -339,9 +342,6 @@ angular.module('services',[])
                         option.removed = true
                 })
 
-                this.papers.forEach(function(paper){
-                    paper.removeOption(tag)
-                })
             }
 
             this.restoreOption = function(option){
@@ -353,10 +353,6 @@ angular.module('services',[])
                 this.options.forEach(function(){
                     if(option.tag == tag)
                         delete option.removed
-                })
-
-                this.papers.forEach(function(paper){
-                    paper.addOption(tag)
                 })
             }
 
