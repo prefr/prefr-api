@@ -92,7 +92,7 @@
                     </label>     
 
                     <label class = "ui-border-top" ng-if = "!isAdmin">
-                        &nbsp;
+                        Options:
                     </label>
 
                 </div>
@@ -111,7 +111,7 @@
                         class           = "option"
                         ng-repeat       = "option in ballot.options | filter: {removed : '!'} | orderBy:'tag'" 
                         ng-mousedown    = "select('ballot-option', option); $event.stopPropagation()" 
-                        ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
+                        ng-class        = "{'selected' : selectionBallotOption.value === option, 'result':  paper.id == -1}"
                     >                       
                         <label>                            
                             <span class="tag">
@@ -254,12 +254,12 @@
 
             				<preference-option 
             					class		    = "ui-panel right ui-corners-all"
-                                ng-class        = "{'selected': selectionBallotOption.value == ballot.getOptionByTag(tag)}"
+                                ng-class        = "{'selected': selectionBallotOption.value && selectionBallotOption.value === ballot.getOptionByTag(tag)}"
             					ng-repeat	    = "tag in rank | orderBy"
             					value		    = "{{tag}}"
-                                ng-click    = "select('ballot-option', ballot.getOptionByTag(tag))"
+                                ng-click        = "select('ballot-option', ballot.getOptionByTag(tag))"
             				>
-            					<div class="content">						
+            					<div class="content">	
             						<div class="title"> 	{{ballot.getOptionByTag(tag).title}} 	</div>						
             					</div>
             					<div class = "tag">
@@ -343,6 +343,7 @@
                 </div>
                 <hr/>
 
+
                 <div class="participants-overview left ui-dark-white ui-pixelate">
 
                     <label 
@@ -415,36 +416,36 @@
 
                         </div> 
                     </label>
-                </div>
 
-                <div
-                    class   = "participants-overview  removed left"
-                    ng-if   = "(ballot.papers | filter: {removed : true}).length > 0"
-                >
-                    <h4> Removed Participants</h4>
-                    <br/>
-                    <br/>
-
-                    <label
-                        ng-class        = "{'selected' : selectionBallotPaper.value == paper}"
-                        ng-repeat       = "removed_paper in ballot.papers | orderBy:'-id':true"    
-                        ng-if           = "removed_paper.removed"
+                    <div
+                        class   = "removed"
+                        ng-if   = "(ballot.papers | filter: {removed : true}).length > 0"
                     >
-                        <div class="connector left"></div>
+                        <h4> Removed Participants</h4>
+                        <br/>
+                        <br/>
 
-                        <span class   = "name">
-                            {{removed_paper.participant || 'no name'}}
-                        </span>
+                        <label
+                            ng-class        = "{'selected' : selectionBallotPaper.value == paper}"
+                            ng-repeat       = "removed_paper in ballot.papers | orderBy:'-id':true"    
+                            ng-if           = "removed_paper.removed"
+                        >
+                            <div class="connector left"></div>
 
-                        <div class = "icons right shift">
-                            <button 
-                                ng-mousedown    = "restorePaper(removed_paper); select('ballot-paper', removed_paper)"
-                                title           = "restore"
-                            >
-                                <i class = "fa fa-arrow-circle-up"></i>
-                            </button>
-                        </div> 
-                    </label>
+                            <span class   = "name">
+                                {{removed_paper.participant || 'no name'}}
+                            </span>
+
+                            <div class = "icons right shift">
+                                <button 
+                                    ng-mousedown    = "restorePaper(removed_paper); select('ballot-paper', removed_paper)"
+                                    title           = "restore"
+                                >
+                                    <i class = "fa fa-arrow-circle-up"></i>
+                                </button>
+                            </div> 
+                        </label>
+                    </div>
                 </div>
 
                 <hr class = "up" />

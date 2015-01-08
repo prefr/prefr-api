@@ -86,6 +86,7 @@ nav a {
 	color:					#666;
 	padding:				0 1em;
 	margin:					0 0;
+	vertical-align:			top;
 	cursor:					pointer;
 	transition:				all 200ms;
 }
@@ -1366,11 +1367,9 @@ preference-ranking.dragging preference-rank.empty {
 }
 
 preference-ranking.vertical preference-rank.empty {
-	margin:					1.05em 0;
 }
 
 preference-ranking.horizontal preference-rank.empty {
-	margin:					0 1.05em;
 }
 
 preference-ranking.vertical.dragging.first preference-rank.empty,
@@ -1381,24 +1380,6 @@ preference-ranking.vertical preference-rank.empty.active {
 preference-ranking.horizontal.dragging.first preference-rank.empty,
 preference-ranking.horizontal preference-rank.empty.active {
 	margin:					0 2.5em;
-}
-
-preference-ranking.vertical.dragging.first preference-rank.empty,
-preference-ranking.vertical preference-rank.active {
-	padding-bottom:			4.1em;
-}
-
-preference-ranking.horizontal.dragging.first preference-rank.empty,
-preference-ranking.horizontal preference-rank.active {
-	padding-right:			2em;
-}
-
-preference-ranking.vertical preference-rank.empty.active {
-	padding-bottom:			4.6em;
-}
-
-preference-ranking.horizontal preference-rank.emptyactive {
-	padding-right:			2em;
 }
 
 
@@ -1449,6 +1430,7 @@ preference-option {
 	overflow:				hidden;
 
 	cursor:					move;
+	cursor:					-moz-grab;
 }
 
 
@@ -1501,13 +1483,29 @@ preference-option.dragged {
 	z-index: 				1000;
 
 	overflow: 				hidden;
+	cursor:					move;
 	
 }
 
 
-preference-option.dummy {
-	opacity : 				0;
+/*dummy option */
+preference-option[value=""] {
+	opacity: 				0.3;
+	cursor:					default;
+	font-size:				0;
 }
+
+preference-ranking.dragging preference-rank.active preference-option[value=""] {
+	font-size:				inherit;
+	transition:				all 400ms;
+}
+
+preference-ranking.dragging preference-rank.active.no-transition preference-option[value=""]{
+	transition:				all 0ms;
+}
+
+
+
 
 
 /* transition mechanics:*/

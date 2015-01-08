@@ -77,14 +77,24 @@ function HTMLpreferenceRanking() {
 									element.css('position', 'relative')
 
 
-									scope.$watch(attrs.rankingModel, function(rankingModel){
+									function updateRankingByModel(rankingModel){
 										if(scope.dragged_option)
 											return false
 
 										element.children().remove()
 
-										//copy rankingModel
-										scope.ranking = JSON.parse(JSON.stringify(rankingModel)) || []
+										//copy rankingModel:
+										ranking_data = JSON.parse(JSON.stringify(rankingModel)) || []
+
+										scope.ranking = [['']]
+
+										ranking_data.forEach(function(rank){
+											//add dummy options:
+											rank.push('')
+											scope.ranking.push(rank)
+											//add empty ranks:
+											scope.ranking.push([''])
+										})
 
 
 										if(!content){
@@ -93,7 +103,10 @@ function HTMLpreferenceRanking() {
 											})
 										}
 										element.append(content)
+									}
 
+									scope.$watch(attrs.rankingModel, function(rankingModel){
+										updateRankingByModel(rankingModel)
 									}, true)
 
 
@@ -150,16 +163,16 @@ function HTMLpreferenceRanking() {
 										var ranks = element.find('preference-rank')
 
 										ranks.each(function(index, rank_DOM){
-											var rank = $(rank_DOM)
+											var rank 	= 	$(rank_DOM),
+												options = 	rank.find('preference-option')
 
 											over = !over && pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
 
 											if(over) scope.active_rank = rank
 											
-
 											rank.toggleClass('active',		over)
-											rank.toggleClass('empty',		rank.find('preference-option').length == 0)	
-											rank.toggleClass('nonempty',	rank.find('preference-option').length != 0 || over)
+											rank.toggleClass('empty',		options.length == 1)	
+											rank.toggleClass('nonempty',	options.length != 1 || over)
 
 											rank.removeClass('no-transition')
 										})
@@ -172,9 +185,9 @@ function HTMLpreferenceRanking() {
 
 
 										var parent_rank = option.parents('preference-rank')
-											prev_empty	= (parent_rank.prev().find('preference-option').length == 0),
-											next_empty 	= (parent_rank.next().find('preference-option').length == 0),
-											empty		= (parent_rank.find('preference-option').length == 1)
+											prev_empty	= (parent_rank.prev().find('preference-option').length == 1), //just the dummy option
+											next_empty 	= (parent_rank.next().find('preference-option').length == 1), //just the dummy option
+											empty		= (parent_rank.find('preference-option').length == 2)	//dummy option and dragged option
 
 										parent_rank
 										.addClass('no-transition')
@@ -184,8 +197,8 @@ function HTMLpreferenceRanking() {
 											element.addClass('first')
 
 										if(empty && prev_empty && next_empty){
-											parent_rank.prev().remove()
-											parent_rank.next().remove()
+											parent_rank.prev().hide()
+											parent_rank.next().hide()
 											parent_rank.addClass('empty')
 										}
 
@@ -232,17 +245,20 @@ function HTMLpreferenceRanking() {
 										})
 
 										var prev		= scope.active_rank.prev('preference-rank')
-											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 0
+											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 1
 											next		= scope.active_rank.next('preference-rank')
-											next_empty 	= next.length != 0 && next.find('preference-option').length == 0
+											next_empty 	= next.length != 0 && next.find('preference-option').length == 1
 
 
-										if(!prev_empty)
-											scope.active_rank.scope().empty_rank.clone(true).insertBefore(scope.active_rank)
+										prev.show()
+										next.show()
+
+										// if(!prev_empty)
+										// 	scope.active_rank.scope().empty_rank.clone(true).insertBefore(scope.active_rank)
 										
 
-										if(!next_empty)
-											scope.active_rank.scope().empty_rank.clone(true).insertAfter(scope.active_rank)
+										// if(!next_empty)
+										// 	scope.active_rank.scope().empty_rank.clone(true).insertAfter(scope.active_rank)
 
 
 										element.removeClass('dragging')
@@ -274,7 +290,6 @@ function HTMLpreferenceRanking() {
 										element.toggleClass('no-drag', no_drag)	
 										scope.$broadcast('dragging-' + (no_drag ? 'off' : 'on'))
 									})	
-												
 								},
 
 				controller	:	function($scope, $element, $attrs, $rootScope){
@@ -290,7 +305,10 @@ function HTMLpreferenceRanking() {
 											var values = []
 
 											$(rank).find('preference-option').map(function(index, option){
-												values.push( $(option).attr('value') )
+												var value = $(option).attr('value')
+												
+												if(value)	//ignore dummy, i.e. options witghput value
+													values.push(value)
 											})
 											
 											if(values.length > 0) ranking.push(values)
@@ -317,17 +335,18 @@ function HTMLpreferenceRank() {
 
 				link		:	function(scope, element, attrs){
 
-									if(element.parent().find('preference-rank').length <= 1)
-										scope.empty_rank.clone(true).insertBefore(element)
+									// if(element.parent().find('preference-rank').length <= 1)
+									// 	scope.empty_rank.clone(true).insertBefore(element)
 										
-									scope.empty_rank.clone(true).insertAfter(element)
+									// scope.empty_rank.clone(true).insertAfter(element)
 									
-									element.addClass('nonempty')
+									//empty at first:
+									element.addClass('empty')
 								},
 
 				controller	:	function($scope, $element){
-									$scope.empty_rank = $element.clone(true).addClass('empty')
-									$scope.empty_rank.find('preference-option').remove()
+									// $scope.empty_rank = $element.clone(true).addClass('empty')
+									// $scope.empty_rank.find('preference-option').remove()
 								}
 
 			}
@@ -343,6 +362,10 @@ function HTMLpreferenceOption($scope) {
 
 									//300ms of mouse down trigger the drag
 									scope.waitForDrag = function(event) {
+										//the dummy option should not do anything:
+										if(!attrs.value)
+											return false
+
 										scope.wait_for_it	=	window.setTimeout(scope.startDragging, 300)
 										scope.trackMouseMovement(event)
 										$(document).on('mousemove)', scope.trackMouseMovement)
@@ -395,6 +418,10 @@ function HTMLpreferenceOption($scope) {
 										element.on('mousedown', scope.init)
 									})
 									
+									if(attrs.value)
+										element.parents('preference-rank')
+										.addClass('nonempty')
+										.removeClass('empty')
 								}
 			}
 }

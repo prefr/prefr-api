@@ -119,7 +119,7 @@
 
         <label
             class       = "ui-border-top" 
-            ng-mousedown    = "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
+            ng-mousedown    = "ballot.newOption()"
         >
             Add new option
             <div class = "icons right">
@@ -136,8 +136,6 @@
             <div 
                 class           = "option ui-blue"
                 ng-repeat       = "option in ballot.options | filter: {removed : '!'} | orderBy:'tag'" 
-                ng-mousedown    = "select('ballot-option', option); $event.stopPropagation()" 
-                ng-class        = "{'selected' : selectionBallotOption.value == option, 'result':  paper.id == -1}"
             >                       
                 <label>                            
                     <span class="tag">
@@ -197,7 +195,10 @@
                         </span>
 
                         <div class = "icons right">
-                            <button ng-mousedown = "ballot.restoreOption(removed_option); select('ballot-option', removed_option)">
+                            <button 
+                                ng-mousedown = "ballot.restoreOption(removed_option)"
+                                title        = "restore option"
+                            >
                                 <i class = "fa fa-arrow-circle-up"></i>
                             </button>
                         </div>                          
@@ -212,7 +213,15 @@
         </div>
 
         <hr class = "up"/>
-        <div class = "ui-border-bottom ui-medium-height ui-blue"></div>
+        <label
+            class           = "ui-border-bottom" 
+            ng-mousedown    = "ballot.newOption()"
+        >
+            Add new option
+            <div class = "icons right">
+                <i class = "fa fa-plus"></i>
+            </div>
+        </label>     
         
         <div class = "ui-extended-height ui-white"></div>
 
@@ -248,7 +257,7 @@
         <h3>Special option: Status Quo (optional)</h3>
        
         <p>
-           This is a special option. You can use it in your prfr ballot if you like, but you don't have to. It is useful though if you want to allow your participants to reject options altogether. They can do that by ranking the disliked option lower than the Status Quo. If in the end the status quo wins the ballot all options have been rejected.
+           This is a special option. You can use it in your prefr ballot if you like, but you don't have to. It is useful though if you want to allow your participants to reject options altogether. They can do that by ranking the disliked option lower than the Status Quo. If in the end the status quo wins the ballot all options have been rejected.
         </p>
 
         <div class = "ui-medium-height"></div>
@@ -281,6 +290,7 @@
                         ng-model    = "status_quo.title"
                         max-size    
                     >
+                    <div class = "icons right"> <i class = "fa fa-pencil"></i></div>
                 </label>
 
                  <div 
@@ -332,7 +342,7 @@
         <br/> <i class = "fa fa-caret-right"></i> Status Quo: "Don't do any of the suggested activities."
         <br/>
         <br/>
-        <em>What should paint the shack with?</em> 
+        <em>What should we paint the shack with?</em> 
         <br/> <i class = "fa fa-caret-right"></i> Status Quo:  "Keep the current color."
         </p>
 
