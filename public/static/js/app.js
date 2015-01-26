@@ -23,12 +23,6 @@ prefr.config([
     function($routeProvider) {
         $routeProvider
         .when(
-            '/',
-            {
-                templateUrl :   'static/partials/root.html'
-            }
-        )
-        .when(
             '/ballotBox/new',
             {
                 templateUrl :   'static/partials/new_ballot_box.html',
@@ -49,22 +43,8 @@ prefr.config([
                 controller  :   'EvaluationCtrl'
             }
         )
-        .when(
-            'import',
-            {
-                templateURL :   'static/partials/import.html',
-                controller  :   'ImportCtrl'
-            }
-        )
-        .when(
-            '/test',
-            {
-                templateUrl :   'static/partials/test.html',
-                controller  :   'Test'
-            }
-        )
         .otherwise({
-            redirectTo: '/ballot_box/new'
+            redirectTo: '/ballotBox/new'
         })
     }
 ])
@@ -76,7 +56,7 @@ prefr.directive('manageOptions',        [manageOptions])
 prefr.directive('singleSelect',         [HTMLsingleSelect])
 prefr.directive('extendable',           ['$timeout', HTMLextendable])
 
-prefr.directive('preferenceRanking',    ['$compile', HTMLpreferenceRanking])
+prefr.directive('preferenceRanking',    [HTMLpreferenceRanking])
 prefr.directive('preferenceRank',       [HTMLpreferenceRank])
 prefr.directive('preferenceOption',     [HTMLpreferenceOption])
 

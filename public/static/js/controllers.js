@@ -1,10 +1,21 @@
 var prefrControllers = angular.module('prefrControllers', []);
 
+prefrControllers.controller(
+	'HeaderCtrl',
+	[
+		'$scope',
+		'Storage',
+		
+		function($scope, Storage){
+			$scope.Storage = Storage
 
-function saveBallotBox(ballot){
+			$scope.removeItem = function(id){
+				delete Storage[id]
+			}
+		}
+	]
+)
 
-}
- 
 prefrControllers.controller(
 	'NewBallotBoxCtrl',
 	[
@@ -12,12 +23,12 @@ prefrControllers.controller(
 		'$rootScope',
 		'$location',
 		'$window',
+		'Storage',
 		'Ballot',
 		'BallotOption',
 		'api',
 
-		function($scope, $rootScope, $location, $window, Ballot, BallotOption, api){
-
+		function($scope, $rootScope, $location, $window, Storage, Ballot, BallotOption, api){
 
 			$scope.setup = function(){				
 				$rootScope.step = $location.search().step || 0
@@ -85,8 +96,18 @@ prefrControllers.controller(
 
 							$rootScope.participantLink	= url.replace(/#.*/, '#'+ $rootScope.participantPath)
 							$rootScope.adminLink		= url.replace(/#.*/, '#'+ $rootScope.adminPath)
-							$scope.next()
 
+
+							Storage[data.id] = Storage[data.id] || {}
+
+							angular.extend(Storage[data.id], {
+						   		id:				data.id,
+						   		subject:		data.subject,
+						   		link:			$rootScope.adminLink
+							})
+
+
+							$scope.next()
 							$scope.clear()
 						})
 			}		
@@ -112,12 +133,14 @@ prefrControllers.controller(
 		'$location',
 		'$http',
 		'$q',
+		'$location',
 		'$timeout',
+		'Storage',
 		'Ballot',
 		'BallotPaper',
 		'api',
 
-		function ($scope, $routeParams, $location, $http, $q, $timeout, Ballot, BallotPaper, api){
+		function ($scope, $routeParams, $location, $http, $q, $location, $timeout, Storage, Ballot, BallotPaper, api){
 
 								
 			$scope.adminSecret 		= $routeParams.admin_secret
@@ -156,6 +179,8 @@ prefrControllers.controller(
 		    $scope.savePaper = function(paper){
     			if(paper.scheduledSave)
 	    			$timeout.cancel(paper.scheduledSave)
+
+
 	    		
 				paper.scheduledSave	=	$timeout(function(){
 											var diff = paper.diff()
@@ -240,7 +265,19 @@ prefrControllers.controller(
 		    }
 
 		    $scope.lockPapers = function() {
-		    	$scope.ballot.papers.forEach(function(paper){ paper.lock()})		    
+		    	$scope.ballot.papers.forEach(function(paper){ 
+		    			!Storage[$scope.ballot.id]
+		    		||	!Storage[$scope.ballot.id].unlocked 
+		    		|| Storage[$scope.ballot.id].unlocked.indexOf(paper.id) == -1
+		    		?	paper.lock()
+		    		:	paper.unlock()
+		    	})
+
+		    	$scope.ballot.papers.sort(function(p1, p2){
+		    		return p1.locked
+		    	})
+
+
 		    }
 
 
@@ -248,33 +285,44 @@ prefrControllers.controller(
 			.then(function(data){
 				$scope.ballot	= new Ballot(data)
 
-				$scope.lockPapers()
+				var url 		= $location.absUrl(),
+					first_visit = !Storage[data.id]
 
-				if($scope.ballot.papers.length == 0)
-					$scope.ballot.newPaper()
+
+				Storage[data.id] = Storage[data.id] || {}
+
+				angular.extend(Storage[data.id], {
+			   		id:			data.id,
+			   		subject:	data.subject,
+			   		link:		url
+				})
+
+				$scope.lockPapers()
+		
+				if($scope.ballot.papers.length == 0 || first_visit) {
+					$scope.ballot.newPaper().unlock()
+				}
+
 
 
 				$scope.$watch('ballot', function(){
 					$scope.ballot.papers.forEach(function(paper){
 						$scope.savePaper(paper)
 					})
+
+					angular.extend(Storage[data.id], {
+				   		id:			data.id,
+				   		subject:	data.subject,
+				   		link:		url,
+				   		unlocked:	$scope.ballot.papers
+				   					.filter(function(paper){ return !paper.locked})
+				   					.map(function(paper){ return paper.id })
+					})
+
+					console.log(Storage)
+
 				}, true)
 			})
-		}
-	]
-)
-
-
-prefrControllers.controller(
-
-	'Test', 
-	[
-		'$scope', 
-		'$routeParams',
-		function ($scope, $routeParams) {
-			$scope.evaluate = function(ballot_box) {				
-				return($.post('api/ballotBox', _l($(ballot_box).val())))
-			}
 		}
 	]
 )

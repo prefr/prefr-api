@@ -6,7 +6,7 @@
 
     <table id = "main"> 
         <tr single-select   = "{'edit-menu' : 'ranking'}">
-            <td id="left-column" class="ballot-overview ui-white">
+            <td id="left-column" class="ballot-overview">
                 
 
                 <div class = "left right">
@@ -144,7 +144,7 @@
 
                         </label>
                         <div 
-                            class   = "details ui-blue"
+                            class   = "details"
                         >
                             <textarea 
                                 extendable 
@@ -231,18 +231,18 @@
                     ng-if     = "selectionBallotPaper.value == paper"
                     class     = "paper"
                 >
+                    <div class = "ui-borders ui-corners-all ui-dark-white">
+                        <h2>{{paper.participant || 'no name'}}</h2>
+                        <div ng-if = "paper.locked">
+                            (<i class = "fa fa-warning"></i> locked)
+                        </div>
+                    </div>
 
-            		<preference-ranking
-            			ranking-orientation =   "vertical"
+                    <preference-ranking
+                        ranking-orientation =   "vertical"
                         ranking-model       =   "paper.ranking"
                         no-dragging         =   "paper.locked"                     
-            		>	
-                        <div class = "ui-borders ui-corners-all ui-dark-white">
-                            <h2>{{paper.participant || 'no name'}}</h2>
-                            <div ng-if = "paper.locked">
-                                (<i class = "fa fa-warning"></i> locked)
-                            </div>
-                        </div>
+                    >   
 
                         <preference-rank
                             ng-repeat   =   "rank in ranking"
@@ -310,11 +310,10 @@
 
             <td
                 id              = "right-column"
-                class           = "ui-white"
                 single-select   = "{'overview-menu': 'papers'}"   
             >
 
-                <div class="left right">
+                <div class="left right ui-white">
                     <h2>Participants ({{ballot.paperCount()||0}})</h2>
                     <p>
                         Enter your name below and arrange the options in the middle column according to your preference.

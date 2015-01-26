@@ -166,7 +166,7 @@ function HTMLpreferenceRanking() {
 											var rank 	= 	$(rank_DOM),
 												options = 	rank.find('preference-option')
 
-											over = !over && pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
+											over = pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
 
 											if(over) scope.active_rank = rank
 											
@@ -197,8 +197,8 @@ function HTMLpreferenceRanking() {
 											element.addClass('first')
 
 										if(empty && prev_empty && next_empty){
-											parent_rank.prev().hide()
-											parent_rank.next().hide()
+											scope.prev = parent_rank.prev().detach()
+											scope.next = parent_rank.next().detach()
 											parent_rank.addClass('empty')
 										}
 
@@ -250,8 +250,11 @@ function HTMLpreferenceRanking() {
 											next_empty 	= next.length != 0 && next.find('preference-option').length == 1
 
 
-										prev.show()
-										next.show()
+										if(scope.prev) scope.prev.insertBefore(scope.active_rank)
+										if(scope.next) scope.next.insertAfter(scope.active_rank)
+
+										delete scope.next
+										delete scope.prev
 
 										// if(!prev_empty)
 										// 	scope.active_rank.scope().empty_rank.clone(true).insertBefore(scope.active_rank)

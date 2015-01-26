@@ -416,4 +416,24 @@ angular.module('services',[])
         }
     }
 ])
+.service('Storage', [
+
+    '$window',
+    '$rootScope',
+
+    function($window, $rootScope){
+        var scope       = $rootScope.$new()
+
+        scope.data = JSON.parse($window.localStorage.getItem("prefr") || '{}')
+
+
+        if(typeof($window.localStorage) !== "undefined") {
+            scope.$watch(function(){
+                $window.localStorage.setItem("prefr", JSON.stringify(scope.data))
+            })
+        }
+
+        return scope.data
+    }
+])
 
