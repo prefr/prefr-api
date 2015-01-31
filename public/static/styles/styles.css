@@ -649,41 +649,49 @@ h2,
 	opacity:				0.6;
 }
 
-.locked.selected .fa-lock{
+.locked:hover		.fa-lock{
   -webkit-animation-duration: 		1000ms;
   -webkit-animation-iteration-count:1;
   -webkit-animation-name: 			locked;
 
 
-  animation-duration: 		1000ms;
+  animation-duration: 		600ms;
   animation-iteration-count:1;
   animation-name: 			locked;
 }
 
 @keyframes locked {
-  0% {
-  	color:				#fff;
-  }
+  	0% {
+  		transform:			none;
+  		text-shadow:		0 0 0em #000;
+  	}
 
-  35% {
-  	color:				rgba(255, 0, 0, 0.8);
-  	text-shadow:		#fff 0 0 0.2em;	
-  }
+  	10%{
+  		transform:			rotate(20deg) scale(1.5);
+  		text-shadow:		0 0 0.2em #000;
+  	}
 
-  50% {
-  	color:				#fff;
-  }
+  	35% {
+  		transform:			rotate(-5deg) scale(1.5);
+  	}
 
-  65% {
-  	color:				rgba(255, 0, 0, 0.8);
-  	text-shadow:		#fff 0 0 0.2em;	
-  }
+  	50% {  		
+  		text-shadow:		0 0 0em #000;
+  	}
 
+	65% {
+		transform:			rotate(5deg) scale(1.5);
+  	}
 
+	90%{  		
+  		transform:			rotate(-20deg) scale(1.5);
+  		text-shadow:		0 0 0.2em #000;
+  	}
  
-  100% {
-  	color:				#fff;
-  }
+  	100% {
+  		transform:			none;
+  		text-shadow:		0 0 0em #000;
+  	}
 }
 
 @-webkit-keyframes locked {

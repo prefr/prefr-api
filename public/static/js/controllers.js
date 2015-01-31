@@ -198,12 +198,9 @@ prefrControllers.controller(
 
 					    					return 	api_call
 					    							.catch(function(){
-									   					console.log('catch!')
 
 									   					var ranked_options = paper.getRankedOptions()
 
-									   					console.log(ranked_options)
-									   					
 									   					ranked_options
 									   					.forEach(function(tag){
 									   						if($scope.ballot.options.every(function(option){ return option.tag != tag }))
@@ -318,8 +315,6 @@ prefrControllers.controller(
 				   					.filter(function(paper){ return !paper.locked})
 				   					.map(function(paper){ return paper.id })
 					})
-
-					console.log(Storage)
 
 				}, true)
 			})
