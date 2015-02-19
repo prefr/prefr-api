@@ -641,16 +641,12 @@ h2,
 
 
 
-
-
-
-
 .locked {
 	opacity:				0.6;
 }
 
-.locked:hover		.fa-lock{
-  -webkit-animation-duration: 		1000ms;
+.locked.selected .fa-lock{
+  -webkit-animation-duration: 		600ms;
   -webkit-animation-iteration-count:1;
   -webkit-animation-name: 			locked;
 
@@ -661,62 +657,73 @@ h2,
 }
 
 @keyframes locked {
-  	0% {
-  		transform:			none;
-  		text-shadow:		0 0 0em #000;
-  	}
+  0% {
+  	transform:			scale(1);
+  	text-shadow:		none
+  }
 
-  	10%{
-  		transform:			rotate(20deg) scale(1.5);
-  		text-shadow:		0 0 0.2em #000;
-  	}
+  25%{
+  	transform:			scale(1.5) rotate(20deg);
+  	text-shadow:		#fff 0 0 0.2em;
 
-  	35% {
-  		transform:			rotate(-5deg) scale(1.5);
-  	}
+  }
 
-  	50% {  		
-  		text-shadow:		0 0 0em #000;
-  	}
+  40% {
+  	transform:			scale(1.5) rotate(-20deg);	
+  	text-shadow:		#fff 0 0 0.2em;
 
-	65% {
-		transform:			rotate(5deg) scale(1.5);
-  	}
+  }
 
-	90%{  		
-  		transform:			rotate(-20deg) scale(1.5);
-  		text-shadow:		0 0 0.2em #000;
-  	}
+  60% {
+  	transform:			scale(1.5) rotate(10deg);
+  	text-shadow:		#fff 0 0 0.2em;
+
+  }
+
+  75% {
+  	transform:			scale(1.5) rotate(-10deg);
+  	text-shadow:		#fff 0 0 0.2em;
+
+  }
  
-  	100% {
-  		transform:			none;
-  		text-shadow:		0 0 0em #000;
-  	}
+  100% {
+  	transform:			scale(1);
+  	text-shadow:		none;
+  }
 }
 
 @-webkit-keyframes locked {
-  0% {
-  	color:				#fff;
+  transform:			scale(1);
+  	text-shadow:		none
   }
 
-  35% {
-  	color:				rgba(255, 0, 0, 0.8);
-  	text-shadow:		#fff 0 0 0.2em;	
+  25%{
+  	transform:			scale(1.5) rotate(20deg);
+  	text-shadow:		#fff 0 0 0.2em;
+
   }
 
-  50% {
-  	color:				#fff;
+  40% {
+  	transform:			scale(1.5) rotate(-20deg);	
+  	text-shadow:		#fff 0 0 0.2em;
+
   }
 
-  65% {
-  	color:				rgba(255, 0, 0, 0.8);
-  	text-shadow:		#fff 0 0 0.2em;	
+  60% {
+  	transform:			scale(1.5) rotate(10deg);
+  	text-shadow:		#fff 0 0 0.2em;
+
   }
 
+  75% {
+  	transform:			scale(1.5) rotate(-10deg);
+  	text-shadow:		#fff 0 0 0.2em;
 
+  }
  
   100% {
-  	color:				#fff;
+  	transform:			scale(1);
+  	text-shadow:		none;
   }
 }
 
