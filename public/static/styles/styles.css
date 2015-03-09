@@ -188,7 +188,8 @@ body > section:after {
 body > section > article {
 	position:				relative;
 	margin:					auto;
-	width:					40em;
+	width:					75%;
+	max-width:				60em;
 }
 
 
@@ -642,24 +643,26 @@ h2,
 
 
 .locked {
-	opacity:				0.6;
+	
 }
 
-.locked.selected .fa-lock{
-  -webkit-animation-duration: 		600ms;
-  -webkit-animation-iteration-count:1;
-  -webkit-animation-name: 			locked;
+.locked.selected .fa-lock,
+.locked.selected:hover .fa-lock{
+  -webkit-animation-duration: 			600ms;
+  -webkit-animation-iteration-count:	1;
+  -webkit-animation-name: 				locked;
 
 
-  animation-duration: 		600ms;
-  animation-iteration-count:1;
-  animation-name: 			locked;
+  animation-duration: 					600ms;
+  animation-iteration-count:			1;
+  animation-name: 						locked;
 }
+
 
 @keyframes locked {
   0% {
   	transform:			scale(1);
-  	text-shadow:		none
+  	text-shadow:		none;
   }
 
   25%{
@@ -693,8 +696,9 @@ h2,
 }
 
 @-webkit-keyframes locked {
-  transform:			scale(1);
-  	text-shadow:		none
+  0%{
+  	transform:			scale(1);
+  	text-shadow:		none;
   }
 
   25%{
@@ -726,8 +730,6 @@ h2,
   	text-shadow:		none;
   }
 }
-
-
 
 
 .removed{
@@ -1110,7 +1112,7 @@ label.selected {
 
 .selected label.locked,
 label.selected.locked {
-	opacity:				0.75!important;
+	/*opacity:				0.75!important;*/
 }
 
 
@@ -1184,10 +1186,20 @@ label .wrapper textarea{
 }
 
 
+.ui-white  input,
+.ui-white  textarea {
+	outline:				0.1rem dashed #ccc;
+}
+
 .ui-white  input:focus,
 .ui-white  textarea:focus {
 	background:				rgba(155,155,155,0.1) !important;
 	cursor: 				text;
+}
+
+.ui-blue  input,
+.ui-blue  textarea {
+	outline:				none;
 }
 
 input:focus,

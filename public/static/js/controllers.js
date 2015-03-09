@@ -187,7 +187,7 @@ prefrControllers.controller(
 
 									    	if(!diff) return $q.reject()
 
-					    					return 	api.savePaper()
+					    					return 	api.savePaper($scope.ballot, paper)
 					    							.catch(function(){
 
 									   					var ranked_options = paper.getRankedOptions()
@@ -234,22 +234,14 @@ prefrControllers.controller(
 		    }
 
 		    $scope.updateBallotBox = function(){
-		    	var data = $scope.ballot.exportData()
+		    	return 	api.updateBallot($scope.ballot, $scope.adminSecret)
+                        .then(function(data){
+                            $scope.ballot
+                            .importData(data)
 
-		    	return	api.updateBallot({
-		    				id:				$scope.box_id,
-		    				subject:		data.subject,
-		    				details:		data.details,
-		    				options:		data.options,
-		    				adminSecret:	$scope.adminSecret
-		    			})
-		    			.then(function(data){
-		    				$scope.ballot
-		    				.importData(data)
-
-		    				if($scope.ballot.locked)
-								$scope.getSchulzeRanking()
-		    			})
+                            if($scope.ballot.locked)
+                                $scope.getSchulzeRanking()
+                        })
 		    }
 
 		    $scope.lockPapers = function() {

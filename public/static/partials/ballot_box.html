@@ -61,15 +61,6 @@
                     </p>
 
                     <p ng-if = "isAdmin">
-                         <button
-                            ng-disabled     = "!ballot.diff()"
-                            ng-mousedown    = "updateBallotBox()"
-                            class           = "ui-float-right"
-                        >
-                            <i ng-if ="!!ballot.diff()" class = "fa fa-warning"> </i>
-                            apply changes
-                        </button>
-
                         <small>
                            Add options to the ballot below. You may want to add a description alongside the title to your options if titles of different options are too similar.  
                            Any changes to ballot's options or settings will only take effect after saving.
@@ -228,7 +219,7 @@
 
                 <div
                     ng-repeat = "paper in ballot.papers.concat(result ? [result] : [])"
-                    ng-if     = "selectionBallotPaper.value == paper"
+                    ng-if     = "!ballot.diff() && selectionBallotPaper.value == paper"
                     class     = "paper"
                 >
                     <div class = "ui-borders ui-corners-all ui-dark-white">
@@ -306,11 +297,61 @@
 
 
 
+            <td
+                id              = "right-column"            
+                ng-if           = "!!ballot.diff()"   
+            >
+                <div class="left right ui-white">
+                    <h2>Ballot settings have been changed</h2>
+
+                    <div class ="ui-medium-height"></div>
+
+                    <p>
+                        You changed some of the ballot settings. Please save or revert those changes before editing any papers.
+                    </p>
+
+                    <div class ="ui-medium-height"></div>
+
+                    <div class = "ui-tac">
+
+                        <button ng-mousedown = "updateBallotBox()">                            
+                            save changes
+                        </button>
+
+                        <br/>
+                        <br/>
+                            - or- 
+                        <br/>
+                        <br/>
+
+                        <button ng-mousedown = "ballot.revert()">                         
+                            revert
+                        </button>
+
+                    </div>
+                    
+                    <div class ="ui-medium-height"></div>
+
+
+                    <p>
+                        You can keep making as many changes as you like before saving them.
+                    </p>
+                </div>
+                <div class = "ui-border-top ui-extended-height ui-blue ui-bottom"></div>
+            </td>
       	
+
+
+
+
+
+
+
 
             <td
                 id              = "right-column"
-                single-select   = "{'overview-menu': 'papers'}"   
+                single-select   = "{'overview-menu': 'papers'}"
+                ng-if           = "!ballot.diff()"   
             >
 
                 <div class="left right ui-white">
@@ -335,8 +376,7 @@
 
                     <label 
                         class           = "ui-border-top" 
-                        ng-mousedown    = "select('ballot-paper', ballot.newPaper())"
-                        ng-if           = "!ballot.diff()"
+                        ng-mousedown    = "select('ballot-paper', ballot.newPaper())"                        
                     >
                         Add new particpant
                         <div class = "icons right">

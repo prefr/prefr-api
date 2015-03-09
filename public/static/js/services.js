@@ -57,7 +57,12 @@ angular.module('services',[])
                 this.importData(this.exportData())
             }
 
+            this.revert = function(){
+                this.importData(this.backup)
+            }
+
             this.importData(data)
+
 
         }
 
@@ -165,7 +170,6 @@ angular.module('services',[])
 
             this.revert = function(){
                 this.importData(this.backup_zero, true)
-
             }
 
             this.lock = function(){
@@ -227,11 +231,23 @@ angular.module('services',[])
                 return this
             }
 
-            this.importSettings = function(data){
+            this.importSettings = function(data){                
                 this.id      = data.id      || this.id      || ''
-                this.subject = data.subject || this.subject || ''
-                this.details = data.details || this.details || ''
+
+                this.subject =  data.subject != undefined
+                                ?   data.subject 
+                                :   this.subject || ''
+
+                this.details =  data.details != undefined
+                                ?   data.details 
+                                :   this.details || ''
+
                 this.locked  = data.locked  || this.locked  || false
+
+                this.backup =   {
+                                    subject:    String(this.subject),
+                                    details:    String(this.details)
+                                }
 
                 return this
             }
@@ -241,13 +257,10 @@ angular.module('services',[])
 
                 this
                 .importSettings(data)
-                .importOptions(data.options)
-                .importPapers(data.papers)
+                .importOptions(data.options || [])
+                .importPapers(data.papers || [])
 
-                this.backup =   {
-                                    subject:    String(this.subject),
-                                    details:    String(this.details)
-                                }
+
             }
 
             this.exportData = function(){
@@ -378,6 +391,13 @@ angular.module('services',[])
                 return this.options.filter(function(option){ return !option.removed }).length
             }
 
+            this.revert = function(){                
+                this.importSettings(this.backup)                
+                this.options.forEach(function(option){
+                    option.revert()
+                })
+            }
+
 
             this.importData(data)
         }
@@ -406,18 +426,24 @@ angular.module('services',[])
                         })                    
             },
 
-            updateBallot: function(ballot){
-                return  $http.put('/api/ballotBox/'+data.id, ballot.exportData())
+            updateBallot: function(ballot, adminSecret){
+                var data = ballot.exportData() 
+
+                data.adminSecret = adminSecret              
+
+                return  $http.put('/api/ballotBox/'+data.id, data)
                         .then(function(result){
                             return result.data
                         })
             },
 
             savePaper: function(ballot, paper){ //paper may just be diff data
-                var data        =   paper.diff() || paper.exportData(),
+                var data        =   paper.diff 
+                                    ?   paper.diff() || paper.exportData()
+                                    :   paper,
                     api_call    =   paper.id
-                                    ?   $http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, data)
-                                    :   $http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', data)
+                                    ?   $http.put('/api/ballotBox/'+ballot.id+'/paper/'+paper.id, data)
+                                    :   $http.post('/api/ballotBox/'+ballot.id+'/paper', data)
 
                 return  api_call
                         .then(function(result){
