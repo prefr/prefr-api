@@ -187,16 +187,7 @@ prefrControllers.controller(
 
 									    	if(!diff) return $q.reject()
 
-									    	var data = 	paper.id
-									    				?	diff
-									    				:	paper.exportData()
-
-
-									    	var api_call = 	paper.id
-						    								?	$http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, data)
-		    												:	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', data)
-
-					    					return 	api_call
+					    					return 	api.savePaper()
 					    							.catch(function(){
 
 									   					var ranked_options = paper.getRankedOptions()

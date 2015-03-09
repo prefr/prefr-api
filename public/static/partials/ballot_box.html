@@ -333,7 +333,11 @@
                         </small>
                     </p>
 
-                    <label class = "ui-border-top" ng-mousedown = "select('ballot-paper', ballot.newPaper())">
+                    <label 
+                        class           = "ui-border-top" 
+                        ng-mousedown    = "select('ballot-paper', ballot.newPaper())"
+                        ng-if           = "!ballot.diff()"
+                    >
                         Add new particpant
                         <div class = "icons right">
                             <i class = "fa fa-plus"></i>

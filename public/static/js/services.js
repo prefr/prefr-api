@@ -406,12 +406,25 @@ angular.module('services',[])
                         })                    
             },
 
-            updateBallot: function(data){
-                return  $http.put('/api/ballotBox/'+data.id, data)
+            updateBallot: function(ballot){
+                return  $http.put('/api/ballotBox/'+data.id, ballot.exportData())
+                        .then(function(result){
+                            return result.data
+                        })
+            },
+
+            savePaper: function(ballot, paper){ //paper may just be diff data
+                var data        =   paper.diff() || paper.exportData(),
+                    api_call    =   paper.id
+                                    ?   $http.put('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id, data)
+                                    :   $http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', data)
+
+                return  api_call
                         .then(function(result){
                             return result.data
                         })
             }
+
 
         }
     }
