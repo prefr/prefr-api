@@ -5,7 +5,7 @@ name := "prefr"
 
 version := "0.1"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.5"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
