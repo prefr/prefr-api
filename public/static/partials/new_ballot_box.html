@@ -4,11 +4,11 @@
 
 
 
-    <div ng-if = "step == 0">
+    <div ng-show = "step == 0">
         <h3>Introduction</h3>        
 
         <p>
-            Pick a question or matter to be decided by a group. <em>(e.g. "What should we do this weekend?")</em>        
+            Pick a qfuestion or matter to be decided by a group. <em>(e.g. "What should we do this weekend?")</em>        
             Then provide potential answers or options to be ranked, something like this:
         </p>        
 
@@ -40,7 +40,7 @@
 
 
 
-    <div ng-if = "step == 1">
+    <div ng-show = "step == 1">
         <h3>Subject matter</h3>
 
         <p>
@@ -106,7 +106,7 @@
 
 
 
-    <div ng-if = "step == 2">
+    <div ng-show = "step == 2">
         
         <h3>Options</h3>
         <p>
@@ -135,7 +135,7 @@
 
             <div 
                 class           = "option ui-blue"
-                ng-repeat       = "option in ballot.options | filter: {removed : '!'} | orderBy:'tag'" 
+                ng-repeat       = "option in ballot.options | removed : false| orderBy:'tag'" 
             >                       
                 <label>                            
                     <span class="tag">
@@ -166,24 +166,20 @@
                     <textarea 
                         extendable 
                         ng-model    = "option.details" 
-                        ng-if       = "isAdmin"
                         placeholder = "Enter details"
                     ></textarea>
-                    <div ng-if = "!isAdmin">
-                        {{option.details || 'No details'}}
-                    </div>
                 </div>
             </div>
             <div
                 class       = "removed"
-                ng-if       = "(ballot.options  | filter: {removed : true}).length > 0"
+                ng-if       = "(ballot.options  | removed : true).length > 0"
             >
                 <h4> Removed options </h4>
                 <br/>
 
                 <div 
                     class       = "option"
-                    ng-repeat   = "removed_option in ballot.options  | filter: {removed : true} | orderBy:'tag'" 
+                    ng-repeat   = "removed_option in ballot.options  | removed : true | orderBy:'tag'" 
                 >                       
                     <label>                            
                         <span class="tag">
@@ -252,7 +248,7 @@
 
 
 
-    <div ng-if = "step == 3">
+    <div ng-show = "step == 3">
         
         <h3>Special option: Status Quo (optional)</h3>
        
@@ -299,12 +295,8 @@
                     <textarea 
                         extendable 
                         ng-model    = "status_quo.details" 
-                        ng-if       = "isAdmin"
                         placeholder = "Enter details"
                     ></textarea>
-                    <div ng-if = "!isAdmin">
-                        {{status_quo.details || 'No details'}}
-                    </div>
                 </div>
             </div>
         </div>
@@ -367,7 +359,7 @@
 
 
 
-    <div ng-if ="step == 4">
+    <div ng-show ="step == 4">
         <h3>How to participate</h3>
 
         <p>

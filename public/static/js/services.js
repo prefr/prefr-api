@@ -96,13 +96,15 @@ angular.module('services',[])
 
                     this.backup         =   {
                                                 participant :   String(this.participant),
-                                                ranking:        JSON.parse(JSON.stringify(this.ranking))
+                                                ranking:        JSON.parse(JSON.stringify(this.ranking)),
+                                                removed:        this.removed
                                             }
 
 
                     this.backup_zero    =   this.backup_zero ||     {
                                                                         participant :   String(this.participant),
-                                                                        ranking:        JSON.parse(JSON.stringify(this.ranking))
+                                                                        ranking:        JSON.parse(JSON.stringify(this.ranking)),
+                                                                        removed:        this.removed
                                                                     }
                 }
 
@@ -121,14 +123,15 @@ angular.module('services',[])
                 if(this.ranking.length == 0)
                     this.ranking.push([])
 
-                console.log(tag)
+                var ranked_options  = this.getRankedOptions(),
+                    status_quo_rank = this.ranking.filter(function(rank){ return rank.indexOf("0") != -1 })[0]
 
-                //check if option is already present:
-                this.ranking.reduce(function(options, rank){
-                    return Array.concat.apply(options, rank)
-                }).indexOf(tag) == -1
-                ?   this.ranking[this.ranking.length-1].push(tag)   
-                :   this.ranking
+
+                if(ranked_options.indexOf(tag) == -1){
+                    status_quo_rank.length
+                    ?   status_quo_rank.push(tag)
+                    :   this.ranking[this.ranking.length-1].push(tag)   
+                }
                 
                 return this
             }
@@ -163,8 +166,12 @@ angular.module('services',[])
             }
 
             this.getRankedOptions = function(){
+                console.log(this.ranking)
+                console.log(this.ranking.reduce(function(options, rank){
+                            return Array.concat(options, rank) 
+                        }, []))
                 return  this.ranking.reduce(function(options, rank){
-                            return Array.concat.apply(options, rank) 
+                            return Array.concat(options, rank) 
                         }, [])
             }
 
@@ -202,6 +209,7 @@ angular.module('services',[])
             this.locked         = undefined
             this.options        = []
             this.papers         = []
+            this.backup         = {}
 
             this.getOptionByTag = function(tag){
                 return this.options.filter(function(option){ return option.tag == tag })[0]    
@@ -217,6 +225,8 @@ angular.module('services',[])
 
                                     return option.importData(option_data)
                                 })
+
+                this.backup.options = data
 
                 return this
             }
@@ -244,10 +254,8 @@ angular.module('services',[])
 
                 this.locked  = data.locked  || this.locked  || false
 
-                this.backup =   {
-                                    subject:    String(this.subject),
-                                    details:    String(this.details)
-                                }
+                this.backup.subject = String(this.subject)
+                this.backup.details = String(this.details)
 
                 return this
             }
@@ -392,10 +400,9 @@ angular.module('services',[])
             }
 
             this.revert = function(){                
-                this.importSettings(this.backup)                
-                this.options.forEach(function(option){
-                    option.revert()
-                })
+                this.importSettings(this.backup)     
+                this.options = []
+                this.importOptions(this.backup.options) 
             }
 
 

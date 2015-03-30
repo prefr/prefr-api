@@ -244,6 +244,27 @@ function HTMLpreferenceRanking() {
 											'left'	: 'auto'
 										})
 
+
+										//clear textNodes:
+										var childNodes 	= scope.active_rank.get(0).childNodes,
+											textNodes	= []
+
+
+										for(key in childNodes){
+											var node = childNodes[key]
+											if(node.nodeType == 3) 
+												textNodes.push(node)
+										}
+
+										textNodes.forEach(function(node){
+											scope.active_rank.get(0).removeChild(node)
+										})
+
+										//move dummy option to the end of the rank
+										scope.active_rank
+										.find('[value=""]')
+										.appendTo(scope.active_rank)
+
 										var prev		= scope.active_rank.prev('preference-rank')
 											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 1
 											next		= scope.active_rank.next('preference-rank')
@@ -345,6 +366,7 @@ function HTMLpreferenceRank() {
 									
 									//empty at first:
 									element.addClass('empty')
+
 								},
 
 				controller	:	function($scope, $element){
@@ -428,6 +450,8 @@ function HTMLpreferenceOption($scope) {
 								}
 			}
 }
+
+//Is that in use? //
 
 function manageOptions(){
 	return {	

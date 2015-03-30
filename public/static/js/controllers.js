@@ -30,8 +30,9 @@ prefrControllers.controller(
 
 		function($scope, $rootScope, $location, $window, Storage, Ballot, BallotOption, api){
 
+
 			$scope.setup = function(){				
-				$rootScope.step = $location.search().step || 0
+				$rootScope.step =  $location.search().step || 0
 
 				$rootScope.ballot =		$rootScope.ballot
 										||
@@ -72,11 +73,11 @@ prefrControllers.controller(
 
 			$scope.previous = function(){				
 				$window.history.back()
-				// $rootScope.step == 0 
-				// ?	$rootScope.step = 0
-				// :	$rootScope.step --
+				$rootScope.step == 0 
+				?	$rootScope.step = 0
+				:	$rootScope.step --
 
-				// $location.search('step', $rootScope.step)
+				
 			}
 			$scope.gotoBallot = function(){
 				$location.path($rootScope.adminPath)
@@ -94,8 +95,8 @@ prefrControllers.controller(
 							$rootScope.participantPath 	= '/ballotBox/'+data.id
 							$rootScope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
 
-							$rootScope.participantLink	= url.replace(/#.*/, '#'+ $rootScope.participantPath)
-							$rootScope.adminLink		= url.replace(/#.*/, '#'+ $rootScope.adminPath)
+							$rootScope.participantLink	= url.replace(/#.*$/, '#'+ $rootScope.participantPath)
+							$rootScope.adminLink		= url.replace(/#.*$/, '#'+ $rootScope.adminPath)
 
 
 							Storage[data.id] = Storage[data.id] || {}
@@ -110,16 +111,22 @@ prefrControllers.controller(
 							$scope.next()
 							$scope.clear()
 						})
-			}		
+			}	
 
-
-			if($location.search().step == undefined){
-				$scope.clear()
-				$location.search('step', 0)
-			}else {
+			$scope.update = function(){
+				if($location.search().step == undefined){
+					$scope.clear()
+					$location.search('step', 0)
+				}
 				$scope.setup()	
 			}
 
+
+			$scope.$on('$locationChangeStart', function(){
+				$scope.update()
+			})
+
+			$scope.update()
 		}
 	]
 ) 
@@ -146,7 +153,7 @@ prefrControllers.controller(
 			$scope.adminSecret 		= $routeParams.admin_secret
 			$scope.box_id			= $routeParams.box_id
 			$scope.isAdmin 			= !!$scope.adminSecret
-			$scope.adminLink 		= $location.absUrl()
+			$scope.adminLink 		= $location.absUrl().replace(/\?.*$/,'')
 			$scope.participantLink	= $scope.adminLink.replace('/'+$scope.adminSecret, '')
 
 			$scope.removeBallotPaper = function(paper_id) {
@@ -233,11 +240,13 @@ prefrControllers.controller(
 			    		:	$q.when()
 		    }
 
-		    $scope.updateBallotBox = function(){
+		    $scope.updateBallotBox = function(){	    	
 		    	return 	api.updateBallot($scope.ballot, $scope.adminSecret)
                         .then(function(data){
                             $scope.ballot
                             .importData(data)
+
+                            $scope.correctPapers()
 
                             if($scope.ballot.locked)
                                 $scope.getSchulzeRanking()
@@ -260,12 +269,51 @@ prefrControllers.controller(
 
 		    }
 
+		    $scope.getUnrankedOptions = function(paper){
+		    	var ranked_options 		= paper.getRankedOptions(),
+		    		available_options 	= $scope.ballot.options.map(function(option){ return option.tag })
+
+		    	return available_options.filter(function(tag){ return ranked_options.indexOf(tag) == -1 })
+		    }
+
+		    $scope.getSurplusOptions = function(paper){
+		    	var ranked_options 		= paper.getRankedOptions(),
+		    		available_options 	= $scope.ballot.options.map(function(option){ return option.tag })
+
+		    	return ranked_options.filter(function(tag){ return available_options.indexOf(tag) == -1 })
+		    }
+
+		    $scope.correctPapers = function(){
+		    	$scope.ballot.papers.forEach(function(paper){
+		    		console.log('correcting:', paper.ranking)
+		    		console.log('ranked:', paper.getRankedOptions())
+
+                	var unranked_options 	= $scope.getUnrankedOptions(paper),
+                		surplus_options		= $scope.getSurplusOptions(paper)
+
+
+                	console.log('unranked:',unranked_options)
+                	console.log('surplus:', surplus_options)
+
+                	unranked_options.forEach(function(tag){
+                		paper.addOption(tag)
+                	})
+
+                	surplus_options.forEach(function(tag){
+                		paper.removeOption(tag)
+                	})
+
+                	console.log('to:', paper.ranking)
+                	console.log('--------')
+                })
+		    }
+
 
 			api.getBallot($scope.box_id)
 			.then(function(data){
 				$scope.ballot	= new Ballot(data)
 
-				var url 		= $location.absUrl(),
+				var url 		= $location.absUrl().replace(/\?.*$/, ''),
 					first_visit = !Storage[data.id]
 
 
@@ -284,19 +332,21 @@ prefrControllers.controller(
 				}
 
 
+				$scope.$watch('ballot.papers', function(){
 
-				$scope.$watch('ballot', function(){
+					$scope.correctPapers()
+
 					$scope.ballot.papers.forEach(function(paper){
 						$scope.savePaper(paper)
 					})
 
 					angular.extend(Storage[data.id], {
-				   		id:			data.id,
-				   		subject:	data.subject,
-				   		link:		url,
-				   		unlocked:	$scope.ballot.papers
-				   					.filter(function(paper){ return !paper.locked})
-				   					.map(function(paper){ return paper.id })
+				   		id:				data.id,
+				   		subject:		data.subject,
+				   		link:			url,
+				   		unlocked:		$scope.ballot.papers
+				   						.filter(function(paper){ return !paper.locked})
+				   						.map(function(paper){ return paper.id })
 					})
 
 				}, true)

@@ -6,15 +6,13 @@ var prefr   =   angular.module(
                                 'ngAnimate',
                                 'ngSanitize',
                                 'prefrControllers',  
+                                'prefrFilters',  
                                 'services'                                                             
                             ]
                         )
 
 prefr.run( function($rootScope) {    
-    $rootScope.isAdmin      = true
-    $rootScope.help         = {}
     $rootScope.console      = window.console
-    $rootScope.help.open    = function(){}
 })
 
 
@@ -26,7 +24,8 @@ prefr.config([
             '/ballotBox/new',
             {
                 templateUrl :   'static/partials/new_ballot_box.html',
-                controller  :   'NewBallotBoxCtrl'
+                controller  :   'NewBallotBoxCtrl',
+                reloadOnSearch: false
             }
         )
         .when(
@@ -44,7 +43,7 @@ prefr.config([
             }
         )
         .otherwise({
-            redirectTo: '/ballotBox/new'
+            redirectTo:     '/ballotBox/new'
         })
     }
 ])
