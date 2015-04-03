@@ -128,7 +128,7 @@ angular.module('services',[])
 
 
                 if(ranked_options.indexOf(tag) == -1){
-                    status_quo_rank.length
+                    status_quo_rank
                     ?   status_quo_rank.push(tag)
                     :   this.ranking[this.ranking.length-1].push(tag)   
                 }
@@ -152,7 +152,9 @@ angular.module('services',[])
 
             this.diff = function(zero){
                 var diff = {},
-                    backup = zero ? this.backup_zero : (this.id ? this.backup : {})
+                    backup =    zero 
+                                ?   this.backup_zero 
+                                :   (this.id ? this.backup : {})
 
                 if(this.participant != backup.participant)
                     diff.participant = this.participant
@@ -166,10 +168,6 @@ angular.module('services',[])
             }
 
             this.getRankedOptions = function(){
-                console.log(this.ranking)
-                console.log(this.ranking.reduce(function(options, rank){
-                            return Array.concat(options, rank) 
-                        }, []))
                 return  this.ranking.reduce(function(options, rank){
                             return Array.concat(options, rank) 
                         }, [])

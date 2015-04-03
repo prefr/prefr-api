@@ -192,33 +192,33 @@ prefrControllers.controller(
 				paper.scheduledSave	=	$timeout(function(){
 											var diff = paper.diff()
 
-									    	if(!diff) return $q.reject()
+									    	if(!diff || paper.removed) return $q.reject()
 
 					    					return 	api.savePaper($scope.ballot, paper)
-					    							.catch(function(){
+					    							// .catch(function(){
 
-									   					var ranked_options = paper.getRankedOptions()
+									   				// 	var ranked_options = paper.getRankedOptions()
 
-									   					ranked_options
-									   					.forEach(function(tag){
-									   						if($scope.ballot.options.every(function(option){ return option.tag != tag }))
-									   							paper.removeOption(tag)
-									   					})
+									   				// 	ranked_options
+									   				// 	.forEach(function(tag){
+									   				// 		if($scope.ballot.options.every(function(option){ return option.tag != tag }))
+									   				// 			paper.removeOption(tag)
+									   				// 	})
 
-									   					$scope.ballot.options
-									   					.forEach(function(option){
-									   						if(ranked_options.indexOf(options.tag) == -1)
-									   							paper.addOptions(options.tag)
-									   					})
+									   				// 	$scope.ballot.options
+									   				// 	.forEach(function(option){
+									   				// 		if(ranked_options.indexOf(options.tag) == -1)
+									   				// 			paper.addOptions(options.tag)
+									   				// 	})
 
-									   					return $q.when(paper.exportData())
-									   				})    			
+									   				// 	return $q.when(paper.exportData())
+									   				// })    			
 						   				}, 2000)
 						   									
 
 	    		return	paper.scheduledSave
-						.then(function(result){
-							paper.importData(result.data)
+						.then(function(data){
+							paper.importData(data)
 						})
 		    }
 
@@ -244,7 +244,8 @@ prefrControllers.controller(
 		    	return 	api.updateBallot($scope.ballot, $scope.adminSecret)
                         .then(function(data){
                             $scope.ballot
-                            .importData(data)
+                            .importSettings(data)
+                			.importOptions(data.options || [])
 
                             $scope.correctPapers()
 
@@ -285,15 +286,9 @@ prefrControllers.controller(
 
 		    $scope.correctPapers = function(){
 		    	$scope.ballot.papers.forEach(function(paper){
-		    		console.log('correcting:', paper.ranking)
-		    		console.log('ranked:', paper.getRankedOptions())
-
                 	var unranked_options 	= $scope.getUnrankedOptions(paper),
                 		surplus_options		= $scope.getSurplusOptions(paper)
 
-
-                	console.log('unranked:',unranked_options)
-                	console.log('surplus:', surplus_options)
 
                 	unranked_options.forEach(function(tag){
                 		paper.addOption(tag)
@@ -303,8 +298,6 @@ prefrControllers.controller(
                 		paper.removeOption(tag)
                 	})
 
-                	console.log('to:', paper.ranking)
-                	console.log('--------')
                 })
 		    }
 
@@ -337,7 +330,8 @@ prefrControllers.controller(
 					$scope.correctPapers()
 
 					$scope.ballot.papers.forEach(function(paper){
-						$scope.savePaper(paper)
+						if(!paper.removed)
+							$scope.savePaper(paper)
 					})
 
 					angular.extend(Storage[data.id], {

@@ -394,17 +394,18 @@
 
                             </label>
 
+
                             <label
                                 ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'locked' : paper.locked}"
                                 ng-repeat       = "paper in (ballot.papers)"    
                                 ng-if           = "!paper.removed"
-                                ng-mousedown        = "select('ballot-paper', paper)"                
+                                ng-mousedown    = "select('ballot-paper', paper)"                
                             >
                                 <div class="connector left"></div>
 
                                 <span 
                                     class   = "name"
-                                    ng-show = "paper.locked"
+                                    ng-if = "paper.locked"
                                 >
                                     {{paper.participant || 'no name'}}
                                 </span>
@@ -418,13 +419,23 @@
 
                                 <div class = "icons right shift">
 
-                                    <button
+                                    <span
                                         disabled
-                                        ng-if   = "!!paper.diff()"
+                                        ng-show = "!!paper.diff()"
+                                        class   = "info"
                                         title   = "saving"     
                                     >
                                         <i class = "fa fa-upload pulsing"></i>
-                                    </button>
+                                    </span>
+
+                                    <span
+                                        class   = "info beating"
+                                        ng-show = "!paper.participant && !paper.locked"
+                                        title   = "Please enter a name"
+                                    >
+                                        <i class = "fa fa-exclamation-circle"></i>
+                                    </span>
+
 
                                     <button 
                                         ng-disabled     = "paper.locked || !paper.diff(true)"
@@ -461,9 +472,10 @@
                                 <br/>
 
                                 <label
-                                    ng-class        = "{'selected' : selectionBallotPaper.value == paper}"
+                                    ng-class        = "{'selected' : selectionBallotPaper.value == removed_paper}"
                                     ng-repeat       = "removed_paper in ballot.papers | orderBy:'-id':true"    
                                     ng-if           = "removed_paper.removed"
+                                    ng-mousedown    = "select('ballot-paper', removed_paper)"  
                                 >
                                     <div class="connector left"></div>
 
