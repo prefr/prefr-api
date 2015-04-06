@@ -1084,9 +1084,8 @@ textarea[extendable] {
 
 .participants-overview label {
 	max-width:				23em;
+	transition:				background 400ms;
 }
-
-
 
 
 label {
@@ -1153,6 +1152,7 @@ label + label {
 .selected label,
 label.selected {
 	background-color:		#5f98f7;
+	box-shadow:				2em 0 2em -1em #5f98f7 inset;
 }
 
 .selected label.locked,

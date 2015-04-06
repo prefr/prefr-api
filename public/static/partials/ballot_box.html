@@ -1,7 +1,7 @@
 <div
     ng-if           =   "ballot"
 	class			=	"ballot-box"
-	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
+	single-select	=	"{'ballot-paper': 'ballot.papers[0]', 'ballot-option': undefined, 'mode' : 'prefr'}"		
 >
 
     <table id = "main"> 
@@ -421,7 +421,7 @@
 
                                     <span
                                         disabled
-                                        ng-show = "!!paper.diff()"
+                                        ng-if   = "!!paper.diff()"
                                         class   = "info"
                                         title   = "saving"     
                                     >
@@ -430,7 +430,7 @@
 
                                     <span
                                         class   = "info beating"
-                                        ng-show = "!paper.participant && !paper.locked"
+                                        ng-if   = "!paper.participant && !paper.locked"
                                         title   = "Please enter a name"
                                     >
                                         <i class = "fa fa-exclamation-circle"></i>

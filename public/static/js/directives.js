@@ -15,6 +15,12 @@ function HTMLsingleSelect() {
 										$scope[$scope.mask(select_as)].value = select_by										
 									}
 
+									$scope.selected = function(select_as){
+										return 		!$scope[$scope.mask(select_as)].value 
+												&&	 $scope[$scope.mask(select_as)].value  !== null
+									}
+
+
 									if(typeof params == 'string'){
 										selection_map[$scope.mask(params)] = null
 									} 
@@ -38,6 +44,8 @@ function HTMLsingleSelect() {
 									} 
 
 									$.extend($scope, selection_map)
+
+									console.dir(params)
 
 								}
 			}
