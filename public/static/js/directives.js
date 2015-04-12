@@ -3,49 +3,47 @@ function HTMLsingleSelect() {
 				restrict	:	'A',
 				scope		:	true,
 
-				controller	:	function($scope, $element, $attrs) {									
-									var params 			= $scope.$eval($attrs.singleSelect),
-										selection_map	= {}
+				controller	:	function($scope, $element, $attrs) {		
 
 									$scope.mask = function(value) {
 										return($.camelCase('selection-'+value))
 									}
 									
 									$scope.select = function(select_as, select_by) {														
-										$scope[$scope.mask(select_as)].value = select_by										
+										$scope[$scope.mask(select_as)]			= $scope[$scope.mask(select_as)] || {}
+										$scope[$scope.mask(select_as)].value 	= select_by										
 									}
 
-									$scope.selected = function(select_as){
-										return 		!$scope[$scope.mask(select_as)].value 
-												&&	 $scope[$scope.mask(select_as)].value  !== null
+									$scope.isActive = function(select_as){
+										return 		!!$scope[$scope.mask(select_as)]
+												||	  $scope[$scope.mask(select_as)] === null
 									}
 
+									function setupSelection(){
+										var params = $scope.$eval($attrs.singleSelect)
 
-									if(typeof params == 'string'){
-										selection_map[$scope.mask(params)] = null
-									} 
+										if(typeof params == 'string')
+											if(!$scope.isActive(key))
+												$scope.select(params, undefined)
 
-									if($.isArray(params)) {
-										params.forEach(function(value, index){
-											selection_map[$scope.mask(value)] = {
-																					default	:	null,
-																					value	:	null
-																				}
-										})
+										if($.isArray(params))
+											params.forEach(function(key, index){
+												if(!$scope.isActive(key))
+													$scope.select(key, undefined)												
+											})
+
+										if($.isPlainObject(params))
+											$.each(params, function(key, value){
+												console.log(key, value)
+												if(!$scope.isActive(key))
+													$scope.select(key, value)											
+											})										
 									}
 
-									if($.isPlainObject(params)) {
-										$.each(params, function(key, value){
-											selection_map[$scope.mask(key)] =	{
-																					default	: value,
-																					value	: value
-																				}
-										})
-									} 
-
-									$.extend($scope, selection_map)
-
-									console.dir(params)
+									$scope.$watch(function(){
+										setupSelection()
+										console.dir($scope['selectionBallotPaper'])
+									})								
 
 								}
 			}

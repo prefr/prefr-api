@@ -1,7 +1,7 @@
 <div
     ng-if           =   "ballot"
 	class			=	"ballot-box"
-	single-select	=	"{'ballot-paper': 'ballot.papers[0]', 'ballot-option': undefined, 'mode' : 'prefr'}"		
+	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
 >
 
     <table id = "main"> 
@@ -429,7 +429,7 @@
                                     </span>
 
                                     <span
-                                        class   = "info beating"
+                                        class   = "info pumping"
                                         ng-if   = "!paper.participant && !paper.locked"
                                         title   = "Please enter a name"
                                     >
