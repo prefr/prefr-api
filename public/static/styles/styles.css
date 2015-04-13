@@ -1937,11 +1937,8 @@ preference-ranking.horizontal preference-rank.ng-enter{
     -webkit-transition: 		400ms linear all;
     transition: 				400ms linear all;
     opacity: 					0;
-}
-
-.ng-hide * {
-	opacity:					0;
     position:					absolute;
+    top:						0;
 }
 
 .ng-hide-add {

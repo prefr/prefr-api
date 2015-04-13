@@ -1,408 +1,410 @@
 <article class = "ui-white left right ui-deep-shadow-ex">
+
+
     <h2> New prefr ballot</h2>
 
 
+    <div class = "ui-relative">
 
+        <div ng-show = "step == 0">
+            <h3>Introduction</h3>        
 
-    <div ng-show = "step == 0">
-        <h3>Introduction</h3>        
+            <p>
+                Pick a question or matter to be decided by a group. <em>(e.g. "What should we do this weekend?")</em>        
+                Then provide potential answers or options to be ranked, something like this:
+            </p>        
 
-        <p>
-            Pick a question or matter to be decided by a group. <em>(e.g. "What should we do this weekend?")</em>        
-            Then provide potential answers or options to be ranked, something like this:
-        </p>        
+            <ul class ="ui-extensive-width">
+                <li><i class = "fa fa-caret-right"></i> Have a LAN party.</li>
+                <li><i class = "fa fa-caret-right"></i> Play some board games.</li>
+                <li><i class = "fa fa-caret-right"></i> Go see a movie.</li>
+                <li><i class = "fa fa-caret-right"></i> Keep coding.</li>
+            </ul>   
+            <p>
+                After that invite friends or colleagues to participate by ranking your options and have this app calculate the group's collective preference ranking by a method of your choice (only <a href="http://en.wikipedia.org/wiki/Schulze_method">schulze method</a> available at the moment).
+            </p>
 
-        <ul class ="ui-extensive-width">
-            <li><i class = "fa fa-caret-right"></i> Have a LAN party.</li>
-            <li><i class = "fa fa-caret-right"></i> Play some board games.</li>
-            <li><i class = "fa fa-caret-right"></i> Go see a movie.</li>
-            <li><i class = "fa fa-caret-right"></i> Keep coding.</li>
-        </ul>   
-        <p>
-            After that invite friends or colleagues to participate by ranking your options and have this app calculate the group's collective preference ranking by a method of your choice (only <a href="http://en.wikipedia.org/wiki/Schulze_method">schulze method</a> available at the moment).
-        </p>
-
-        <br/>
-
-        <button 
-            class       = "left"
-            ng-click    = "next()"
-        >
-                Get started
-                <i class = "fa fa-chevron-right "></i>
-        </button>
-
-
-        
-    </div>
-
-
-
-
-
-    <div ng-show = "step == 1">
-        <h3>Subject matter</h3>
-
-        <p>
-            Now, ask a question or pick a subject matter:
-        </p>
-
-        <label class = "ui-white subject">
-            <span> Subject: </span>
-            <input 
-                type        = "text" 
-                ng-model    = "ballot.subject" 
-                placeholder = "Enter subject"
-                class       = "ui-extensive-width"
-            >
-            <div class = "icons right">
-                <i class = "fa fa-pencil"></i>
-            </div>
-
-        </label>
-
-        <p>
-            You may want to add further details if the subject line was too short to put all the information into. <em>(e.g. "We'll be at least 6 people at 3pm. Two more may join until 6pm. There is no limited on the budget. Food will be provided.")</em>
-        </p>
-
-        <label class = "ui-white">
-            <span> Details: </span>
-            <div class = "icons right">
-                <i class = "fa fa-pencil"></i>
-            </div>
             <br/>
-            <div class="wrapper">
-                <textarea placeholder = "Enter details" extendable ng-model = "ballot.details" placeholder = "Enter details"></textarea>
-            </div>
-        </label>  
 
-        <p>
-            You can change the subject and details later on if you like. But keep in mind that your participants may not notice in time and will be unable to update their ranking accordingly.
-        </p>
-
-
-        <div class = "ui-extended-height"></div>
-
-        <button 
-            class       = "right"
-            ng-click    = "previous()"
-        >
-            Back (introduction)
-            <i class = "fa fa-chevron-left "></i>
-        </button>
-
-        <button 
-            class       = "left"
-            ng-click    = "next()"
-        >
-            Next (options)
-            <i class = "fa fa-chevron-right "></i>
-        </button>
-    </div>
-
-
-
-
-
-
-
-    <div ng-show = "step == 2">
-        
-        <h3>Options</h3>
-        <p>
-            Options represent the possible outcomes of the decision to be made. Each participant will rank these options according to her preference.
-        </p>
-
-        <p>
-            You can add as many as you like and you can add, remove and edit options later on. But be aware that some participants may not notice later changes and therefore won't be able to update their rankings to be in line with your changes.
-        </p>
-
-        <label
-            class       = "ui-border-top" 
-            ng-mousedown    = "ballot.newOption()"
-        >
-            Add new option
-            <div class = "icons right">
-                <i class = "fa fa-plus"></i>
-            </div>
-        </label>     
-
-
-        <hr/>
-
-
-        <div class = "options-overview left right ui-dark-white ui-pixelate">                   
-
-            <div 
-                class           = "option ui-blue"
-                ng-repeat       = "option in ballot.options | removed : false| orderBy:'tag'" 
-            >                       
-                <label>                            
-                    <span class="tag">
-                        {{option.tag}}
-                    </span>
-
-                    <input 
-                        name        = "title" 
-                        type        = "text"
-                        placeholder = "Enter title" 
-                        ng-model    = "option.title"
-                        max-size    
-                    >
-
-                    <div class = "icons right">
-                        <button 
-                            ng-mousedown    = "ballot.removeOption(option)"
-                            title           = "move to trash"
-                        >
-                            <i class = "fa fa-times"></i>
-                        </button>
-                    </div>
-                </label>
-
-                 <div 
-                    class   = "details ui-blue"
-                >
-                    <textarea 
-                        extendable 
-                        ng-model    = "option.details" 
-                        placeholder = "Enter details"
-                    ></textarea>
-                </div>
-            </div>
-            <div
-                class       = "removed"
-                ng-if       = "(ballot.options  | removed : true).length > 0"
-            >
-                <h4> Removed options </h4>
-                <br/>
-
-                <div 
-                    class       = "option"
-                    ng-repeat   = "removed_option in ballot.options  | removed : true | orderBy:'tag'" 
-                >                       
-                    <label>                            
-                        <span class="tag">
-                            {{removed_option.tag}}
-                        </span>
-
-                        <span>
-                            {{removed_option.title}}
-                        </span>
-
-                        <div class = "icons right">
-                            <button 
-                                ng-mousedown = "ballot.restoreOption(removed_option)"
-                                title        = "restore option"
-                            >
-                                <i class = "fa fa-arrow-circle-up"></i>
-                            </button>
-                        </div>                          
-
-                    </label>
-
-                    <div class = "details">
-                        <textarea extendable disabled placeholder ="no further description">{{removed_option.details}}</textarea>
-                    </div>
-                </div>
-            </div>        
-        </div>
-
-        <hr class = "up"/>
-        <label
-            class           = "ui-border-bottom" 
-            ng-mousedown    = "ballot.newOption()"
-        >
-            Add new option
-            <div class = "icons right">
-                <i class = "fa fa-plus"></i>
-            </div>
-        </label>     
-        
-        <div class = "ui-extended-height ui-white"></div>
-
-        <div>
-            <button 
-                class       = "right"
-                ng-click    = "previous()"
-            >
-                <i class = "fa fa-chevron-left"></i>
-                Back (subject)
-            </button>
-            
             <button 
                 class       = "left"
                 ng-click    = "next()"
             >
-                <i class = "fa fa-chevron-right"></i>
-                Next (Status Quo)
+                    Get started
+                    <i class = "fa fa-chevron-right "></i>
             </button>
-        </div>        
-    </div>
 
 
-
-
-
-
-
-
-
-    <div ng-show = "step == 3">
-        
-        <h3>Special option: Status Quo (optional)</h3>
-       
-        <p>
-           This is a special option. You can use it in your prefr ballot if you like, but you don't have to. It is useful though if you want to allow your participants to reject options altogether. They can do that by ranking the disliked option lower than the Status Quo. If in the end the status quo wins the ballot all options have been rejected.
-        </p>
-
-        <div class = "ui-medium-height"></div>
-
-        <button ng-click = "use_status_quo = !use_status_quo" class = "right">
-            use Status Quo
-            <i class = "fa" ng-class = "{'fa-check-square-o' : use_status_quo, 'fa-square-o': !use_status_quo}"></i> 
-        </button>
-
-        <div class = "ui-medium-height"></div>
-
-
-        <div class = "ui-border-top ui-medium-height ui-blue"></div>
-
-        <hr/>
-
-        <div class = "options-overview left right ui-dark-white ui-pixelate">                   
-
-            <div class = "option ui-blue">
-
-                <label>                            
-                    <span class="tag">
-                        {{status_quo.tag}}
-                    </span>
-
-                    <input 
-                        name        = "title" 
-                        type        = "text"
-                        placeholder = "Enter title" 
-                        ng-model    = "status_quo.title"
-                        max-size    
-                    >
-                    <div class = "icons right"> <i class = "fa fa-pencil"></i></div>
-                </label>
-
-                 <div 
-                    class   = "details ui-blue"
-                >
-                    <textarea 
-                        extendable 
-                        ng-model    = "status_quo.details" 
-                        placeholder = "Enter details"
-                    ></textarea>
-                </div>
-            </div>
+            
         </div>
 
-        <hr class = "up"/>
-        <div class = "ui-border-bottom ui-medium-height ui-blue"></div>
 
-        <div class = "ui-extended-height"></div>
 
-        <div>
+
+
+        <div ng-show = "step == 1">
+            <h3>Subject matter</h3>
+
+            <p>
+                Now, ask a question or pick a subject matter:
+            </p>
+
+            <label class = "ui-white subject">
+                <span> Subject: </span>
+                <input 
+                    type        = "text" 
+                    ng-model    = "ballot.subject" 
+                    placeholder = "Enter subject"
+                    class       = "ui-extensive-width"
+                >
+                <div class = "icons right">
+                    <i class = "fa fa-pencil"></i>
+                </div>
+
+            </label>
+
+            <p>
+                You may want to add further details if the subject line was too short to put all the information into. <em>(e.g. "We'll be at least 6 people at 3pm. Two more may join until 6pm. There is no limited on the budget. Food will be provided.")</em>
+            </p>
+
+            <label class = "ui-white">
+                <span> Details: </span>
+                <div class = "icons right">
+                    <i class = "fa fa-pencil"></i>
+                </div>
+                <br/>
+                <div class="wrapper">
+                    <textarea placeholder = "Enter details" extendable ng-model = "ballot.details" placeholder = "Enter details"></textarea>
+                </div>
+            </label>  
+
+            <p>
+                You can change the subject and details later on if you like. But keep in mind that your participants may not notice in time and will be unable to update their ranking accordingly.
+            </p>
+
+
+            <div class = "ui-extended-height"></div>
+
             <button 
                 class       = "right"
                 ng-click    = "previous()"
             >
-                <i class = "fa fa-chevron-left"></i>
-                Back (subject)
+                Back (introduction)
+                <i class = "fa fa-chevron-left "></i>
             </button>
-            
+
             <button 
                 class       = "left"
-                ng-click    = "saveBallot(use_status_quo)"
+                ng-click    = "next()"
+            >
+                Next (options)
+                <i class = "fa fa-chevron-right "></i>
+            </button>
+        </div>
+
+
+
+
+
+
+
+        <div ng-show = "step == 2">
+            
+            <h3>Options</h3>
+            <p>
+                Options represent the possible outcomes of the decision to be made. Each participant will rank these options according to her preference.
+            </p>
+
+            <p>
+                You can add as many as you like and you can add, remove and edit options later on. But be aware that some participants may not notice later changes and therefore won't be able to update their rankings to be in line with your changes.
+            </p>
+
+            <label
+                class       = "ui-border-top" 
+                ng-mousedown    = "ballot.newOption()"
+            >
+                Add new option
+                <div class = "icons right">
+                    <i class = "fa fa-plus"></i>
+                </div>
+            </label>     
+
+
+            <hr/>
+
+
+            <div class = "options-overview left right ui-dark-white ui-pixelate">                   
+
+                <div 
+                    class           = "option ui-blue"
+                    ng-repeat       = "option in ballot.options | removed : false| orderBy:'tag'" 
+                >                       
+                    <label>                            
+                        <span class="tag">
+                            {{option.tag}}
+                        </span>
+
+                        <input 
+                            name        = "title" 
+                            type        = "text"
+                            placeholder = "Enter title" 
+                            ng-model    = "option.title"
+                            max-size    
+                        >
+
+                        <div class = "icons right">
+                            <button 
+                                ng-mousedown    = "ballot.removeOption(option)"
+                                title           = "move to trash"
+                            >
+                                <i class = "fa fa-times"></i>
+                            </button>
+                        </div>
+                    </label>
+
+                     <div 
+                        class   = "details ui-blue"
+                    >
+                        <textarea 
+                            extendable 
+                            ng-model    = "option.details" 
+                            placeholder = "Enter details"
+                        ></textarea>
+                    </div>
+                </div>
+                <div
+                    class       = "removed"
+                    ng-if       = "(ballot.options  | removed : true).length > 0"
+                >
+                    <h4> Removed options </h4>
+                    <br/>
+
+                    <div 
+                        class       = "option"
+                        ng-repeat   = "removed_option in ballot.options  | removed : true | orderBy:'tag'" 
+                    >                       
+                        <label>                            
+                            <span class="tag">
+                                {{removed_option.tag}}
+                            </span>
+
+                            <span>
+                                {{removed_option.title}}
+                            </span>
+
+                            <div class = "icons right">
+                                <button 
+                                    ng-mousedown = "ballot.restoreOption(removed_option)"
+                                    title        = "restore option"
+                                >
+                                    <i class = "fa fa-arrow-circle-up"></i>
+                                </button>
+                            </div>                          
+
+                        </label>
+
+                        <div class = "details">
+                            <textarea extendable disabled placeholder ="no further description">{{removed_option.details}}</textarea>
+                        </div>
+                    </div>
+                </div>        
+            </div>
+
+            <hr class = "up"/>
+            <label
+                class           = "ui-border-bottom" 
+                ng-mousedown    = "ballot.newOption()"
+            >
+                Add new option
+                <div class = "icons right">
+                    <i class = "fa fa-plus"></i>
+                </div>
+            </label>     
+            
+            <div class = "ui-extended-height ui-white"></div>
+
+            <div>
+                <button 
+                    class       = "right"
+                    ng-click    = "previous()"
+                >
+                    <i class = "fa fa-chevron-left"></i>
+                    Back (subject)
+                </button>
+                
+                <button 
+                    class       = "left"
+                    ng-click    = "next()"
+                >
+                    <i class = "fa fa-chevron-right"></i>
+                    Next (Status Quo)
+                </button>
+            </div>        
+        </div>
+
+
+
+
+
+
+
+
+
+        <div ng-show = "step == 3">
+            
+            <h3>Special option: Status Quo (optional)</h3>
+           
+            <p>
+               This is a special option. You can use it in your prefr ballot if you like, but you don't have to. It is useful though if you want to allow your participants to reject options altogether. They can do that by ranking the disliked option lower than the Status Quo. If in the end the status quo wins the ballot all options have been rejected.
+            </p>
+
+            <div class = "ui-medium-height"></div>
+
+            <button ng-click = "use_status_quo = !use_status_quo" class = "right">
+                use Status Quo
+                <i class = "fa" ng-class = "{'fa-check-square-o' : use_status_quo, 'fa-square-o': !use_status_quo}"></i> 
+            </button>
+
+            <div class = "ui-medium-height"></div>
+
+
+            <div class = "ui-border-top ui-medium-height ui-blue"></div>
+
+            <hr/>
+
+            <div class = "options-overview left right ui-dark-white ui-pixelate">                   
+
+                <div class = "option ui-blue">
+
+                    <label>                            
+                        <span class="tag">
+                            {{status_quo.tag}}
+                        </span>
+
+                        <input 
+                            name        = "title" 
+                            type        = "text"
+                            placeholder = "Enter title" 
+                            ng-model    = "status_quo.title"
+                            max-size    
+                        >
+                        <div class = "icons right"> <i class = "fa fa-pencil"></i></div>
+                    </label>
+
+                     <div 
+                        class   = "details ui-blue"
+                    >
+                        <textarea 
+                            extendable 
+                            ng-model    = "status_quo.details" 
+                            placeholder = "Enter details"
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <hr class = "up"/>
+            <div class = "ui-border-bottom ui-medium-height ui-blue"></div>
+
+            <div class = "ui-extended-height"></div>
+
+            <div>
+                <button 
+                    class       = "right"
+                    ng-click    = "previous()"
+                >
+                    <i class = "fa fa-chevron-left"></i>
+                    Back (subject)
+                </button>
+                
+                <button 
+                    class       = "left"
+                    ng-click    = "saveBallot(use_status_quo)"
+                >
+                    <i class = "fa fa-chevron-right"></i>
+                    Submit
+                </button>
+            </div>        
+            
+            <div class = "ui-extended-height"></div>
+        
+            <p>
+            You can rename the Staus Quo option to whatever you like. And you should do so depending on your subject, e.g.:  
+            <br/>
+            <br/>
+            <em>What should we do on the weekend?</em> 
+            <br/> <i class = "fa fa-caret-right"></i> Status Quo: "Don't do any of the suggested activities."
+            <br/>
+            <br/>
+            <em>What should we paint the shack with?</em> 
+            <br/> <i class = "fa fa-caret-right"></i> Status Quo:  "Keep the current color."
+            </p>
+
+            <p>
+                You can also change the details – So what makes this options special? <br/>
+                It is the way we treat it internally. That is if somehow someone hasn't ranked an option at all, it will be treated as if it was ranked as high as the Status Quo. (This can happen if the admin adds a new option after someone has already posted her ranking.)
+            </p>
+            <p>
+                If no Status Quo option is provided, every unranked option is considered to be ranked below all other options.
+            </p>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        <div ng-show ="step == 4">
+            <h3>How to participate</h3>
+
+            <p>
+                It is done. Your ballot is online. \o/
+            </p>
+
+            <p>
+                To cast a vote use either of the two links below. The first one ist your admin link. With it you can make changes to the ballot. The second one is the link for others to cast their vote - you should give it to those you want to participate.
+            </p>
+
+            <p>
+                Admin link: <br/>
+                <small>
+                    <a href = "{{adminLink}}">{{adminLink}}</a><br/>             
+                </small>
+
+                <br/>
+
+                Participant link: <br/>
+                <small>
+                    <a href = "{{participantLink}}">{{participantLink}}</a>
+                </small>
+            </p>
+
+            <p>
+                Both links allow you to add as many new partcipants as you like. You can even remove or change the votes of others.
+            </p>
+
+            <p>
+                Bookmark those links or save them some other ways. Without them you won't be able to acces your prefr ballot.
+            </p>
+
+            <button 
+                class       = "left"
+                ng-click    = "gotoBallot()"
             >
                 <i class = "fa fa-chevron-right"></i>
-                Submit
+                Open prefr ballot
             </button>
-        </div>        
-        
-        <div class = "ui-extended-height"></div>
-    
-        <p>
-        You can rename the Staus Quo option to whatever you like. And you should do so depending on your subject, e.g.:  
-        <br/>
-        <br/>
-        <em>What should we do on the weekend?</em> 
-        <br/> <i class = "fa fa-caret-right"></i> Status Quo: "Don't do any of the suggested activities."
-        <br/>
-        <br/>
-        <em>What should we paint the shack with?</em> 
-        <br/> <i class = "fa fa-caret-right"></i> Status Quo:  "Keep the current color."
-        </p>
-
-        <p>
-            You can also change the details – So what makes this options special? <br/>
-            It is the way we treat it internally. That is if somehow someone hasn't ranked an option at all, it will be treated as if it was ranked as high as the Status Quo. (This can happen if the admin adds a new option after someone has already posted her ranking.)
-        </p>
-        <p>
-            If no Status Quo option is provided, every unranked option is considered to be ranked below all other options.
-        </p>
+        </div>
 
 
+        <div class = "ui-extended-height ui-white"></div>
+        <div class = "ui-border-top ui-extended-height ui-blue"></div>        
     </div>
-
-
-
-
-
-
-
-
-
-
-
-    <div ng-show ="step == 4">
-        <h3>How to participate</h3>
-
-        <p>
-            It is done. Your ballot is online. \o/
-        </p>
-
-        <p>
-            To cast a vote use either of the two links below. The first one ist your admin link. With it you can make changes to the ballot. The second one is the link for others to cast their vote - you should give it to those you want to participate.
-        </p>
-
-        <p>
-            Admin link: <br/>
-            <small>
-                <a href = "{{adminLink}}">{{adminLink}}</a><br/>             
-            </small>
-
-            <br/>
-
-            Participant link: <br/>
-            <small>
-                <a href = "{{participantLink}}">{{participantLink}}</a>
-            </small>
-        </p>
-
-        <p>
-            Both links allow you to add as many new partcipants as you like. You can even remove or change the votes of others.
-        </p>
-
-        <p>
-            Bookmark those links or save them some other ways. Without them you won't be able to acces your prefr ballot.
-        </p>
-
-        <button 
-            class       = "left"
-            ng-click    = "gotoBallot()"
-        >
-            <i class = "fa fa-chevron-right"></i>
-            Open prefr ballot
-        </button>
-    </div>
-
-
-    <div class = "ui-extended-height ui-white"></div>
-    <div class = "ui-border-top ui-extended-height ui-blue"></div>        
-
 </article>

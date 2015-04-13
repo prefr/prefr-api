@@ -15,8 +15,8 @@ function HTMLsingleSelect() {
 									}
 
 									$scope.isActive = function(select_as){
-										return 		!!$scope[$scope.mask(select_as)]
-												||	  $scope[$scope.mask(select_as)] === null
+										return		$scope[$scope.mask(select_as)]
+												&&	$scope[$scope.mask(select_as)].value !== undefined
 									}
 
 									function setupSelection(){
@@ -34,7 +34,6 @@ function HTMLsingleSelect() {
 
 										if($.isPlainObject(params))
 											$.each(params, function(key, value){
-												console.log(key, value)
 												if(!$scope.isActive(key))
 													$scope.select(key, value)											
 											})										
@@ -42,7 +41,6 @@ function HTMLsingleSelect() {
 
 									$scope.$watch(function(){
 										setupSelection()
-										console.dir($scope['selectionBallotPaper'])
 									})								
 
 								}
