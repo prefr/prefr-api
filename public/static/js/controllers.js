@@ -194,25 +194,7 @@ prefrControllers.controller(
 
 									    	if(!diff || paper.removed) return $q.reject()
 
-					    					return 	api.savePaper($scope.ballot, paper)
-					    							// .catch(function(){
-
-									   				// 	var ranked_options = paper.getRankedOptions()
-
-									   				// 	ranked_options
-									   				// 	.forEach(function(tag){
-									   				// 		if($scope.ballot.options.every(function(option){ return option.tag != tag }))
-									   				// 			paper.removeOption(tag)
-									   				// 	})
-
-									   				// 	$scope.ballot.options
-									   				// 	.forEach(function(option){
-									   				// 		if(ranked_options.indexOf(options.tag) == -1)
-									   				// 			paper.addOptions(options.tag)
-									   				// 	})
-
-									   				// 	return $q.when(paper.exportData())
-									   				// })    			
+					    					return 	api.savePaper($scope.ballot, paper)  			
 						   				}, 2000)
 						   									
 

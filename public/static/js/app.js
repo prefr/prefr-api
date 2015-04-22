@@ -7,7 +7,8 @@ var prefr   =   angular.module(
                                 'ngSanitize',
                                 'prefrControllers',  
                                 'prefrFilters',  
-                                'services'                                                             
+                                'services',
+                                'ngGitReleases'                                                             
                             ]
                         )
 
@@ -18,7 +19,10 @@ prefr.run( function($rootScope) {
 
 prefr.config([
     '$routeProvider',
-    function($routeProvider) {
+    'ngGitReleasesProvider',
+
+    function($routeProvider, ngGitReleasesProvider) {
+
         $routeProvider
         .when(
             '/ballotBox/new',
@@ -42,8 +46,22 @@ prefr.config([
                 controller  :   'EvaluationCtrl'
             }
         )
+        .when(
+            '/releases',
+            {
+                templateUrl :   'static/partials/releases.html',
+                controller  :   'GitReleasesCtrl'
+            }
+        )
         .otherwise({
             redirectTo:     '/ballotBox/new'
+        })
+
+        ngGitReleasesProvider
+        .config({
+            apiUrl: 'https://api.github.com',
+            owner:  'prefr',
+            repo:   'prefr'
         })
     }
 ])
