@@ -32,34 +32,31 @@ prefrControllers.controller(
 
 
 			$scope.setup = function(){				
-				$rootScope.step =  $location.search().step || 0
+				$rootScope.ballot 		=	$rootScope.ballot
+											||
+											new Ballot({
+												id: 		undefined,
+												subject: 	undefined,
+												options:	[
+																{
+																	tag:		"A",
+																	title:		"",
+																	details: 	"",
+																}
+															],
+												papers:		[]
 
-				$rootScope.ballot =		$rootScope.ballot
-										||
-										new Ballot({
-											id: 		undefined,
-											subject: 	undefined,
-											options:	[
-															{
-																tag:		"A",
-																title:		"",
-																details: 	"",
-															}
-														],
-											papers:		[]
+											})
 
-										})
-
-				$rootScope.status_quo = $rootScope.status_quo 
-										|| new BallotOption({									
-											tag:		"0",
-											title:		"Status Quo / do nothing.",
-											details: 	"This options represents the status quo. Anything ranked above this option is considered acceptable. Everything ranked lower than this option is considered rejected.",
-										})
+				$rootScope.status_quo 	= 	$rootScope.status_quo 
+											|| new BallotOption({									
+												tag:		"0",
+												title:		"Status Quo / do nothing.",
+												details: 	"This options represents the status quo. Anything ranked above this option is considered acceptable. Everything ranked lower than this option is considered rejected.",
+											})
 			}
 
 			$scope.clear = function(){
-				delete $rootScope.step
 				delete $rootScope.ballot
 				delete $rootScope.status_quo
 				delete $rootScope.use_status_quo
@@ -67,19 +64,15 @@ prefrControllers.controller(
 
 
 			$scope.next = function(){
-				$rootScope.step++
-				$location.search('step', $rootScope.step)
+				$location.search('step', ($location.search().step || 0)+1)
 			}
 
 			$scope.previous = function(){				
-				$window.history.back()
-				$rootScope.step == 0 
-				?	$rootScope.step = 0
-				:	$rootScope.step --
-
-				
+				$window.history.back()				
 			}
+
 			$scope.gotoBallot = function(){
+				$location.search('step', null)
 				$location.path($rootScope.adminPath)
 			}
 
@@ -109,15 +102,14 @@ prefrControllers.controller(
 
 
 							$scope.next()
-							$scope.clear()
 						})
 			}	
 
 			$scope.update = function(){
-				if($location.search().step == undefined){
+				if($location.search().step == undefined)
 					$scope.clear()
-					$location.search('step', 0)
-				}
+
+				$scope.step = $location.search().step || 0
 				$scope.setup()	
 			}
 

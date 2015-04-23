@@ -19,9 +19,10 @@ prefr.run( function($rootScope) {
 
 prefr.config([
     '$routeProvider',
+    '$locationProvider',
     'ngGitReleasesProvider',
 
-    function($routeProvider, ngGitReleasesProvider) {
+    function($routeProvider, $locationProvider, ngGitReleasesProvider) {
 
         $routeProvider
         .when(
@@ -56,6 +57,9 @@ prefr.config([
         .otherwise({
             redirectTo:     '/ballotBox/new'
         })
+
+        // use the HTML5 History API
+        $locationProvider.html5Mode(true);
 
         ngGitReleasesProvider
         .config({
