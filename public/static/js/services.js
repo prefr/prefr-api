@@ -233,7 +233,10 @@ angular.module('services',[])
                 this.papers  =  data.map(function(paper_data){
                                     var paper = self.getPaperById(paper_data.id) || new BallotPaper(paper_data)
 
-                                    return paper.importData(paper_data)
+                                    //dont overwrite if changes have just been made
+                                    return  paper.diff()
+                                            ?   paper
+                                            :   paper.importData(paper_data)
                                 })
 
                 return this

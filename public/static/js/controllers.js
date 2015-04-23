@@ -127,11 +127,14 @@ prefrControllers.controller(
 
 	'BallotBoxCtrl', 
 	[
+		'$config',
 		'$scope', 
 		'$routeParams',
 		'$location',
 		'$http',
+		'$interval',
 		'$q',
+		'$window',
 		'$location',
 		'$timeout',
 		'Storage',
@@ -139,7 +142,7 @@ prefrControllers.controller(
 		'BallotPaper',
 		'api',
 
-		function ($scope, $routeParams, $location, $http, $q, $location, $timeout, Storage, Ballot, BallotPaper, api){
+		function ($config, $scope, $routeParams, $location, $http, $interval, $q, $window, $location, $timeout, Storage, Ballot, BallotPaper, api){
 
 								
 			$scope.adminSecret 		= $routeParams.admin_secret
@@ -228,6 +231,23 @@ prefrControllers.controller(
                         })
 		    }
 
+		    $scope.checkForRemoteUpdates = function(){
+		    	return 	api.getBallot($scope.ballot.id)
+		    			.then(function(data){
+		    				console.log('check')
+
+		    				//Dont overwrite Ballot if changes have been made
+		    				console.log($scope.ballot.diff())
+		    				if(!$scope.ballot.diff())
+			    				$scope.ballot
+			    				.importSettings(data)
+			    				.importOptions(data.options)
+
+			    			$scope.ballot
+			    			.importPapers(data.papers)
+		    			})
+		    }
+
 		    $scope.lockPapers = function() {
 		    	$scope.ballot.papers.forEach(function(paper){ 
 		    			!Storage[$scope.ballot.id]
@@ -275,9 +295,7 @@ prefrControllers.controller(
                 })
 		    }
 
-
-			api.getBallot($scope.box_id)
-			.then(function(data){
+		    $scope.setupBallotBox = function(data){
 				$scope.ballot	= new Ballot(data)
 
 				var url 		= $location.absUrl().replace(/\?.*$/, ''),
@@ -299,6 +317,7 @@ prefrControllers.controller(
 				}
 
 
+				//watch for paper changes:
 				$scope.$watch('ballot.papers', function(){
 
 					$scope.correctPapers()
@@ -318,7 +337,40 @@ prefrControllers.controller(
 					})
 
 				}, true)
-			})
+
+				//regulary check for remote changes to the ballot:
+				var remoteCheck = null
+
+				function startCheckingRemote(){
+					if(!remoteCheck){
+						$scope.checkForRemoteUpdates()
+						remoteCheck = $interval($scope.checkForRemoteUpdates, $config.checkRemoteInterval*1000)
+					}
+				}
+
+				function stopCheckingRemote(){
+					if(!!remoteCheck){
+						$interval.cancel(remoteCheck)
+						remoteCheck = null
+					}
+				}
+
+				angular.element($window).on('focus',	startCheckingRemote)
+				angular.element($window).on('blur', 	stopCheckingRemote)
+
+				$scope.$on('$destroy', function(){
+					stopCheckingRemote()
+					angular.element($window).off('focus', 	startCheckingRemote)
+					angular.element($window).off('blur', 	stopCheckingRemote)
+				})
+
+				startCheckingRemote()
+
+		    }
+
+
+			api.getBallot($scope.box_id)
+			.then($scope.setupBallotBox)
 		}
 	]
 )

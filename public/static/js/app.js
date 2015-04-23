@@ -12,17 +12,27 @@ var prefr   =   angular.module(
                             ]
                         )
 
+prefr.constant('$config', {
+    'checkRemoteInterval'    :   60,
+    'gitReleases'       :   {
+                                apiUrl: 'https://api.github.com',
+                                owner:  'prefr',
+                                repo:   'prefr'
+                            }
+})
+
 prefr.run( function($rootScope) {    
     $rootScope.console      = window.console
 })
 
 
 prefr.config([
+    '$config',
     '$routeProvider',
     '$locationProvider',
     'ngGitReleasesProvider',
 
-    function($routeProvider, $locationProvider, ngGitReleasesProvider) {
+    function($config, $routeProvider, $locationProvider, ngGitReleasesProvider) {
 
         $routeProvider
         .when(
@@ -62,11 +72,7 @@ prefr.config([
         $locationProvider.html5Mode(true);
 
         ngGitReleasesProvider
-        .config({
-            apiUrl: 'https://api.github.com',
-            owner:  'prefr',
-            repo:   'prefr'
-        })
+        .config($config)
     }
 ])
 
