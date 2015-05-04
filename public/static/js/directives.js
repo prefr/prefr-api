@@ -69,7 +69,7 @@ function HTMLextendable($timeout){
 }
 
 
-function HTMLpreferenceRanking() {	
+function HTMLpreferenceRanking($timeout) {	
 	return	{
 				restrict	:	'E',
 				scope		:	true,
@@ -299,7 +299,9 @@ function HTMLpreferenceRanking() {
 									}
 
 									scope.touch = function(tag){
-										scope.touchedTag = tag
+										$timeout(function(){
+											scope.touchedTag = tag
+										}, 1400)
 									}
 								
 									scope.rankingOrientation = attrs.rankingOrientation

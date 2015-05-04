@@ -1318,114 +1318,6 @@ label.result {
 }
 
 
-/*
-
-.ballot-box .ballot-paper .participant {
-	display:				inline-block;
-	position:				relative;
-
-	margin:					0;
-	padding	:				0;
-	padding-right:			2em;
-	font-size:				1.4em;
-	padding-left:			1em;
-
-	background-color:		#647D8C;
-	color:					rgba(255,255,255,0.9);
-	border:					none;
-	text-align: 			left;
-	white-space: 			nowrap;
-	vertical-align: 		top;
-}
-
-.ballot-box .ballot-paper .participant.result{
-	background-color:		rgba(80, 170, 60, 1);
-}
-
-.ballot-box .ballot-paper .participant > * {
-	vertical-align:			middle;
-}
-
-*/
-
-/*
-
-.ballot-box .ballot-paper .participant span.name,
-.ballot-box .ballot-paper .participant input {
-	display:				inline-block;
-
-	width:					8em;
-	padding:				0;
-	margin:					0;
-
-	background:				transparent;
-	color:					inherit;
-
-	border:					none;
-	font-size:				inherit;	
-	font-weight:			inherit;
-
-	overflow:				hidden;
-	text-overflow:			ellipsis;
-
-}
-
-
-.ballot-box .ballot-paper .participant:before,
-.ballot-box .ballot-paper .participant:after {
-	content:				'';
-
-	display:				block;
-	position:				absolute;
-
-	top:					50%;
-	margin-top:				-1.5em;
-
-	width:					0;
-	height:					0;
-
-
-	border-top:				1.5em solid transparent;
-	border-bottom:			1.5em solid transparent;		
-
-	transition:				border-width 200ms;
-}
-
-.ballot-box .ballot-paper .participant:before {
-	right:					100%;
-	border-right:			0 solid #647D8C;
-}
-
-.ballot-box .ballot-paper .participant.result:before {
-	border-right:			0 solid rgba(80, 170, 60, 1);
-}
-
-.ballot-box .ballot-paper.selected .participant:before {
-	border-right-width:		1.05em;
-}
-
-.ballot-box .ballot-paper .participant:after {
-	right:					0;
-	border-right:			0 solid #aaa;
-}
-
-.ballot-box .ballot-paper.selected .participant:after {
-	border-right-width:		1.05em;
-}
-
-.ballot-box .ballot-paper.selected {
-	margin-left:			-1em;
-}
-
-
-.ballot-box .ballot-paper preference-ranking {
-	vertical-align:			top;
-	white-space: 			nowrap;
-}
-
-*/
-
-
 .ballot-box #main {
 	width: 					100%;
 	height:					100%;	
@@ -1517,6 +1409,10 @@ preference-ranking {
 
 }
 
+preference-ranking.ng-leave {
+	transition:				all 1000ms;
+	font-size:				5em;
+}
 
 preference-ranking.compact {
 	font-size:				0.75em;
@@ -1548,7 +1444,7 @@ preference-ranking preference-rank {
 
 	transition-property:	margin, height, padding, opacity;
 	transition-duration:	300ms;
-	transition-timing-function: ease-in-out;
+	transition-timing-function: linear;
 }
 
 preference-ranking preference-rank {
@@ -1749,8 +1645,9 @@ preference-option .move-rank {
 
     opacity:            	0;
 
-    transition-property:opacity, top, bottom;
-    transition-duration:200ms;
+    transition-property:	opacity, top, bottom;
+    transition-duration:	200ms;
+    transition-timing-function:	linear;
 }
 
 .dragging preference-option .move-rank {
