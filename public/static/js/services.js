@@ -136,19 +136,60 @@ angular.module('services',[])
                 return this
             }
 
-            this.removeOption = function(tag){
-                this.ranking.forEach(function(rank, index){
+            this.getRankOfOption = function(tag){
+                var index = null
+
+                this.ranking.forEach(function(rank, i){
                     var pos = rank.indexOf(tag)
+                    if(pos != -1)
+                        index = i                           
+                })
+
+                return this.ranking[index]
+            }
+
+            this.removeOption = function(tag){
+
+                var rank    = this.getRankOfOption(tag),
+                    index   = self.ranking.indexOf(rank),
+                    pos     = rank.indexOf(tag)
+
                     if(pos != -1)
                         rank.splice(pos, 1)         
 
                     if(rank.length == 0)
                         self.ranking.splice(index, 1)
-                })
-
 
                 return this
             }           
+
+            this.upOption = function(tag){
+                var rank    = this.getRankOfOption(tag)
+                    index   = self.ranking.indexOf(rank)
+
+                if(index > 0 || rank.length > 1){
+                    this.removeOption(tag)
+
+                    this.ranking.indexOf(rank) == -1 //has the rank been removed when the option was deleted?
+                    ?   this.ranking[index-1].push(tag)
+                    :   this.ranking.splice(index, 0, [tag])
+                    
+                }                
+            }
+
+            this.downOption = function(tag){
+                var rank    = this.getRankOfOption(tag)
+                    index   = self.ranking.indexOf(rank)
+
+                if(index < this.ranking.length-1 || rank.length > 1){
+                    this.removeOption(tag)
+
+                    this.ranking.indexOf(rank) == -1 //has the rank been removed when the option was deleted?
+                    ?   this.ranking[index].push(tag)
+                    :   this.ranking.splice(index+1, 0, [tag])
+                    
+                }                
+            }
 
             this.diff = function(zero){
                 var diff = {},

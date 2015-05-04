@@ -298,8 +298,7 @@ prefrControllers.controller(
 		    $scope.setupBallotBox = function(data){
 				$scope.ballot	= new Ballot(data)
 
-				var url 		= $location.absUrl().replace(/\?.*$/, ''),
-					first_visit = !Storage[data.id]
+				var url 		= $location.absUrl().replace(/\?.*$/, '')
 
 
 				Storage[data.id] = Storage[data.id] || {}
@@ -312,7 +311,9 @@ prefrControllers.controller(
 
 				$scope.lockPapers()
 		
-				if($scope.ballot.papers.length == 0 || first_visit) {
+
+
+				if($scope.ballot.papers.length == 0) {
 					$scope.ballot.newPaper().unlock()
 				}
 

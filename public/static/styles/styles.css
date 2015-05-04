@@ -459,6 +459,13 @@ hr.up{
 
 
 
+.no-transition,
+.no-transition * {
+	transition-property: 	none !important;
+}
+
+
+
 
 
 .ui-content {
@@ -1667,8 +1674,6 @@ preference-option {
 
 	text-align:				center;
 
-	overflow:				hidden;
-
 	cursor:					move;
 	cursor:					-moz-grab;
 }
@@ -1728,181 +1733,109 @@ preference-option.dragged {
 }
 
 
+preference-option .move-rank {
+    position:				absolute;
+    
+    font-size:				1.7em;
+    color:					rgba(255,255,255,0.5);
+
+    height:					1em;
+    width:					1em;
+    left:					0;      
+    line-height:			1em;
+    
+    background:				rgba(255,255,255,0.3);
+    cursor:					pointer;
+
+    opacity:            	0;
+
+    transition-property:opacity, top, bottom;
+    transition-duration:200ms;
+}
+
+.dragging preference-option .move-rank {
+	display:				none;
+}
+
+preference-option:hover .move-rank {
+    opacity:            	1;
+}
+
+preference-option .move-rank.up {
+    top:                	-2em;    
+}
+
+preference-option:hover .move-rank.up{
+	top:                	0em;    
+}
+
+preference-option .move-rank.down {
+    bottom:             	-2em;    
+}
+
+preference-option:hover .move-rank.down {
+    bottom:             	0em;    
+}
+
+
+preference-option .move-rank.up:hover,
+preference-option .move-rank.down:hover{
+    background:         	rgba(255,255,255,0.5);
+    color:              	#fff;    
+}
+
+
+preference-option.touched {
+  -webkit-animation-duration: 			400ms;
+  -webkit-animation-iteration-count:	1;
+  -webkit-animation-name: 				touched;
+
+
+  animation-duration: 					400ms;
+  animation-iteration-count:			1;
+  animation-name: 						touched;
+}
+
+
+
+@keyframes touched {
+  0% {
+  	font-size:			0;
+  }
+  
+  100% {
+ 	font-size:			1;
+  }
+}
+
+@-webkit-keyframes touched {
+  0% {
+  	font-size:			0;
+  }
+
+  
+  100% {
+ 	font-size:			1;
+  }
+}
+
+
 /* dummy option */
 preference-option[value=""] {
 	opacity: 				0.3;
 	cursor:					default;
 	font-size:				0;
-	transition:				all 400ms;
+	transition-property:	font-size;
+	transition-duration:	400ms;
 }
 
-preference-ranking.dragging preference-rank.active preference-option[value=""] {
+preference-rank.active preference-option[value=""] {
 	font-size:				inherit;
 }
 
-preference-ranking.dragging preference-rank.active.no-transition preference-option[value=""]{
-	transition:				all 0ms;
+preference-rank.hide-dummy preference-option[value=""] {
+	display:				none !important;
 }
-
-
-
-
-
-/* transition mechanics:*/
-
-
-
-
-
-
-/*
-
-
-/*vertical animation 
-
-
-
-preference-ranking.vertical .finished preference-option[value=""],
-preference-ranking.vertical preference-rank.ng-leave preference-option {
-	-webkit-animation:		enter_option_vertical 200ms reverse ease-in-out;
-	animation:				enter_option_vertical 200ms reverse ease-in-out;
-}
-
-
-
-preference-ranking.vertical .started preference-option[value=""],
-preference-ranking.vertical preference-rank.ng-enter preference-option {
-	-webkit-animation:		enter_option_vertical 200ms ease-in-out;
-	animation:				enter_option_vertical 200ms ease-in-out;
-}
-
-
-
-
- @keyframes enter_option_vertical {
-	from {
-		line-height:			0em;
-		height:					0em;
-		margin-top:				-0.25em;		
-		margin-bottom:			-0.25em;
-	}
-	to {
-		line-height:			3.6em;	
-		height:					3.6em;	
-		margin-top:				0.5em;		
-		margin-bottom:			0.5em;
-	}
-}
-
-
-@-webkit-keyframes enter_option_vertical {
-	from {
-		line-height:			0em;
-		height:					0em;
-		margin-top:				-0.25em;		
-		margin-bottom:			-0.25em;
-	}
-	to {
-		line-height:			3.6em;	
-		height:					3.6em;	
-		margin-top:				0.5em;		
-		margin-bottom:			0.5em;
-	}
-}
-
-
-
-/* horizontal animation 
-
-preference-ranking.horizontal preference-option.ng-leave,
-preference-ranking.horizontal preference-rank.ng-leave preference-option {
-	-webkit-animation:		enter_option_horizontal 500ms reverse ease-in-out;
-	animation:				enter_option_horizontal 500ms reverse ease-in-out;
-}
-
-
-
-preference-ranking.horizontal preference-option.ng-enter,
-preference-ranking.horizontal preference-rank.ng-enter preference-option {
-	-webkit-animation:		enter_option_horizontal 500ms ease-in-out;
-	animation:				enter_option_horizontal 500ms ease-in-out;
-}
-
-
-@keyframes enter_option_horizontal {
-	from {		
-		padding-right:			0em;
-		padding-left:			0em;
-		margin-left:			0em;		
-		margin-right:			0em;
-	}
-	to {	
-	}
-}
-
-
-@-webkit-keyframes enter_option_horizontal {
-	from {		
-		padding-right:			0em;
-		padding-left:			0em;
-		margin-left:			0em;		
-		margin-right:			0em;
-	}
-	to {		
-	}
-}
-
-
-
-preference-ranking.horizontal preference-rank.ng-leave{
-	-webkit-animation:		enter_rank_horizontal 500ms reverse linear;
-	animation:				enter_rank_horizontal 500ms reverse linear;
-}	
-
-preference-ranking.horizontal preference-rank.ng-enter{
-	-webkit-animation:		enter_rank_horizontal 500ms linear;
-	animation:				enter_rank_horizontal 500ms linear;
-}	
-
-
- @keyframes enter_rank_horizontal {
-	from {		
-		width:					0em;		
-		min-width:				0em;
-		border-left-width:		0em;
-		border-right-width:		0em;
-		margin-left:			0em;
-		margin-right:			0em;
-		padding-right:			0em;
-		padding-left:			0em;
-	}
-	to {	
-	}
-}
-
-
-@-webkit-keyframes enter_rank_horizontal {
-	from {		
-		width:					0em;
-		min-width:				0em;		
-		border-left-width:		0em;
-		border-right-width:		0em;
-		margin-left:			0em;
-		margin-right:			0em;
-		padding-right:			0em;
-		padding-left:			0em;
-	}
-	to {	
-	}
-}
-
-
-
-
-*/
-
-
-
 
 
 
@@ -1934,8 +1867,8 @@ preference-ranking.horizontal preference-rank.ng-enter{
 
 
 .ng-hide {
-    -webkit-transition: 		400ms linear all;
-    transition: 				400ms linear all;
+    -webkit-transition: 		400ms linear opacity;
+    transition: 				400ms linear opacity;
     opacity: 					0;
     position:					absolute;
     top:						0;
@@ -1971,7 +1904,7 @@ preference-ranking.horizontal preference-rank.ng-enter{
 }
 
 [ng-view].ng-enter{
-	transition:					400ms all linear;
+	transition:					400ms opacity linear;
 	transition-delay:			400ms;
 	opacity:					0;
 }

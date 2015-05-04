@@ -157,7 +157,7 @@ function HTMLpreferenceRanking() {
 											scope.next_update = window.setTimeout(function() {
 																	window.clearInterval(scope.next_update)
 																	delete scope.next_update																	
-																}, 10)
+																}, 20)
 										}										
 									}
 
@@ -185,8 +185,6 @@ function HTMLpreferenceRanking() {
 
 									scope.startDragging = function(event, last_mousemove, option) {	
 										if(no_drag) return null
-
-
 
 										var parent_rank = option.parents('preference-rank')
 											prev_empty	= (parent_rank.prev().find('preference-option').length == 1), //just the dummy option
@@ -248,26 +246,7 @@ function HTMLpreferenceRanking() {
 											'left'	: 'auto'
 										})
 
-
-										//clear textNodes:
-										var childNodes 	= scope.active_rank.get(0).childNodes,
-											textNodes	= []
-
-
-										for(key in childNodes){
-											var node = childNodes[key]
-											if(node.nodeType == 3) 
-												textNodes.push(node)
-										}
-
-										textNodes.forEach(function(node){
-											scope.active_rank.get(0).removeChild(node)
-										})
-
-										//move dummy option to the end of the rank
-										scope.active_rank
-										.find('[value=""]')
-										.appendTo(scope.active_rank)
+										scope.cleanRank(scope.active_rank)
 
 										var prev		= scope.active_rank.prev('preference-rank')
 											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 1
@@ -297,6 +276,32 @@ function HTMLpreferenceRanking() {
 										controller.evaluate()
 									}
 
+									scope.cleanRank = function(rank){
+										//clear textNodes:
+										var childNodes 	= rank.get(0).childNodes,
+											textNodes	= []
+
+
+										for(key in childNodes){
+											var node = childNodes[key]
+											if(node.nodeType == 3) 
+												textNodes.push(node)
+										}
+
+										textNodes.forEach(function(node){
+											rank.get(0).removeChild(node)
+										})
+
+										//move dummy option to the end of the rank
+										rank
+										.find('[value=""]')
+										.appendTo(rank)
+									}
+
+									scope.touch = function(tag){
+										scope.touchedTag = tag
+									}
+								
 									scope.rankingOrientation = attrs.rankingOrientation
 
 
@@ -352,7 +357,6 @@ function HTMLpreferenceRanking() {
 										}				
 										
 									}
-
 								}
 			}
 }
