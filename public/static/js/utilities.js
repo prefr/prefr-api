@@ -59,7 +59,6 @@ function _over(element, mouse, rel, ignore_x, ignore_y) {
 
 		level	=	0
 
-
 		//check perimeter (with margin, border and padding)
 
 		boundry	=	{
@@ -69,7 +68,7 @@ function _over(element, mouse, rel, ignore_x, ignore_y) {
 						right	: pos.left	+ margin.left	+ border.left	+ padding.left	+ width		+ padding.right		+ border.right	+ margin.right,
 					}
 
-		
+		console.dir(boundry)
 
 		if(_within(boundry, point, ignore_x, ignore_y)){
 		 	level++

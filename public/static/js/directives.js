@@ -162,29 +162,28 @@ function HTMLpreferenceRanking($timeout) {
 									}
 
 									scope.positionUpdate = function(pos){
-										var ranks = element.find('preference-rank').toArray().map(function(DOM){ return $(DOM) })
+										//deprecated
+										
+										
+										// var ranks = element.find('preference-rank').toArray().map(function(DOM){ return $(DOM) })
 
-										//find active rank:
-										scope.active_rank	=	ranks.filter(function(rank){
-																	return pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
-																})[0]
-																||
-																scope.active_rank								
+										// //find active rank:
+										// scope.active_rank	=	ranks.filter(function(rank){
+										// 							return pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
+										// 						})[0]
+										// 						||
+										// 						scope.active_rank								
 
-										console.log(!!scope.active_rank)
-
-										ranks.forEach(function(rank){
-											var options = 	rank.find('preference-option'),											
-												active	=	scope.active_rank.get(0) == rank.get(0)
+										// ranks.forEach(function(rank){
+										// 	var options = 	rank.find('preference-option'),											
+										// 		active	=	scope.active_rank.get(0) == rank.get(0)
 											
-											if(active) console.log('!!!')
+										// 	rank.toggleClass('active',		active)
+										// 	rank.toggleClass('empty',		options.length == 1)	
+										// 	rank.toggleClass('nonempty',	options.length != 1 || active)
 
-											rank.toggleClass('active',		active)
-											rank.toggleClass('empty',		options.length == 1)	
-											rank.toggleClass('nonempty',	options.length != 1 || active)
-
-											rank.removeClass('no-transition')
-										})
+										// 	rank.removeClass('no-transition')
+										// })
 
 									}
 
@@ -235,7 +234,6 @@ function HTMLpreferenceRanking($timeout) {
 										$(document).off('mousemove',			scope.trackMousemovement)
 										$(document).off('mouseup mouseleave',	scope.drop)
 									
-
 										scope.active_rank
 										.addClass('no-transition')
 										.removeClass('active')
@@ -264,14 +262,6 @@ function HTMLpreferenceRanking($timeout) {
 
 										delete scope.next
 										delete scope.prev
-
-										// if(!prev_empty)
-										// 	scope.active_rank.scope().empty_rank.clone(true).insertBefore(scope.active_rank)
-										
-
-										// if(!next_empty)
-										// 	scope.active_rank.scope().empty_rank.clone(true).insertAfter(scope.active_rank)
-
 
 										element.removeClass('dragging')
 
@@ -381,6 +371,28 @@ function HTMLpreferenceRank() {
 									
 									//empty at first:
 									element.addClass('empty')
+
+									element.on('mouseenter', function(){
+										//reset last active rank:
+										if(!!scope.active_rank && scope.active_rank != element){
+											var options = scope.active_rank.find('preference-option')				
+
+											scope.active_rank.removeClass('active')
+											scope.active_rank.toggleClass('nonempty', options.length > 1)
+											scope.active_rank.toggleClass('empty', options.length == 1)	
+											scope.active_rank.removeClass('no-transition')
+										}
+
+										//setup new active rank:
+										var options = element.find('preference-option')
+
+										element.addClass('active')
+										element.addClass('nonempty')
+										element.toggleClass('empty',  options.length == 1)								
+										element.removeClass('no-transition')
+
+										scope.active_rank = element
+									})
 
 								},
 

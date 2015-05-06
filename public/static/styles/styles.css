@@ -1496,6 +1496,7 @@ preference-rank.nonempty > .tag:before{
 preference-ranking preference-rank.empty {
 	opacity:				0;	
 	transform:				scale(0.3);
+	outline:				5em blue;
 }
 
 preference-ranking.dragging preference-rank.empty {
@@ -1509,18 +1510,18 @@ preference-ranking.vertical preference-rank.empty {
 preference-ranking.horizontal preference-rank.empty {
 }
 
-preference-ranking.vertical preference-rank.empty.active {
+preference-ranking.dragging.vertical preference-rank.empty.active {
 	margin:					2.5em 0;
 	transform:				none;
 }
 
-preference-ranking.horizontal preference-rank.empty.active {
+preference-ranking.dragging.horizontal preference-rank.empty.active {
 	margin:					0 2.5em;
 	transform:				none;
 }
 
 
-preference-ranking preference-rank.empty.active {
+preference-ranking.dragging preference-rank.empty.active {
 	opacity:				1 !important;
 }
 
@@ -1542,7 +1543,7 @@ preference-ranking preference-rank:after {
 
 }
 
-preference-ranking preference-rank.active:after {
+preference-ranking.dragging preference-rank.active:after {
 	opacity:				1;
 
 	right:					-0.5em;
@@ -1722,7 +1723,7 @@ preference-option[value=""] {
 }
 
 
-preference-rank.active preference-option[value=""] {
+.dragging preference-rank.active preference-option[value=""] {
 	font-size:				inherit;
 	opacity: 				0.3;
 	transition-duration:	400ms;
