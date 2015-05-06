@@ -20,7 +20,6 @@ prefrControllers.controller(
 	'NewBallotBoxCtrl',
 	[
 		'$scope',
-		'$rootScope',
 		'$location',
 		'$window',
 		'Storage',
@@ -28,11 +27,11 @@ prefrControllers.controller(
 		'BallotOption',
 		'api',
 
-		function($scope, $rootScope, $location, $window, Storage, Ballot, BallotOption, api){
+		function($scope, $location, $window, Storage, Ballot, BallotOption, api){
 
 
 			$scope.setup = function(){				
-				$rootScope.ballot 		=	$rootScope.ballot
+				$scope.ballot 			=	$scope.ballot
 											||
 											new Ballot({
 												id: 		undefined,
@@ -48,7 +47,7 @@ prefrControllers.controller(
 
 											})
 
-				$rootScope.status_quo 	= 	$rootScope.status_quo 
+				$scope.status_quo 		= 	$scope.status_quo 
 											|| new BallotOption({									
 												tag:		"0",
 												title:		"Status Quo / do nothing.",
@@ -57,9 +56,9 @@ prefrControllers.controller(
 			}
 
 			$scope.clear = function(){
-				delete $rootScope.ballot
-				delete $rootScope.status_quo
-				delete $rootScope.use_status_quo
+				delete $scope.ballot
+				delete $scope.status_quo
+				delete $scope.use_status_quo
 			}
 
 
@@ -73,23 +72,23 @@ prefrControllers.controller(
 
 			$scope.gotoBallot = function(){
 				$location.search('step', null)
-				$location.path($rootScope.adminPath)
+				$location.path($scope.adminPath)
 			}
 
 			$scope.saveBallot = function(use_status_quo){
 
 				if(use_status_quo)
-					$rootScope.ballot.options.push($rootScope.status_quo)
+					$scope.ballot.options.push($scope.status_quo)
 
-				return 	api.saveBallot($rootScope.ballot)
+				return 	api.saveBallot($scope.ballot)
 						.then(function(data){
 							var url = $location.absUrl()
 
-							$rootScope.participantPath 	= '/ballotBox/'+data.id
-							$rootScope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
+							$scope.participantPath 	= '/ballotBox/'+data.id
+							$scope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
 
-							$rootScope.participantLink	= url.replace(/#.*$/, '#'+ $rootScope.participantPath)
-							$rootScope.adminLink		= url.replace(/#.*$/, '#'+ $rootScope.adminPath)
+							$scope.participantLink	= url.replace(/#.*$/, '#'+ $scope.participantPath)
+							$scope.adminLink		= url.replace(/#.*$/, '#'+ $scope.adminPath)
 
 
 							Storage[data.id] = Storage[data.id] || {}
@@ -97,7 +96,7 @@ prefrControllers.controller(
 							angular.extend(Storage[data.id], {
 						   		id:				data.id,
 						   		subject:		data.subject,
-						   		link:			$rootScope.adminLink
+						   		link:			$scope.adminLink
 							})
 
 
@@ -234,10 +233,8 @@ prefrControllers.controller(
 		    $scope.checkForRemoteUpdates = function(){
 		    	return 	api.getBallot($scope.ballot.id)
 		    			.then(function(data){
-		    				console.log('check')
 
 		    				//Dont overwrite Ballot if changes have been made
-		    				console.log($scope.ballot.diff())
 		    				if(!$scope.ballot.diff())
 			    				$scope.ballot
 			    				.importSettings(data)
@@ -314,12 +311,13 @@ prefrControllers.controller(
 
 
 				if($scope.ballot.papers.length == 0) {
-					$scope.ballot.newPaper().unlock()
+					$scope.ballot.newPaper().unlock()							
 				}
 
 
 				//watch for paper changes:
 				$scope.$watch('ballot.papers', function(){
+
 
 					$scope.correctPapers()
 

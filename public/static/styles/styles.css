@@ -1409,11 +1409,6 @@ preference-ranking {
 
 }
 
-preference-ranking.ng-leave {
-	transition:				all 1000ms;
-	font-size:				5em;
-}
-
 preference-ranking.compact {
 	font-size:				0.75em;
 }
@@ -1442,9 +1437,9 @@ preference-ranking preference-rank {
 
 	opacity:				1;
 
-	transition-property:	margin, height, padding, opacity;
+	transition-property:	margin, height, padding, opacity, transform;
 	transition-duration:	300ms;
-	transition-timing-function: linear;
+	transition-timing-function: ease-out, ease-out, linear, linear;
 }
 
 preference-ranking preference-rank {
@@ -1494,17 +1489,13 @@ preference-rank.nonempty > .tag:before{
 
 
 preference-ranking preference-rank.empty {
-	opacity:				0;
+	opacity:				0;	
+	transform:				scale(0.3);
 }
-
-preference-ranking.dragging preference-rank:first-of-type.empty, 
-preference-ranking.dragging preference-rank:last-of-type.empty {
-	opacity:				0.5;
-}
-
 
 preference-ranking.dragging preference-rank.empty {
-	opacity:				0;
+	opacity:				0.5;	
+	transform:				scale(0.45);
 }
 
 preference-ranking.vertical preference-rank.empty {
@@ -1513,16 +1504,14 @@ preference-ranking.vertical preference-rank.empty {
 preference-ranking.horizontal preference-rank.empty {
 }
 
-preference-ranking.vertical.dragging preference-rank:first-of-type.empty,
-preference-ranking.vertical.dragging preference-rank:last-of-type.empty,
 preference-ranking.vertical preference-rank.empty.active {
 	margin:					2.5em 0;
+	transform:				none;
 }
 
-preference-ranking.horizontal.dragging preference-rank:first-of-type.empty,
-preference-ranking.horizontal.dragging preference-rank:last-of-type.empty,
 preference-ranking.horizontal preference-rank.empty.active {
 	margin:					0 2.5em;
+	transform:				none;
 }
 
 
@@ -1722,12 +1711,18 @@ preference-option[value=""] {
 	opacity: 				0.3;
 	cursor:					default;
 	font-size:				0;
-	transition-property:	font-size;
+	transition-property:	font-size, opacity;
 	transition-duration:	400ms;
+	transition-timing-function: ease-in;
+
 }
+
 
 preference-rank.active preference-option[value=""] {
 	font-size:				inherit;
+	opacity: 				0.3;
+	transition-duration:	400ms;
+	transition-timing-function: ease-out;
 }
 
 preference-rank.hide-dummy preference-option[value=""] {

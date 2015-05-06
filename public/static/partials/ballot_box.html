@@ -231,6 +231,9 @@
                             </div>
                         </div>
 
+                        <br/>
+                        <br/>
+
                         <preference-ranking
                             ranking-orientation =   "vertical"
                             ranking-model       =   "paper.ranking"
@@ -404,10 +407,9 @@
 
                             </label>
 
-
                             <label
                                 ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'locked' : paper.locked}"
-                                ng-repeat       = "paper in (ballot.papers)"    
+                                ng-repeat       = "paper in ballot.papers"    
                                 ng-if           = "!paper.removed"
                                 ng-mousedown    = "select('ballot-paper', paper)"                
                             >

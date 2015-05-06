@@ -162,21 +162,23 @@ function HTMLpreferenceRanking($timeout) {
 									}
 
 									scope.positionUpdate = function(pos){
-										var over = false
+										var ranks = element.find('preference-rank').toArray().map(function(DOM){ return $(DOM) })
 
-										var ranks = element.find('preference-rank')
+										//find active rank:
+										scope.active_rank	=	ranks.filter(function(rank){
+																	return pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
+																})[0]
+																||
+																scope.active_rank
 
-										ranks.each(function(index, rank_DOM){
-											var rank 	= 	$(rank_DOM),
-												options = 	rank.find('preference-option')
 
-											over = pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
-
-											if(over) scope.active_rank = rank
+										ranks.forEach(function(rank){
+											var options = 	rank.find('preference-option'),											
+												active	=	scope.active_rank == rank
 											
-											rank.toggleClass('active',		over)
+											rank.toggleClass('active',		active)
 											rank.toggleClass('empty',		options.length == 1)	
-											rank.toggleClass('nonempty',	options.length != 1 || over)
+											rank.toggleClass('nonempty',	options.length != 1 || active)
 
 											rank.removeClass('no-transition')
 										})

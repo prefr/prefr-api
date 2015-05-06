@@ -270,15 +270,22 @@ angular.module('services',[])
                 return this
             }
 
-            this.importPapers = function(data){
-                this.papers  =  data.map(function(paper_data){
-                                    var paper = self.getPaperById(paper_data.id) || new BallotPaper(paper_data)
+            this.importPapers = function(data){               
+                
+                var papers      =   data.map(function(paper_data){
+                                        var paper = self.getPaperById(paper_data.id) || new BallotPaper(paper_data)
 
-                                    //dont overwrite if changes have just been made
-                                    return  paper.diff()
-                                            ?   paper
-                                            :   paper.importData(paper_data)
-                                })
+                                        //dont overwrite if changes have just been made
+                                        return  paper.diff()
+                                                ?   paper
+                                                :   paper.importData(paper_data)
+                                    })
+                this.papers.forEach(function(paper){
+                    if( papers.indexOf(paper) == -1 &&  paper.diff() )
+                        papers.push(paper)
+                })                    
+
+                this.papers = papers
 
                 return this
             }
