@@ -169,13 +169,16 @@ function HTMLpreferenceRanking($timeout) {
 																	return pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
 																})[0]
 																||
-																scope.active_rank
+																scope.active_rank								
 
+										console.log(!!scope.active_rank)
 
 										ranks.forEach(function(rank){
 											var options = 	rank.find('preference-option'),											
-												active	=	scope.active_rank == rank
+												active	=	scope.active_rank.get(0) == rank.get(0)
 											
+											if(active) console.log('!!!')
+
 											rank.toggleClass('active',		active)
 											rank.toggleClass('empty',		options.length == 1)	
 											rank.toggleClass('nonempty',	options.length != 1 || active)

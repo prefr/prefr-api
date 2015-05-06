@@ -1409,6 +1409,11 @@ preference-ranking {
 
 }
 
+preference-ranking.dragging,
+preference-ranking.dragging *{
+	cursor:					grabbing !important;	
+}
+
 preference-ranking.compact {
 	font-size:				0.75em;
 }
@@ -1557,15 +1562,14 @@ preference-option {
 	width:					8em;
 	margin:					0.3em 0.6em;
 
-	text-align:				center;
+	cursor:					grab !important;
 
-	cursor:					move;
-	cursor:					-moz-grab;
+	text-align:				center;
 }
 
 
 preference-ranking.no-drag preference-option {
-	cursor:					pointer !important;
+	cursor:					pointer;
 }
 
 
@@ -1612,9 +1616,9 @@ preference-option.dragged {
 	box-shadow: 			0 0 0.5rem rgba(0,0,0,0.6);
 	z-index: 				1000;
 
-	overflow: 				hidden;
-	cursor:					move;
+	overflow: 				hidden;	
 	
+	pointer-events: 		none;
 }
 
 
