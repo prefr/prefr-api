@@ -255,10 +255,10 @@
                 					value		    = "{{tag}}"
                                     ng-click        = "select('ballot-option', ballot.getOptionByTag(tag))"
                 				>
-                                    <div class = "move-rank up" ng-mousedown = "paper.upOption(tag); touch(tag); select('ballot-option', ballot.getOptionByTag(tag))">
+                                    <div class = "move-rank up" ng-mousedown = "paper.upOption(tag); ">
                                         <i class = "fa fa-caret-up"></i>
                                     </div>
-                                    <div class = "move-rank down" ng-mousedown = "paper.downOption(tag); touch(tag); select('ballot-option', ballot.getOptionByTag(tag))">
+                                    <div class = "move-rank down" ng-mousedown = "paper.downOption(tag); ">
                                         <i class = "fa fa-caret-down"></i>
                                     </div>
 

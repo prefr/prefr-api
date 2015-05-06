@@ -1676,6 +1676,7 @@ preference-option .move-rank.down:hover{
 }
 
 
+/*
 preference-option.touched {
   -webkit-animation-duration: 			400ms;
   -webkit-animation-iteration-count:	1;
@@ -1709,6 +1710,7 @@ preference-option.touched {
  	font-size:			1;
   }
 }
+*/
 
 
 /* dummy option */

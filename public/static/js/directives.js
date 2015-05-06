@@ -298,6 +298,29 @@ function HTMLpreferenceRanking($timeout) {
 											scope.touchedTag = tag
 										}, 1400)
 									}
+
+									scope.activateRank = function(rank){
+										//reset last active rank:
+										if(!scope.active_rank || scope.active_rank == rank)
+											return null
+
+										var options = scope.active_rank.find('preference-option')				
+
+										scope.active_rank.removeClass('active')
+										scope.active_rank.toggleClass('nonempty', options.length > 1)
+										scope.active_rank.toggleClass('empty', options.length == 1)	
+										scope.active_rank.removeClass('no-transition')
+
+										//setup new active rank:
+										var options = rank.find('preference-option')
+
+										rank.addClass('active')
+										rank.addClass('nonempty')
+										rank.toggleClass('empty',  options.length == 1)								
+										rank.removeClass('no-transition')
+
+										scope.active_rank = rank
+									}
 								
 									scope.rankingOrientation = attrs.rankingOrientation
 
@@ -373,25 +396,8 @@ function HTMLpreferenceRank() {
 									element.addClass('empty')
 
 									element.on('mouseenter', function(){
-										//reset last active rank:
-										if(!!scope.active_rank && scope.active_rank != element){
-											var options = scope.active_rank.find('preference-option')				
-
-											scope.active_rank.removeClass('active')
-											scope.active_rank.toggleClass('nonempty', options.length > 1)
-											scope.active_rank.toggleClass('empty', options.length == 1)	
-											scope.active_rank.removeClass('no-transition')
-										}
-
-										//setup new active rank:
-										var options = element.find('preference-option')
-
-										element.addClass('active')
-										element.addClass('nonempty')
-										element.toggleClass('empty',  options.length == 1)								
-										element.removeClass('no-transition')
-
-										scope.active_rank = element
+										//call function on parent scope:
+										scope.activateRank(element)
 									})
 
 								},
