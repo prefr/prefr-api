@@ -150,7 +150,6 @@ function HTMLpreferenceRanking($timeout) {
 
 
 											scope.drag(pos)
-											scope.positionUpdate(pos)
 
 											
 											//wait 20 milliseconds
@@ -159,32 +158,6 @@ function HTMLpreferenceRanking($timeout) {
 																	delete scope.next_update																	
 																}, 20)
 										}										
-									}
-
-									scope.positionUpdate = function(pos){
-										//deprecated
-										
-										
-										// var ranks = element.find('preference-rank').toArray().map(function(DOM){ return $(DOM) })
-
-										// //find active rank:
-										// scope.active_rank	=	ranks.filter(function(rank){
-										// 							return pos && (_over(rank, {x:pos.cx, y: pos.cy} , true, true, false) >= 1)
-										// 						})[0]
-										// 						||
-										// 						scope.active_rank								
-
-										// ranks.forEach(function(rank){
-										// 	var options = 	rank.find('preference-option'),											
-										// 		active	=	scope.active_rank.get(0) == rank.get(0)
-											
-										// 	rank.toggleClass('active',		active)
-										// 	rank.toggleClass('empty',		options.length == 1)	
-										// 	rank.toggleClass('nonempty',	options.length != 1 || active)
-
-										// 	rank.removeClass('no-transition')
-										// })
-
 									}
 
 									scope.startDragging = function(event, last_mousemove, option) {	
@@ -327,7 +300,6 @@ function HTMLpreferenceRanking($timeout) {
 
 									scope.$on('dragging-started', 			scope.startDragging)
 									scope.$on('dragging-position-update', 	scope.drag)		
-									scope.$on('dragging-position-update', 	scope.positionUpdate)		
 
 									
 
