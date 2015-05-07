@@ -1573,7 +1573,6 @@ preference-ranking.no-drag preference-option {
 	cursor:					pointer;
 }
 
-
 preference-option .content {
 	overflow:				hidden;
 }
@@ -1676,41 +1675,14 @@ preference-option .move-rank.down:hover{
 }
 
 
-/*
-preference-option.touched {
-  -webkit-animation-duration: 			400ms;
-  -webkit-animation-iteration-count:	1;
-  -webkit-animation-name: 				touched;
-
-
-  animation-duration: 					400ms;
-  animation-iteration-count:			1;
-  animation-name: 						touched;
+preference-option.ng-leave {
+	font-size:				inherit;
+	transition:				font-size 200ms linear;
 }
 
-
-
-@keyframes touched {
-  0% {
-  	font-size:			0;
-  }
-  
-  100% {
- 	font-size:			1;
-  }
+preference-option.ng-leave.ng-leave-active{
+	font-size:				0;
 }
-
-@-webkit-keyframes touched {
-  0% {
-  	font-size:			0;
-  }
-
-  
-  100% {
- 	font-size:			1;
-  }
-}
-*/
 
 
 /* dummy option */
@@ -1724,7 +1696,6 @@ preference-option[value=""] {
 
 }
 
-
 .dragging preference-rank.active preference-option[value=""] {
 	font-size:				inherit;
 	opacity: 				0.3;
@@ -1735,7 +1706,6 @@ preference-option[value=""] {
 preference-rank.hide-dummy preference-option[value=""] {
 	display:				none !important;
 }
-
 
 
 /* ranking-source */

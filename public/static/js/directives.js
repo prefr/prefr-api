@@ -160,20 +160,11 @@ function HTMLpreferenceRanking($timeout) {
 										}										
 									}
 
-									scope.startDragging = function(event, last_mousemove, option) {	
-										if(no_drag) return null
-
-										var parent_rank = option.parents('preference-rank')
+									scope.moveOutOption = function(option){
+										var parent_rank = option.parents('preference-rank'),
 											prev_empty	= (parent_rank.prev().find('preference-option').length == 1), //just the dummy option
 											next_empty 	= (parent_rank.next().find('preference-option').length == 1), //just the dummy option
 											empty		= (parent_rank.find('preference-option').length == 2)	//dummy option and dragged option
-
-										parent_rank
-										.addClass('no-transition')
-										.addClass('active')
-
-										if(element.find('preference-rank').length == 3) //one regular rank two new/invisble onces
-											element.addClass('first')
 
 										if(empty && prev_empty && next_empty){
 											scope.prev = parent_rank.prev().detach()
@@ -181,18 +172,59 @@ function HTMLpreferenceRanking($timeout) {
 											parent_rank.addClass('empty')
 										}
 
-										scope.active_rank = parent_rank
+										parent_rank.addClass('moved-out')
+										option.detach()										
 
-										scope.dragged_option = option.addClass('dragged').appendTo(element)
+										
+										if(!scope.active_rank) scope.activateRank(parent_rank)										
+									}
+
+									scope.moveInOption = function(option){
+										scope.active_rank
+										.addClass('no-transition')
+										.removeClass('active')
+										.removeClass('empty')
+
+										option
+										.appendTo(scope.active_rank)										
+										.css({
+											'top'	: 'auto',
+											'left'	: 'auto'
+										})
+									
+
+										scope.cleanRank(scope.active_rank)
+
+										var parent_rank = option.parents('preference-rank'),
+											prev		= scope.active_rank.prev('preference-rank')
+											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 1
+											next		= scope.active_rank.next('preference-rank')
+											next_empty 	= next.length != 0 && next.find('preference-option').length == 1
+
+										parent_rank.addClass('moved-in')
+
+										if(scope.prev) scope.prev.insertBefore(scope.active_rank)
+										if(scope.next) scope.next.insertAfter(scope.active_rank)
+
+										delete scope.next
+										delete scope.prev
+
+										delete scope.active_rank
+									}
+
+									scope.startDragging = function(event, last_mousemove, option) {	
+										if(no_drag) return null										
 										element.addClass('dragging')
 
-										//scope.demoteRanks()	
-										
-										scope.trackMouseMovement(last_mousemove)
+										option.parents('preference-rank').addClass('no-transition')
 
+										scope.moveOutOption(option)
+
+										scope.dragged_option = option.addClass('dragged').appendTo(element)
+
+										scope.trackMouseMovement(last_mousemove)
 										$(document).on('mousemove',				scope.trackMouseMovement)							
 										$(document).on('mouseup mouseleave',	scope.drop)
-
 
 									}
 
@@ -207,39 +239,16 @@ function HTMLpreferenceRanking($timeout) {
 										$(document).off('mousemove',			scope.trackMousemovement)
 										$(document).off('mouseup mouseleave',	scope.drop)
 									
-										scope.active_rank
-										.addClass('no-transition')
-										.removeClass('active')
-										.removeClass('empty')
+										scope.dragged_option.removeClass('dragged')
 
-										element.removeClass('first')
+										
+										scope.moveInOption(scope.dragged_option)
 
-										scope.dragged_option
-										.appendTo(scope.active_rank)
-										.removeClass('dragged')
-										.css({
-											'top'	: 'auto',
-											'left'	: 'auto'
-										})
+										scope.dragged_option.parents('preference-rank').removeClass('no-transition')
 
-										scope.cleanRank(scope.active_rank)
-
-										var prev		= scope.active_rank.prev('preference-rank')
-											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 1
-											next		= scope.active_rank.next('preference-rank')
-											next_empty 	= next.length != 0 && next.find('preference-option').length == 1
-
-
-										if(scope.prev) scope.prev.insertBefore(scope.active_rank)
-										if(scope.next) scope.next.insertAfter(scope.active_rank)
-
-										delete scope.next
-										delete scope.prev
-
-										element.removeClass('dragging')
+										element.removeClass('dragging')										
 
 										delete scope.dragged_option
-										delete scope.active_rank
 
 										controller.evaluate()
 									}
@@ -266,23 +275,20 @@ function HTMLpreferenceRanking($timeout) {
 										.appendTo(rank)
 									}
 
-									scope.touch = function(tag){
-										$timeout(function(){
-											scope.touchedTag = tag
-										}, 1400)
-									}
-
 									scope.activateRank = function(rank){
+										if(scope.active_rank == rank)return null
+
+
 										//reset last active rank:
-										if(!scope.active_rank || scope.active_rank == rank)
-											return null
+										if(!!scope.active_rank){
 
-										var options = scope.active_rank.find('preference-option')				
+											var options = scope.active_rank.find('preference-option')				
 
-										scope.active_rank.removeClass('active')
-										scope.active_rank.toggleClass('nonempty', options.length > 1)
-										scope.active_rank.toggleClass('empty', options.length == 1)	
-										scope.active_rank.removeClass('no-transition')
+											scope.active_rank.removeClass('active')
+											scope.active_rank.toggleClass('nonempty', options.length > 1)
+											scope.active_rank.toggleClass('empty', options.length == 1)	
+											scope.active_rank.removeClass('no-transition')
+										}
 
 										//setup new active rank:
 										var options = rank.find('preference-option')
@@ -388,6 +394,7 @@ function HTMLpreferenceOption($scope) {
 				restrict	:	'E',
 
 				link		:	function(scope, element, attrs){
+
 									//Dragging controls:
 
 									//300ms of mouse down trigger the drag
@@ -430,10 +437,10 @@ function HTMLpreferenceOption($scope) {
 
 									scope.init = function(event) {
 										scope.waitForDrag(event)	
-											event.preventDefault()
-											event.stopImmediatePropagation()
+										event.preventDefault()
+										event.stopImmediatePropagation()
 
-											$(document).one('mouseup click', scope.stopWaitingForDrag)
+										$(document).one('mouseup click', scope.stopWaitingForDrag)
 									}
 
 									//listen for a mousedown to get the dragging started

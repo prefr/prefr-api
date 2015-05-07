@@ -210,7 +210,7 @@ angular.module('services',[])
 
             this.getRankedOptions = function(){
                 return  this.ranking.reduce(function(options, rank){
-                            return Array.concat(options, rank) 
+                            return Array().concat(options, rank) 
                         }, [])
             }
 
