@@ -166,24 +166,20 @@ function HTMLpreferenceRanking($timeout) {
 											next_empty 	= (parent_rank.next().find('preference-option').length == 1), //just the dummy option
 											empty		= (parent_rank.find('preference-option').length == 2)	//dummy option and dragged option
 
+
+										option.detach()												
+
 										if(empty && prev_empty && next_empty){
 											scope.prev = parent_rank.prev().detach()
-											scope.next = parent_rank.next().detach()
-											parent_rank.addClass('empty')
-										}
-
-										parent_rank.addClass('moved-out')
-										option.detach()										
-
+											scope.next = parent_rank.next().detach()											
+										}																											
 										
-										if(!scope.active_rank) scope.activateRank(parent_rank)										
+										if(!scope.active_rank) scope.activateRank(parent_rank)											
+
+										parent_rank.addClass('no-transition')
 									}
 
-									scope.moveInOption = function(option){
-										scope.active_rank
-										.addClass('no-transition')
-										.removeClass('active')
-										.removeClass('empty')
+									scope.moveInOption = function(option){										
 
 										option
 										.appendTo(scope.active_rank)										
@@ -201,10 +197,13 @@ function HTMLpreferenceRanking($timeout) {
 											next		= scope.active_rank.next('preference-rank')
 											next_empty 	= next.length != 0 && next.find('preference-option').length == 1
 
-										parent_rank.addClass('moved-in')
-
 										if(scope.prev) scope.prev.insertBefore(scope.active_rank)
 										if(scope.next) scope.next.insertAfter(scope.active_rank)
+
+										scope.active_rank
+										.addClass('no-transition')
+										.removeClass('empty')	
+										.removeClass('active')
 
 										delete scope.next
 										delete scope.prev
@@ -215,8 +214,7 @@ function HTMLpreferenceRanking($timeout) {
 									scope.startDragging = function(event, last_mousemove, option) {	
 										if(no_drag) return null										
 										element.addClass('dragging')
-
-										option.parents('preference-rank').addClass('no-transition')
+										scope.dragging = true										
 
 										scope.moveOutOption(option)
 
@@ -244,16 +242,19 @@ function HTMLpreferenceRanking($timeout) {
 										
 										scope.moveInOption(scope.dragged_option)
 
-										scope.dragged_option.parents('preference-rank').removeClass('no-transition')
+										
 
 										element.removeClass('dragging')										
+										scope.dragging = false
 
 										delete scope.dragged_option
 
-										controller.evaluate()
+										controller.evaluate()										
 									}
 
 									scope.cleanRank = function(rank){
+										if(!rank) return null
+
 										//clear textNodes:
 										var childNodes 	= rank.get(0).childNodes,
 											textNodes	= []
@@ -276,7 +277,7 @@ function HTMLpreferenceRanking($timeout) {
 									}
 
 									scope.activateRank = function(rank){
-										if(scope.active_rank == rank)return null
+										if(scope.active_rank == rank) return null
 
 
 										//reset last active rank:
@@ -373,11 +374,13 @@ function HTMLpreferenceRank() {
 									//empty at first:
 									element.addClass('empty')
 
-									element.on('mouseenter', function(){
-										//call function on parent scope:
-										scope.activateRank(element)
-									})
-
+									scope.activate = function(){
+										if(scope.dragging)
+											scope.activateRank(element)
+									}
+									
+									element.on('mouseenter', scope.activate)
+									
 								},
 
 				controller	:	function($scope, $element){
