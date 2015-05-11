@@ -100,7 +100,6 @@ function HTMLpreferenceRanking($timeout, $window) {
 											scope.ranking.push([''])
 										})
 
-
 										if(!content){
 											transclude(scope, function(clone){
 												content = clone
@@ -374,9 +373,8 @@ function HTMLpreferenceRank() {
 									//empty at first:
 									element.addClass('empty')
 
-									scope.activate = function(){
-										if(scope.dragging)
-											scope.activateRank(element)
+									scope.activate = function(){										
+										scope.activateRank(element)
 									}
 									
 									element.on('mouseenter', scope.activate)

@@ -1497,8 +1497,6 @@ preference-rank.nonempty > .tag:before{
 
 preference-ranking preference-rank.empty {
 	opacity:				0;	
-	transform:				scale(0.3);
-	outline:				5em blue;
 }
 
 preference-ranking.dragging preference-rank.empty {
@@ -1526,7 +1524,7 @@ preference-ranking preference-rank:after {
 	content:				'';
 
 	position:				absolute;
-	right:					-8em;
+	right:					-6em;
 	top:					50%;
 
 	border-top:				0.8em solid transparent;
@@ -1544,7 +1542,7 @@ preference-ranking.dragging preference-rank.active:after {
 
 	right:					-0.5em;
 
-	transition:				250ms ease-in;
+	transition:				300ms ease-in;
 }
 
 
