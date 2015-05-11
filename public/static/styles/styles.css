@@ -1442,6 +1442,8 @@ preference-ranking preference-rank {
 
 	opacity:				1;
 
+	transform:				translateZ(0);
+
 	transition-property:	margin, height, padding, opacity, transform;
 	transition-duration:	300ms;
 	transition-timing-function: ease-out, ease-out, linear, linear;
@@ -1504,20 +1506,14 @@ preference-ranking.dragging preference-rank.empty {
 	transform:				scale(0.45);
 }
 
-preference-ranking.vertical preference-rank.empty {
-}
-
-preference-ranking.horizontal preference-rank.empty {
-}
-
 preference-ranking.dragging.vertical preference-rank.empty.active {
 	margin:					2.5em 0;
-	transform:				none;
+	transform:				scale(1);
 }
 
 preference-ranking.dragging.horizontal preference-rank.empty.active {
 	margin:					0 2.5em;
-	transform:				none;
+	transform:				scale(1);
 }
 
 
@@ -1690,8 +1686,8 @@ preference-option[value=""] {
 	opacity: 				0.3;
 	cursor:					default;
 	font-size:				0;
-	transition-property:	font-size, opacity;
-	transition-duration:	400ms;
+	transition-property:	all;
+	transition-duration:	300ms;
 	transition-timing-function: ease-in;
 
 }
@@ -1699,7 +1695,8 @@ preference-option[value=""] {
 .dragging preference-rank.active preference-option[value=""] {
 	font-size:				inherit;
 	opacity: 				0.3;
-	transition-duration:	400ms;
+
+	transition-duration:	300ms;
 	transition-timing-function: ease-out;
 }
 

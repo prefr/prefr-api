@@ -69,7 +69,7 @@ function HTMLextendable($timeout){
 }
 
 
-function HTMLpreferenceRanking($timeout) {	
+function HTMLpreferenceRanking($timeout, $window) {	
 	return	{
 				restrict	:	'E',
 				scope		:	true,
