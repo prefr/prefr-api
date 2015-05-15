@@ -80,15 +80,18 @@ prefrControllers.controller(
 				if(use_status_quo)
 					$scope.ballot.options.push($scope.status_quo)
 
+				var url = $location.absUrl()
+
+				console.log(url)
+
 				return 	api.saveBallot($scope.ballot)
-						.then(function(data){
-							var url = $location.absUrl()
+						.then(function(data){							
 
 							$scope.participantPath 	= '/ballotBox/'+data.id
 							$scope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
 
-							$scope.participantLink	= url.replace(/#.*$/, '#'+ $scope.participantPath)
-							$scope.adminLink		= url.replace(/#.*$/, '#'+ $scope.adminPath)
+							$scope.participantLink	= url.replace(/\/[^\/].*$/, '#'+ $scope.participantPath)
+							$scope.adminLink		= url.replace(/\/[^\/].*$/, '#'+ $scope.adminPath)
 
 
 							Storage[data.id] = Storage[data.id] || {}

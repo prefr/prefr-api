@@ -1733,6 +1733,7 @@ preference-rank.hide-dummy preference-option[value=""] {
 .ng-hide {
     -webkit-transition: 		400ms linear opacity;
     transition: 				400ms linear opacity;
+    transform:					translateZ(0);
     opacity: 					0;
     position:					absolute;
     top:						0;
@@ -1758,8 +1759,9 @@ preference-rank.hide-dummy preference-option[value=""] {
 }
 
 
-[ng-view].ng-leave{
-	transition:					400ms opacity linear;
+[ng-view].ng-leave{	
+    transform:					translateZ(0);
+	transition:					300ms opacity linear;
 }
 
 
@@ -1768,8 +1770,9 @@ preference-rank.hide-dummy preference-option[value=""] {
 }
 
 [ng-view].ng-enter{
-	transition:					400ms opacity linear;
-	transition-delay:			400ms;
+	transform:					translateZ(0);
+	transition:					300ms opacity linear;
+	transition-delay:			300ms;
 	opacity:					0;
 }
 
