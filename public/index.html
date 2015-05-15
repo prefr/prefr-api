@@ -58,7 +58,7 @@
 						<li ng-repeat = "(id, item) in Storage">
 							<a href="{{item.link}}">{{item.subject || '(no subject)'}}</a>
 							<div class = "icons right">
-								<button ng-click = "removeItem(id)" title = "remove">
+								<button ng-click = "removeItem(id)" title = "remove from list">
 									<i class = "fa fa-times"></i>
 								</button>
 							</div>
@@ -67,12 +67,18 @@
 				</nav>
 			</nav>
 
+			<div class = "version">
+				v0.5
+			</div>
 
 		</header> 
 
-		<section 
-			ng-view autoscroll	= "true" 
-		>
+		<section ng-view autoscroll	= "true">
+			<article class = "ui-white left right ui-deep-shadow-ex">
+				<p class = "ui-tac">
+					Please enable Javascript.
+				</p>
+			</article>
 		</section>
 		
 		<footer class = "ui-dark-white">

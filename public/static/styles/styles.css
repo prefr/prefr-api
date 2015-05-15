@@ -132,6 +132,15 @@ nav li > a{
 	vertical-align:			middle;
 }
 
+.version {
+	display:				inline-block;
+	float:					right;
+	padding:				0 0.5em;
+	vertical-align: 		middle;
+	font-size:				0.8em;
+	opacity:				0.7;
+}
+
 body > header h1 {
 	display:				inline-block;
 	float:					left;
