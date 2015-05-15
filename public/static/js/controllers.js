@@ -90,8 +90,8 @@ prefrControllers.controller(
 							$scope.participantPath 	= '/ballotBox/'+data.id
 							$scope.adminPath		= '/ballotBox/'+data.id+'/'+data.adminSecret
 
-							$scope.participantLink	= url.replace(/\/[^\/].*$/, '#'+ $scope.participantPath)
-							$scope.adminLink		= url.replace(/\/[^\/].*$/, '#'+ $scope.adminPath)
+							$scope.participantLink	= url.replace(/\/ballotBox\/new.*$/, $scope.participantPath)
+							$scope.adminLink		= url.replace(/\/ballotBox\/new.*$/, $scope.adminPath)
 
 
 							Storage[data.id] = Storage[data.id] || {}
@@ -108,6 +108,9 @@ prefrControllers.controller(
 			}	
 
 			$scope.update = function(){
+				if(!$scope.ballot)
+					$location.search('step',null)
+
 				if($location.search().step == undefined)
 					$scope.clear()
 
