@@ -8,17 +8,19 @@ var prefr   =   angular.module(
                                 'prefrControllers',  
                                 'prefrFilters',  
                                 'services',
-                                'ngGitReleases'                                                             
+                                'ngGitReleases',
+                                'ngFlattr'                                                             
                             ]
                         )
 
 prefr.constant('$config', {
-    'checkRemoteInterval'    :   60,
-    'gitReleases'       :   {
-                                apiUrl: 'https://api.github.com',
-                                owner:  'prefr',
-                                repo:   'prefr'
-                            }
+    'flattrThingId'         :   '4251245',
+    'checkRemoteInterval'   :   60,
+    'gitReleases'           :   {
+                                    apiUrl: 'https://api.github.com',
+                                    owner:  'prefr',
+                                    repo:   'prefr'
+                                }
 })
 
 prefr.run( function($rootScope) {    

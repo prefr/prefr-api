@@ -237,12 +237,13 @@
                         <preference-ranking
                             ranking-orientation =   "vertical"
                             ranking-model       =   "paper.ranking"
-                            no-dragging         =   "paper.locked"                     
+                            no-dragging         =   "paper.locked"     
                         >   
 
                             <preference-rank
                                 ng-repeat   =   "rank in ranking"
                                 class       =   "ui-panel left vertical ui-borders ui-corners-all"
+                                ng-class    =   "{empty: rank.length <= 1, nonempty: rank.length > 1}"                
                             >
                                 <div class = "tag">
                 					<!-- CSS will put the counter here-->
@@ -250,15 +251,15 @@
 
                                 <preference-option 
                 					class		    = "ui-panel right ui-corners-all"
-                                    ng-class        = "{'selected': selectionBallotOption.value && selectionBallotOption.value === ballot.getOptionByTag(tag), 'moved-in': movedOption == tag}"
-                					ng-repeat	    = "tag in rank | orderBy | dummyLast"
+                                    ng-class        = "{'selected': selectionBallotOption.value && selectionBallotOption.value === ballot.getOptionByTag(tag), 'touched': touchedTag == tag}"
+                					ng-repeat	    = "tag in rank | dummyLast"
                 					value		    = "{{tag}}"
                                     ng-click        = "select('ballot-option', ballot.getOptionByTag(tag))"
                 				>
-                                    <div class = "move-rank up" ng-mousedown = "paper.upOption(tag);">
+                                    <div class = "move-rank up" ng-click = "up()">
                                         <i class = "fa fa-caret-up"></i>
                                     </div>
-                                    <div class = "move-rank down" ng-mousedown = "paper.downOption(tag);">
+                                    <div class = "move-rank down" ng-click = "down()">
                                         <i class = "fa fa-caret-down"></i>
                                     </div>
 

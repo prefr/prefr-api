@@ -4,14 +4,18 @@ prefrControllers.controller(
 	'HeaderCtrl',
 	[
 		'$scope',
+		'$config',
 		'Storage',
+		'ngFlattr',
 		
-		function($scope, Storage){
+		function($scope, $config, Storage, ngFlattr){
 			$scope.Storage = Storage
 
 			$scope.removeItem = function(id){
 				delete Storage[id]
 			}
+
+			$scope.prefrThing = ngFlattr.getThing($config.flattrThingId)
 		}
 	]
 )

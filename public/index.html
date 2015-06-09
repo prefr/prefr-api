@@ -19,6 +19,7 @@
 		<script src="static/js/controllers.js"></script>
 		<script src="static/js/filters.js"></script>
 		<script src="static/js/ngGitReleases.js"></script>
+		<script src="static/js/ngFlattr.js"></script>
 		<script src="static/js/app.js"></script>
 
 	</head>
@@ -35,22 +36,7 @@
 				<a href="/import">import</a>
 				-->
 
-				<!--
-				<a class="FlattrButton" style="display:none;"
-				    title="This is my title"
-				    data-flattr-uid="prefr"
-				    data-flattr-tags="text, opensource"
-				    data-flattr-category="text"
-				    href="http://wp.local/?p=444">
-				</a>
 
-				<script id='fbknikt'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=prefr&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbknikt');
-				</script>
-				-->
-				<a href = "https://github.com/prefr/prefr">
-					<i class = "fa fa-fw fa-github" ></i>
-					project on github
-				</a>
 
 				<nav>
 					<a> <i class = "fa fa-fw fa-caret-down"></i> recent prefr ballots </a>
@@ -65,6 +51,37 @@
 						</li>
 					</ul>
 				</nav>
+
+
+				<a href = "https://github.com/prefr/prefr">
+					<i class = "fa fa-fw fa-github" ></i>
+					project on github
+				</a>
+
+
+				<!-- flattr -->
+				<a 
+					href 	= "" 
+					class	= "FlattrButton"
+					title	= ""
+				>
+					<i class = "fa flattr"></i>
+					flatter us
+					<span class ="flatters">{{prefrThing.data.flattrs}}</span>
+				</a>
+
+				
+
+				<!--
+				<a class="FlattrButton" style="display:none;"
+				    title="Flatter this!"
+				    data-flattr-uid="prefr"
+				    href="http://prefr.org">
+				</a>
+
+				<script id='fbknikt'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=prefr&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbknikt');
+				</script>
+				-->
 			</nav>
 
 			<div class = "version">

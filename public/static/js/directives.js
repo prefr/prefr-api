@@ -69,7 +69,7 @@ function HTMLextendable($timeout){
 }
 
 
-function HTMLpreferenceRanking($timeout, $window) {	
+function HTMLpreferenceRanking($timeout) {	
 	return	{
 				restrict	:	'E',
 				scope		:	true,
@@ -113,53 +113,22 @@ function HTMLpreferenceRanking($timeout, $window) {
 									}, true)
 
 
+
+
+
+
 									var no_drag = false
 
+
 									scope.trackMouseMovement = function(event) {
-										if(!scope.next_update){							
-											var	x		=	event.pageX - element.offset().left,
-												y		=	event.pageY - element.offset().top,
-												width	=	element.innerWidth()
-												height	=	element.innerHeight(),
-												// fx, and fy determine from which point on dragging gets harder, fy = 0.3 means: 
-												// if the cursor is within 30% of the border vertical dragging gets harder
-												fx		=	scope.rankingOrientation == 'vertical' 	? 0.3 : 0,
-												fy		=	scope.rankingOrientation == 'horizonal' ? 0.3 : 0
+										var	x		=	event.pageX - element.offset().left,
+											y		=	event.pageY - element.offset().top
 
-											//movement outside the element counts far less than movement inside the element:
-											if(x < width*fx)		x = width*fx		- fx*Math.pow(width*fx-x, 0.75)
-											if(x > width*(1-fx))	x = width*(1-fx) 	+ fx*Math.pow(x-width*(1-fx), 0.75)
-
-											if(y < height*fy)		y = height*fy		- fy*Math.pow(height*fy-y, 0.75)
-											if(y > height*(1-fy))	y = height*(1-fy) 	+ fy*Math.pow(y-height*(1-fy), 0.75)	
-											
-
-											var cx = x >= width		? width-1 	: x, 
-												cy = y >= height 	? height-1 	: y
-
-											cx = cx <= 0 ? 1 : cx
-											cy = cy <= 0 ? 1 : cy
-
-											var pos	=	{
-															x:	x, 
-															y:	y, 
-															cx: cx,
-															cy: cy
-														}
-
-
-											scope.drag(pos)
-
-											
-											//wait 20 milliseconds
-											scope.next_update = window.setTimeout(function() {
-																	window.clearInterval(scope.next_update)
-																	delete scope.next_update																	
-																}, 20)
-										}										
+										scope.drag({x:x, y:y})
+							
 									}
-
-									scope.moveOutOption = function(option){
+									
+									scope.dragOutOption = function(option){
 										var parent_rank = option.parents('preference-rank'),
 											prev_empty	= (parent_rank.prev().find('preference-option').length == 1), //just the dummy option
 											next_empty 	= (parent_rank.next().find('preference-option').length == 1), //just the dummy option
@@ -173,12 +142,12 @@ function HTMLpreferenceRanking($timeout, $window) {
 											scope.next = parent_rank.next().detach()											
 										}																											
 										
-										if(!scope.active_rank) scope.activateRank(parent_rank)											
+										scope.activateRank(parent_rank)											
 
 										parent_rank.addClass('no-transition')
 									}
 
-									scope.moveInOption = function(option){										
+									scope.dragInOption = function(option){										
 
 										option
 										.appendTo(scope.active_rank)										
@@ -210,16 +179,18 @@ function HTMLpreferenceRanking($timeout, $window) {
 										delete scope.active_rank
 									}
 
-									scope.startDragging = function(event, last_mousemove, option) {	
+									scope.startDragging = function(event, option) {	
 										if(no_drag) return null										
 										element.addClass('dragging')
+
 										scope.dragging = true										
 
-										scope.moveOutOption(option)
+										scope.dragOutOption(option)
 
 										scope.dragged_option = option.addClass('dragged').appendTo(element)
 
-										scope.trackMouseMovement(last_mousemove)
+										scope.trackMouseMovement(event)
+
 										$(document).on('mousemove',				scope.trackMouseMovement)							
 										$(document).on('mouseup mouseleave',	scope.drop)
 
@@ -239,7 +210,7 @@ function HTMLpreferenceRanking($timeout, $window) {
 										scope.dragged_option.removeClass('dragged')
 
 										
-										scope.moveInOption(scope.dragged_option)
+										scope.dragInOption(scope.dragged_option)
 
 										
 
@@ -300,27 +271,81 @@ function HTMLpreferenceRanking($timeout, $window) {
 
 										scope.active_rank = rank
 									}
+
+									
+
+									
 								
+
+									scope.moveOption = function(tag, dir){
+										var from_rank 	=	scope.ranking.filter(function(rank){
+																return rank.indexOf(tag) != -1
+															})[0],
+											from_index 	=	from_rank && scope.ranking.indexOf(from_rank),
+											from_empty	=	from_rank && from_rank.length == 2 	// has dummy and moved option
+
+											to_index	=	from_index+ (from_empty ? 2*dir : dir),
+											to_rank		=	scope.ranking[to_index],
+											to_empty	=	to_rank && to_rank.length == 1 	// has dummy
+
+											if(!to_rank || !from_rank) return null
+
+											scope.dragging_blocked = true
+
+											to_rank.push(tag)
+											//from_rank[from_rank.indexOf(tag)] = ""
+											from_rank.splice(from_rank.indexOf(tag), 1)
+
+											if(to_empty){
+												scope.ranking.splice(to_index+1, 0, [""])
+												scope.ranking.splice(to_index  , 0, [""])
+											}
+
+											if(from_empty){
+												scope.ranking.splice(from_index+1,1)
+												scope.ranking.splice(from_index-1,1)
+											}
+
+											controller.scheduleUpdate()
+											.then(function(){
+												scope.dragging_blocked = false
+											})
+									}
+
+
+									scope.$on('up', function(e, tag){
+										scope.moveOption(tag, -1)
+									})
+
+									scope.$on('down', function(e, tag){
+										scope.moveOption(tag, 1)
+									})
+
 									scope.rankingOrientation = attrs.rankingOrientation
 
 
-									scope.$on('dragging-started', 			scope.startDragging)
-									scope.$on('dragging-position-update', 	scope.drag)		
+									scope.dragging_blocked = false
 
-									
+									scope.toggleDragging = function(){		
+										var no_drag 	= scope.$eval(attrs.noDragging),
+											blocked 	= scope.dragging_blocked,
+											disabled	= no_drag || blocked
+
+
+										element.toggleClass('no-drag', disabled)	
+										scope.$broadcast('dragging-' + (disabled ? 'off' : 'on'))
+									} 
+							
 
 									element.toggleClass('horizontal',	scope.rankingOrientation == 'horizontal')
 									element.toggleClass('vertical', 	scope.rankingOrientation != 'horizontal')
 
 									element.toggleClass('no-drag', 		scope.$eval(attrs.no_drag))	
 
+									scope.$watch(attrs.noDragging, 		scope.toggleDragging)
+									scope.$watch('dragging_blocked',	scope.toggleDragging) 
 
 
-									scope.$watch(attrs.noDragging, function(){		
-										no_drag = scope.$eval(attrs.noDragging)								
-										element.toggleClass('no-drag', no_drag)	
-										scope.$broadcast('dragging-' + (no_drag ? 'off' : 'on'))
-									})	
 								},
 
 				controller	:	function($scope, $element, $attrs, $rootScope){
@@ -338,23 +363,42 @@ function HTMLpreferenceRanking($timeout, $window) {
 											$(rank).find('preference-option').map(function(index, option){
 												var value = $(option).attr('value')
 												
-												if(value)	//ignore dummy, i.e. options witghput value
+												if(value)	//ignore dummy, i.e. options without value
 													values.push(value)
 											})
 											
 											if(values.length > 0) ranking.push(values)
 										})			
 
+										this.updateRankingModel(ranking)
 										
+									}
+
+									this.updateRankingModel = function(ranking){
 										var rankingModel = $scope.$eval($attrs.rankingModel)
 
 										if(JSON.stringify(ranking) != JSON.stringify(rankingModel)){																					
-											while(rankingModel.length) rankingModel.pop()
-											rankingModel.push.apply(rankingModel, ranking)
-											$scope.$apply()	
-										}				
-										
+											$scope.$apply(function(){
+												while(rankingModel.length) rankingModel.pop()
+												rankingModel.push.apply(rankingModel, ranking)
+											})	
+										}
 									}
+
+
+									var scheduledUpdate = undefined
+
+									this.scheduleUpdate = function(){
+										if(scheduledUpdate) $timeout.cancel(scheduledUpdate)
+
+										scheduledUpdate =	$timeout(function(){
+																self.updateRankingModel($scope.ranking)
+															}, 1000)
+
+										return scheduledUpdate
+									}
+
+
 								}
 			}
 }
@@ -365,25 +409,27 @@ function HTMLpreferenceRank() {
 
 				link		:	function(scope, element, attrs){
 
-									// if(element.parent().find('preference-rank').length <= 1)
-									// 	scope.empty_rank.clone(true).insertBefore(element)
-										
-									// scope.empty_rank.clone(true).insertAfter(element)
 									
 									//empty at first:
 									element.addClass('empty')
 
-									scope.activate = function(){										
-										scope.activateRank(element)
-									}
-									
-									element.on('mouseenter', scope.activate)
-									
+									element.on('mouseenter', function(){
+										//call function on parent scope:
+										scope.active = true
+										if(scope.dragging) scope.activateRank(element)
+									})
+
+									element.on('mouseleave', function(){
+										scope.active = false
+									})
+
+									scope.$on('dragging-started', function(){
+										if(scope.active) scope.activateRank(element)
+									})
+
 								},
 
 				controller	:	function($scope, $element){
-									// $scope.empty_rank = $element.clone(true).addClass('empty')
-									// $scope.empty_rank.find('preference-option').remove()
 								}
 
 			}
@@ -398,32 +444,31 @@ function HTMLpreferenceOption($scope) {
 
 									//Dragging controls:
 
-									//300ms of mouse down trigger the drag
+									//200ms of mouse down trigger the drag
 									scope.waitForDrag = function(event) {
 										//the dummy option should not do anything:
 										if(!attrs.value)
 											return false
 
-										scope.wait_for_it	=	window.setTimeout(scope.startDragging, 300)
-										scope.trackMouseMovement(event)
-										$(document).on('mousemove)', scope.trackMouseMovement)
+										scope.wait_for_it	=	window.setTimeout(scope.initiateDragging, 200)
+										element.on('mousemove', scope.trackMouseMovement)
 									}							
 
 									scope.trackMouseMovement = function(event){
-										scope.last_mousemove = event
-									}	
+										scope.event = event 
+									}
+
+
 
 									//clear waiting timeout, attribute and event listener
 									scope.stopWaitingForDrag = function() {
-										$(document).off('mouseup click', scope.stopWaitingForDrag)
-										$(document).off('mousemove', scope.trackMousemovement)
 
 										window.clearTimeout(scope.wait_for_it)
+										element.off('mousemove', scope.trackMouseMovement)
 										delete scope.wait_for_it										
 									}
 
-									//intitiate the dragging:
-									scope.startDragging = function() {	
+									scope.initiateDragging = function() {	
 
 										//cancel wait:
 										scope.stopWaitingForDrag()
@@ -431,17 +476,26 @@ function HTMLpreferenceOption($scope) {
 										//clear selection that might have occured while holding the mouse down
 										window.getSelection().removeAllRanges()
 										
-										scope.$emit('dragging-started', scope.last_mousemove, element)
+										scope.startDragging(scope.event, element)
+										//scope.$emit('dragging-started', element)
 
-										delete scope.last_mousemove			
 									}
 
 									scope.init = function(event) {
+										scope.trackMouseMovement(event)
 										scope.waitForDrag(event)	
 										event.preventDefault()
 										event.stopImmediatePropagation()
 
 										$(document).one('mouseup click', scope.stopWaitingForDrag)
+									}
+
+									scope.up = function(){
+										scope.$emit('up', attrs.value)
+									}
+
+									scope.down = function(){
+										scope.$emit('down', attrs.value)
 									}
 
 									//listen for a mousedown to get the dragging started
@@ -483,23 +537,23 @@ function manageOptions(){
 			$scope.addOption 	= 	function()	 	{ $scope.options.push({title:'', details:''});}
 			$scope.removeOption = 	function(index)	{ $scope.options.slice(index,1) }
 
-			$scope.optionUp		= 	function(index){ 
-										if(index == 0) return null
+			// $scope.optionUp		= 	function(index){ 
+			// 							if(index == 0) return null
 
-										var x = $scope.options[index-1]
+			// 							var x = $scope.options[index-1]
 
-										$scope.options[index-1] = $scope.options[index]
-										$scope.options[index] 	= x
-								 	}
+			// 							$scope.options[index-1] = $scope.options[index]
+			// 							$scope.options[index] 	= x
+			// 					 	}
 
-		 	$scope.optionDown	= 	function(index){ 
-			 							if(index == $scope.options.length-1) return null
+		 // 	$scope.optionDown	= 	function(index){ 
+			//  							if(index == $scope.options.length-1) return null
 
-										var x = $scope.options[index+1]
+			// 							var x = $scope.options[index+1]
 
-										$scope.options[index+1] = $scope.options[index]
-										$scope.options[index] 	= x
-		 							}
+			// 							$scope.options[index+1] = $scope.options[index]
+			// 							$scope.options[index] 	= x
+		 // 							}
 		}	
 	}
 }
