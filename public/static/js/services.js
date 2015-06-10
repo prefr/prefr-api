@@ -511,6 +511,8 @@ angular.module('services',[])
         }
     }
 ])
+
+
 .service('Storage', [
 
     '$window',

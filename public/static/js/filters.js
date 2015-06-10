@@ -1,6 +1,9 @@
 var prefrFilters = angular.module('prefrFilters', []);
 
-prefrFilters.filter('removed', function() {
+prefrFilters
+
+
+.filter('removed', function() {
   return    function(items, invert) {
 
                 items = items || []
@@ -13,11 +16,20 @@ prefrFilters.filter('removed', function() {
             }
 })
 
-prefrFilters.filter('dummyLast', function() {
+
+
+.filter('dummyLast', function() {
   return    function(items) {
                 return  items.sort(function(a,b){
                             return  !a
                         })
+            }
+})
+
+.filter('empty', function() {
+  return    function(items) {
+                return      (items.length && item.length == 0)
+                        ||  Object.keys(items).length == 0
             }
 })
 
