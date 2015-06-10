@@ -22,6 +22,17 @@
 		<script src="static/js/ngFlattr.js"></script>
 		<script src="static/js/app.js"></script>
 
+		<script type="text/javascript">
+		/* <![CDATA[ */
+		    (function() {
+		        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+		        s.type = 'text/javascript';
+		        s.async = true;
+		        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+		        t.parentNode.insertBefore(s, t);
+		    })();
+		/* ]]> */</script>
+
 	</head>
 	<body>
 		<header ng-controller = "HeaderCtrl">
@@ -59,34 +70,18 @@
 				</a>
 
 
+
 				<!-- flattr -->
-				<a 
-					href 	= "" 
-					class	= "FlattrButton"
-					title	= ""
-				>
-					<i class = "fa flattr"></i>
-					flatter us
-					<span class ="flatters">{{prefrThing.data.flattrs}}</span>
-				</a>
-
-				
-
-				<!--
-				<a class="FlattrButton" style="display:none;"
-				    title="Flatter this!"
-				    data-flattr-uid="prefr"
-				    href="http://prefr.org">
-				</a>
-
-				<script id='fbknikt'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=prefr&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbknikt');
-				</script>
-				-->
+				<nav>
+					<a class ="flattr"><i class = "fa fa-fw flattr"></i> flattr us </a>
+					<ul class = "ui-white">
+						<li>
+							<a class="FlattrButton" style="display:none;" href="http://prefr.prg"></a> 
+						</li>
+					</ul>
+				</nav>
+			
 			</nav>
-
-			<div class = "version">
-				v0.5
-			</div>
 
 		</header> 
 
@@ -165,7 +160,12 @@
 
 			<article class = "ui-black">
 				Code licensed under the <a href = "https://github.com/prefr/prefr/blob/master/LICENSE">The MIT License.</a>
+
+				<div class = "version">
+					v0.5
+				</div>
 			</article>
+
 
 		</footer>
 	</body>

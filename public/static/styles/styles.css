@@ -101,8 +101,12 @@ nav li > a {
 	transition:             background-color 400ms;
 }
 
+nav a:not([href]){
+	cursor:					default !important;
+}
+
 nav > a:hover,
-nav > nav li:hover {
+nav > nav li:hover a{
 	background-color:       rgba(200, 200, 200, 0.5);
 	border:                 none;
 }
@@ -1826,16 +1830,17 @@ preference-rank.hide-dummy preference-option[value=""] {
 
 /* flattr */
 
-a.FlattrButton {
+a.flattr {
 	background:             transparent linear-gradient(rgba(146,189,94,0.4), rgba(136,176,88,0.4)) repeat scroll 0 0;
 }
 
-a.FlattrButton:hover {
+a.flattr:hover {	
 	background:             transparent linear-gradient(rgba(146,189,94,1), rgba(136,176,88,1)) repeat scroll 0 0;
-	color:                  #fff;
+	color:					#fff;
 }
 
-a.FlattrButton:hover i.flattr:before {
+
+a.flattr:hover i.flattr:before {
 	background-image:       url('images/flattr_icon_fff.png');
 }
 
@@ -1850,36 +1855,7 @@ i.flattr:before {
 	background-repeat:      no-repeat;
 }
 
-a.FlattrButton .flatters {
-	position:				relative;
-	display:                inline-block;
-	width:                  3.5em;
-	height:                 1.2em;
-	background-color:       #fff;
-	border:                 1px solid rgba(0,0,0,0.2);
-	border-radius:          0.3em;
-	vertical-align:         middle;
-	white-space:            nowrap;
-	line-height:            1.2em;
-	text-align:             center;
-	margin-left:            0.5em;
-	color:                  #666;
-}
-
-a.FlattrButton:hover .flatters {
-	border:                 1px solid rgba(0,0,0,0.4);
-}
-
-a.FlattrButton .flatters:before {
-	content:                '';
+.FlattrButton{
 	display:				block;
-	position:				absolute;
-	right:					100%;
-	top:					50%;
-	margin-top:				-0.3em;
-	border-left:            none;
-	border-right:           0.3em solid #fff;
-	border-top:             0.3em solid transparent;
-	border-bottom:			0.3em solid transparent;
-	z-index:				99;
+	margin:					1em auto;
 }

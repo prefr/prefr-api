@@ -23,8 +23,9 @@ prefr.constant('$config', {
                                 }
 })
 
-prefr.run( function($rootScope) {    
+prefr.run( function($rootScope, $config) {    
     $rootScope.console      = window.console
+    $rootScope.$config      = $config
 })
 
 
