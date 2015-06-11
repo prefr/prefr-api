@@ -64,7 +64,7 @@ body > header {
 	background-color:       rgba(245, 245, 240, 1);
 	box-shadow:             0 0 1rem rgba(0,0,0, 0.5);
 
-	z-index:                100;
+	z-index:                auto;
 }
 
 body > header > * {
@@ -117,7 +117,7 @@ nav nav > ul {
 	top:                    100%;
 	right:                  0;
 	min-width:              100%;
-	box-shadow:             0 0.5em 0.5em 0 rgba(0, 0, 0, 0.25), 0 1em 0.5em -1em rgba(0, 0, 0, 1) inset;
+	box-shadow:             0 0.5em 0.5em 0 rgba(0, 0, 0, 0.25), 0 1em 0.5em -1em rgba(0, 0, 0, 1) inset;	
 }
 
 
@@ -185,6 +185,7 @@ nav.vertical {
 
 
 body > section {
+	position:				relative;
 	display:                block;
 	width:                  100%;
 	min-height:             20em;
@@ -196,6 +197,7 @@ body > section {
 	text-align:             center;
 
 	background-color:       transparent;
+	z-index:				-100;
 }
 
 body > section:after {
