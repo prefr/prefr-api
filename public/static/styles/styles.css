@@ -517,6 +517,10 @@ hr.up{
 }
 
 
+.ui-low-height {
+	height:					1em;
+}
+
 .ui-medium-width {
 	width:                  8em;
 }
