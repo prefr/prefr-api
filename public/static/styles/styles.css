@@ -62,9 +62,9 @@ body > header {
 	line-height:            3.5rem; 
 
 	background-color:       rgba(245, 245, 240, 1);
-	box-shadow:             0 0 1rem rgba(0,0,0, 0.5);
+	box-shadow:             0 0 1rem rgba(0,0,0, 1);
 
-	z-index:                auto;
+	z-index:                100;
 }
 
 body > header > * {
@@ -111,18 +111,21 @@ nav > nav li:hover a{
 	border:                 none;
 }
 
-nav nav > ul {
-	display:                none;
+nav nav > ul {	
 	position:               absolute;
-	top:                    100%;
+	bottom:					0;	
 	right:                  0;
 	min-width:              100%;
-	box-shadow:             0 0.5em 0.5em 0 rgba(0, 0, 0, 0.25), 0 1em 0.5em -1em rgba(0, 0, 0, 1) inset;	
+	box-shadow:             0 0.5em 0.5em 0 rgba(0, 0, 0, 0.25), 0 1em 0.5em -1em rgba(0, 0, 0, 1) inset;
+	overflow:				hidden;
+	opacity:				0;	
 }
 
 
 nav nav:hover > ul{
-	display:                block;
+	opacity:                1;
+	top:					100%;
+	bottom:					auto;		
 }
 
 nav nav:hover > ul > li{
@@ -185,7 +188,6 @@ nav.vertical {
 
 
 body > section {
-	position:				relative;
 	display:                block;
 	width:                  100%;
 	min-height:             20em;
@@ -197,7 +199,6 @@ body > section {
 	text-align:             center;
 
 	background-color:       transparent;
-	z-index:				-100;
 }
 
 body > section:after {
@@ -517,7 +518,6 @@ hr.up{
 .ui-content .justify {
 	text-align:             justify;
 }
-
 
 .ui-low-height {
 	height:					1em;
