@@ -1,14 +1,28 @@
 <article class = "ui-white left right ui-deep-shadow-ex">
 
 
-    <h2> New prefr ballot</h2>
+    <h2> 
+        New prefr ballot 
+
+        <div 
+            ng-repeat   = "n in steps" 
+            class       = "step-indicator"
+            ng-if     = "$index == step"
+        >
+            step<br/>
+            {{$index+1}} / {{steps.length}}
+        </div>
+
+    </h2>
+
+
 
 
     <div class = "ui-relative">
 
-        <div ng-show = "step == 0">
-            <h3>Introduction</h3>        
+        <h3>{{steps[step]}}</h3>        
 
+        <div ng-if = "step == 0">
             <p>
                 Pick a question or matter to be decided by a group. <em>(e.g. "What should we do this weekend?")</em>        
                 Then provide potential answers or options to be ranked, something like this:
@@ -42,9 +56,7 @@
 
 
 
-        <div ng-show = "step == 1">
-            <h3>Subject matter</h3>
-
+        <div ng-if = "step == 1">
             <p>
                 Now, ask a question or pick a subject matter:
             </p>
@@ -108,9 +120,7 @@
 
 
 
-        <div ng-show = "step == 2">
-            
-            <h3>Options</h3>
+        <div ng-if = "step == 2">
             <p>
                 Options represent the possible outcomes of the decision to be made. Each participant will rank these options according to her preference.
             </p>
@@ -250,10 +260,7 @@
 
 
 
-        <div ng-show = "step == 3">
-            
-            <h3>Special option: Status Quo (optional)</h3>
-           
+        <div ng-if = "step == 3">           
             <p>
                This is a special option. You can use it in your prefr ballot if you like, but you don't have to. It is useful though if you want to allow your participants to reject options altogether. They can do that by ranking the disliked option lower than the Status Quo. If in the end the status quo wins the ballot all options have been rejected.
             </p>
@@ -361,9 +368,7 @@
 
 
 
-        <div ng-show ="step == 4">
-            <h3>How to participate</h3>
-
+        <div ng-if ="step == 4">
             <p>
                 It is done. Your ballot is online. \o/
             </p>

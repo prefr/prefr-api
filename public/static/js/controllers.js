@@ -53,6 +53,8 @@ prefrControllers.controller(
 												title:		"Status Quo / do nothing.",
 												details: 	"This options represents the status quo. Anything ranked above this option is considered acceptable. Everything ranked lower than this option is considered rejected.",
 											})
+
+				$scope.steps			=	["Introduction", "Subject matter", "Options", "Special option: Status Quo (optional)", "How to participate"]
 			}
 
 			$scope.clear = function(){
@@ -63,15 +65,14 @@ prefrControllers.controller(
 
 
 			$scope.next = function(){
-				$location.search('step', ($location.search().step || 0)+1)
+				$location.search('step', parseInt($location.search().step || 0)+1)
 			}
 
 			$scope.previous = function(){				
 				$window.history.back()				
 			}
 
-			$scope.gotoBallot = function(){
-				$location.search('step', null)
+			$scope.gotoBallot = function(){				
 				$location.path($scope.adminPath)
 			}
 
@@ -114,13 +115,17 @@ prefrControllers.controller(
 				if($location.search().step == undefined)
 					$scope.clear()
 
-				$scope.step = $location.search().step || 0
+				$scope.step = parseInt($location.search().step) || 0
 				$scope.setup()	
 			}
 
 
 			$scope.$on('$locationChangeStart', function(){
 				$scope.update()
+			})
+
+			$scope.$on('$detroy', function(){
+				$location.search('step', null)
 			})
 
 			$scope.update()

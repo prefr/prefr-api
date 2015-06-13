@@ -293,7 +293,7 @@ body > footer   .built-with .font-awesome div{
 }
 
 body.dragging * {
-	cursor:                not-allowed !important;
+	cursor:                no-drop !important;
 }
 
 
@@ -333,6 +333,7 @@ h1, h2, h3, h4, h5, h6 {
 	margin-top:             0;
 	margin-bottom:          0;
 	font-weight:            normal;
+	position:				relative;
 }
 
 h2{
@@ -347,6 +348,7 @@ h2{
 h3{
 	font-variant:           small-caps;
 	font-size:              1.3em;
+	margin:					2em 0;
 }
 
 h4{
@@ -1435,6 +1437,8 @@ preference-ranking {
 
 preference-ranking.dragging,
 preference-ranking.dragging *{
+	cursor: 				-webkit-grabbing !important; 
+	cursor: 				-moz-grabbing !important;
 	cursor:                 grabbing !important;    
 }
 
@@ -1470,7 +1474,7 @@ preference-ranking preference-rank {
 
 	transition-property:	margin, height, padding, opacity, transform;
 	transition-duration:	300ms;
-	transition-timing-function: ease-out, ease-out, linear, linear;
+	transition-timing-function: ease-out, ease-out, linear, linear, ease-in;
 }
 
 preference-ranking preference-rank {
@@ -1584,11 +1588,11 @@ preference-option {
 	width:                  8em;
 	margin:                 0.3em 0.6em;
 
+	cursor:                 -webkit-grab !important;    
+	cursor: 				-moz-grab !important;
 	cursor:                 grab !important;
 
 	text-align:             center;
-
-	transition:             font-size 200ms;
 }
 
 preference-option.ng-leave.ng-leave-active{
@@ -1604,10 +1608,14 @@ preference-option.ng-enter.ng-enter-active{
 }
 
 
+preference-rank preference-option {
+	transition:             all 200ms linear;	
+}
+
 
 
 preference-ranking.no-drag preference-option {
-	cursor:                 not-allowed !important;
+	cursor:                 pointer !important;
 }
 
 preference-option .content {
@@ -1714,8 +1722,7 @@ preference-option .move-rank.down:hover{
 
 
 preference-option.ng-leave {
-	font-size:				inherit;
-	transition:				font-size 200ms linear;
+	font-size:				1em;
 }
 
 preference-option.ng-leave.ng-leave-active{
@@ -1727,19 +1734,13 @@ preference-option.ng-leave.ng-leave-active{
 preference-option[value=""] {
 	opacity:                0.3;
 	cursor:                 default;
-	font-size:              0;
-	transition-property:    font-size, opacity;
-	transition-duration:    400ms;
-	transition-timing-function: ease-in;
+	font-size:              0;	
 
 }
 
 .dragging preference-rank.active preference-option[value=""] {
-	font-size:				inherit;
+	font-size:				1em;
 	opacity: 				0.3;
-
-	transition-duration:    400ms;
-	transition-timing-function: ease-out;
 }
 
 preference-rank.hide-dummy preference-option[value=""] {
@@ -1840,13 +1841,13 @@ a.flattr {
 	background:             transparent linear-gradient(rgba(146,189,94,0.4), rgba(136,176,88,0.4)) repeat scroll 0 0;
 }
 
-a.flattr:hover {	
+nav:hover > a.flattr {	
 	background:             transparent linear-gradient(rgba(146,189,94,1), rgba(136,176,88,1)) repeat scroll 0 0;
 	color:					#fff;
 }
 
 
-a.flattr:hover i.flattr:before {
+nav:hover > a.flattr i.flattr:before {
 	background-image:       url('images/flattr_icon_fff.png');
 }
 
@@ -1864,4 +1865,79 @@ i.flattr:before {
 .FlattrButton{
 	display:				block;
 	margin:					1em auto;
+}
+
+
+
+
+
+
+
+
+
+/* step-indicator */
+
+
+.step-indicator {
+    position:				absolute;
+    display:				block;
+    left:					85%;
+    bottom:					-0.3em;
+    margin:					-2em;
+    padding:				1em 0;
+    height:					2em;
+    width:					4em;
+    line-height:			1em;
+    
+    font-size:				1em;
+    
+    background-color: 		#647d8c;
+    border: 				0.3em solid rgba(0, 0, 0, 0.25);
+    border-radius:			3em;    
+    font-variant:			small-caps;    
+    text-align:				center;
+    transform:				rotateY(0deg);
+    vertical-align: 		middle;    
+    opacity:				1;
+
+}
+
+
+.step-indicator.ng-enter {			
+	opacity:				0;
+	animation:				rotate-in 400ms;	
+	animation-delay:		400ms;
+	
+}
+
+
+.step-indicator.ng-leave {
+	animation:				rotate-out 400ms;
+}
+
+
+
+@keyframes rotate-in {
+  0% {  	
+  	opacity:				1;
+  	transform:				rotateY(90deg);	
+  }
+
+  100%{
+  	opacity:				1;
+  	transform:				rotateY(0deg);	
+  }
+  
+}
+
+
+@keyframes rotate-out {
+  0% {  
+	transform:				rotateY(0deg);	
+  }
+
+  100%{  	
+  	transform:				rotateY(90deg);	
+  }
+  
 }

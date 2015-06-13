@@ -54,16 +54,17 @@ function HTMLextendable($timeout){
 		priotity: 1000,
 
 		link: function(scope, element, atrrs){
+
 			function refresh(){
 				element[0].style.height = "auto";
   				element[0].style.height = element[0].scrollHeight + "px";
 			}
 
-			element.on('input keydown keyup change', refresh)
+			element.on('input keydown keyup change focus blur', refresh)
 
 			refresh()
 
-			$timeout(refresh, 0)
+			$timeout(refresh, 100)
 		}
 	}
 }
@@ -180,8 +181,10 @@ function HTMLpreferenceRanking($timeout) {
 									}
 
 									scope.startDragging = function(event, option) {	
-										if(no_drag) return null										
+										if(no_drag) return null		
+
 										element.addClass('dragging')
+										$(document).find('body').addClass('dragging')
 
 										scope.dragging = true										
 
@@ -213,8 +216,9 @@ function HTMLpreferenceRanking($timeout) {
 										scope.dragInOption(scope.dragged_option)
 
 										
-
 										element.removeClass('dragging')										
+										$(document).find('body').removeClass('dragging')
+
 										scope.dragging = false
 
 										delete scope.dragged_option
