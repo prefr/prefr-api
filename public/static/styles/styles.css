@@ -228,6 +228,7 @@ body > footer h3 {
 	font-variant:           small-caps;
 	text-align:             center;
 	padding:                1em;
+	margin:					0;
 }
 
 body > footer > section {
@@ -774,9 +775,10 @@ h2,
 	opacity:                0.5;
 }
 
-[disabled] {
-	opacity:                0.3;
+[disabled] {	
 	cursor:                 default;
+	border:					none !important;
+	outline:				none !important;
 }
 
 
@@ -876,6 +878,7 @@ textarea[extendable] {
 
 .options-overview {
 	margin-left:            auto;
+	text-align:				center;
 }
 
 .options-overview .option {     
@@ -1116,8 +1119,7 @@ textarea[extendable] {
 }
 
 .participants-overview label {
-	max-width:              23em;
-	transition:             background 400ms;
+	max-width:              23em;	
 }
 
 

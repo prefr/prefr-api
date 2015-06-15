@@ -66,10 +66,12 @@ prefrControllers.controller(
 
 			$scope.next = function(){
 				$location.search('step', parseInt($location.search().step || 0)+1)
+				$window.scrollTo(0,0)
 			}
 
 			$scope.previous = function(){				
 				$window.history.back()				
+				$window.scrollTo(0,0)
 			}
 
 			$scope.gotoBallot = function(){				
@@ -124,7 +126,7 @@ prefrControllers.controller(
 				$scope.update()
 			})
 
-			$scope.$on('$detroy', function(){
+			$scope.$on('$destroy', function(){
 				$location.search('step', null)
 			})
 
@@ -321,7 +323,7 @@ prefrControllers.controller(
 		
 
 
-				if($scope.ballot.papers.length == 0) {
+				if($scope.ballot.papers.length == 0 && !$scope.ballot.locked) {
 					$scope.ballot.newPaper().unlock()							
 				}
 

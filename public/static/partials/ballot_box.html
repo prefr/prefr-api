@@ -9,30 +9,40 @@
             <td id="left-column" class="ballot-overview">
                 
 
-                <div class = "left right">
 
-                    <h2 ng-if = "isAdmin">Ballot settings</h2>
+                <!-- user is admin and ballot is not locked -->
 
-                    <label ng-if = "isAdmin" class = "ui-white subject">
+
+                <div class = "left right" ng-if = "isAdmin && !ballot.locked">
+
+                    <h2>Ballot settings</h2>
+
+                    <label class = "ui-white subject">
                         <span> Subject: </span>
-                        <input type="text" ng-model = "ballot.subject" placeholder = "Enter subject">
+                        <input 
+                            type        =   "text" 
+                            ng-model    =   "ballot.subject" 
+                            placeholder =   "Enter subject"                            
+                        >
                         <div class = "icons right">
                             <i class = "fa fa-pencil"></i>
                         </div>
-
                     </label>
 
 
-                    <label ng-if = "isAdmin" class = "ui-white">
+                    <label class = "ui-white">
                         <span> Details: </span>
                         <div class = "icons right">
                             <i class = "fa fa-pencil"></i>
                         </div>
                         <br/>
                         <div class="wrapper">
-                            <textarea placeholder = "Enter details" extendable ng-model = "ballot.details" placeholder = "Enter details"></textarea>
-                        </div>
-                        
+                            <textarea 
+                                extendable 
+                                ng-model    = "ballot.details" 
+                                placeholder = "Enter details"                                
+                            ></textarea>
+                        </div>                        
          
                     </label>                    
 
@@ -49,18 +59,8 @@
                             <a href = "{{participantLink}}">{{participantLink}}</a>
                         </small>
                     </p>
-                    
-                    <h2 ng-if="!isAdmin">                        
-                        Subject: {{ballot.subject || '(no subject)'}}
-                    </h2>
 
-
-                    <p ng-if = "!isAdmin">
-                        Details:<br/>                        
-                        {{ballot.details}}
-                    </p>
-
-                    <p ng-if = "isAdmin">
+                    <p>
                         <small>
                            Add options to the ballot below. You may want to add a description alongside the title to your options if titles of different options are too similar.  
                            Any changes to ballot's options or settings will only take effect after saving.
@@ -70,8 +70,7 @@
 
                     
                     <label
-                        class       = "ui-border-top" 
-                        ng-if       = "isAdmin"
+                        class           = "ui-border-top"                         
                         ng-mousedown    = "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
                     >
                         Add new option
@@ -80,15 +79,91 @@
                         </div>
 
                       
-                    </label>     
-
-                    <label class = "ui-border-top" ng-if = "!isAdmin">
-                        Options:
-                    </label>
+                    </label>                       
 
                 </div>
 
 
+
+                <!-- user is admin and ballot is locked -->
+
+
+                <div class = "left right" ng-if = "isAdmin && ballot.locked">
+
+                    <h2>Ballot settings</h2>
+
+                    <label class = "ui-white subject">
+                        <span> Subject: </span>                        
+                        <input 
+                            type        =   "text" 
+                            value       =   "{{ballot.subject || '(no subject)'}}" 
+                            disabled    =   "disabled"
+                        >
+                    </label>
+
+
+                    <label class = "ui-white">
+                        <span> Details: </span>                        
+                        <br/>
+                        <div class="wrapper">
+                            <textarea 
+                                extendable 
+                                placeholder = "Enter details"    
+                                disabled    = "disabled"                            
+                            >{{ballot.details || '(no details)'}}</textarea>
+                        </div>                        
+         
+                    </label>                    
+
+                    <p ng-if = "adminSecret">
+                        Admin link: <br/>
+                        <small>
+                            <a href = "{{adminLink}}">{{adminLink}}</a><br/>             
+                        </small>
+
+                        <br/>
+
+                        Participant link: <br/>
+                        <small>
+                            <a href = "{{participantLink}}">{{participantLink}}</a>
+                        </small>
+                    </p>
+
+                    <p>
+                        Ballot is closed. No further changes allowed.
+                    </p>
+
+                    
+                    <label class = "ui-border-top">
+                        Options:
+                    </label>          
+                </div>
+
+
+
+
+
+                <!-- user is not admin -->
+
+
+                <div class = "left right" ng-if = "!isAdmin">
+
+
+                    <h2>                        
+                        Subject: {{ballot.subject || '(no subject)'}}
+                    </h2>
+
+
+                    <p>
+                        Details:<br/>                        
+                        {{ballot.details || '(no odetails)'}}
+                    </p>
+
+                    <label class = "ui-border-top">
+                        Options:
+                    </label>          
+
+                </div>
 
 
                 <hr/>
@@ -112,17 +187,17 @@
                             <input 
                                 name        = "title" 
                                 type        = "text"
-                                ng-if       = "isAdmin" 
+                                ng-if       = "isAdmin && !ballot.locked" 
                                 placeholder = "Enter title" 
                                 ng-model    = "option.title"
                                 max-size    
                             >
 
-                            <span ng-if = "!isAdmin">{{option.title || 'No title'}} </span>
+                            <span ng-if = "!isAdmin || ballot.locked">{{option.title || 'No title'}} </span>
                             <!--
                                 <div class="connector right"></div>
                             -->
-                            <div class = "icons right" ng-if = "isAdmin">
+                            <div class = "icons right" ng-if = "isAdmin && !ballot.locked">
                                 <button 
                                     ng-mousedown    = "ballot.removeOption(option)"
                                     title           = "move to trash"
@@ -140,16 +215,28 @@
                             <textarea 
                                 extendable 
                                 ng-model    = "option.details" 
-                                ng-if       = "isAdmin"
+                                ng-if       = "isAdmin && !ballot.locked"
                                 placeholder = "Enter details"
                             ></textarea>
-                            <div ng-if = "!isAdmin">
+                            <div ng-if = "!isAdmin || ballot.locked">
                                 {{option.details || 'No details'}}
                             </div>
                         </div>
                     </div>
 
-                     <!-- list of all ballot options end -->
+                    <!-- list of all ballot options end -->
+
+
+                    <br/ >
+                    <button 
+                        ng-mousedown    =   "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
+                        class           =   "left"
+                        ng-if           =   "isAdmin && !ballot.locked"
+                    > 
+                        Add option
+                        <i class = "fa fa-plus"></i>                        
+                    </button>
+                    <br/>
 
 
                     <!-- list of removed ballot options start -->
@@ -190,6 +277,7 @@
                 
                 </div>
 
+
                 <hr class = "up" />
 
                 <div class = "ui-border-bottom ui-extended-height ui-blue"></div>
@@ -226,7 +314,7 @@
                     >
                         <div class = "ui-borders ui-corners-all ui-dark-white">
                             <h2>{{paper.participant || 'no name'}}</h2>
-                            <div ng-if = "paper.locked">
+                            <div ng-if = "paper.locked ">
                                 (<i class = "fa fa-warning"></i> locked)
                             </div>
                         </div>
@@ -237,7 +325,7 @@
                         <preference-ranking
                             ranking-orientation =   "vertical"
                             ranking-model       =   "paper.ranking"
-                            no-dragging         =   "paper.locked"     
+                            no-dragging         =   "paper.locked || ballot.locked"     
                         >   
 
                             <preference-rank
@@ -360,7 +448,16 @@
                 <div ng-show = "!ballot.diff()">
 
 
-                        <div class="left right ui-white">
+                        <div                            
+                            class   = "left right ui-white" 
+                            ng-if   = "ballot.locked"
+                        >
+                            <h2>Participants ({{ballot.paperCount()||0}})</h2> 
+                            <p>Ballot is closed.</p>
+                            <div class = "ui-border-top ui-blue ui-medium-height" ></div>
+                        </div>
+
+                        <div class="left right ui-white" ng-if ="!ballot.locked">
                             <h2>Participants ({{ballot.paperCount()||0}})</h2>
                             <p>
                                 Enter your name below and arrange the options in the middle column according to your preference.
@@ -418,7 +515,7 @@
 
                                 <span 
                                     class   = "name"
-                                    ng-if = "paper.locked"
+                                    ng-if = "paper.locked || ballot.locked"
                                 >
                                     {{paper.participant || 'no name'}}
                                 </span>
@@ -427,10 +524,10 @@
                                     type        = "text"                                 
                                     ng-model    = "paper.participant"
                                     placeholder = "Enter name"
-                                    ng-if       = "!paper.locked"
+                                    ng-if       = "!paper.locked && !ballot.locked"
                                 />
 
-                                <div class = "icons right shift">
+                                <div class = "icons right shift" ng-if = "!ballot.locked">
 
                                     <span
                                         disabled
