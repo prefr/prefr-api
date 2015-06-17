@@ -1,3 +1,5 @@
+"use strict";
+
 var  ngFlattr = angular.module('ngFlattr', []);
 
 

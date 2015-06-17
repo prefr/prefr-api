@@ -1,3 +1,5 @@
+"use strict";
+
 angular.module('services',[])
 .factory('BallotOption',[
 

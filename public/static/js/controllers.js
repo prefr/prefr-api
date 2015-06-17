@@ -1,3 +1,5 @@
+"use strict";
+
 var prefrControllers = angular.module('prefrControllers', []);
 
 prefrControllers.controller(
@@ -147,14 +149,13 @@ prefrControllers.controller(
 		'$interval',
 		'$q',
 		'$window',
-		'$location',
 		'$timeout',
 		'Storage',
 		'Ballot',
 		'BallotPaper',
 		'api',
 
-		function ($config, $scope, $routeParams, $location, $http, $interval, $q, $window, $location, $timeout, Storage, Ballot, BallotPaper, api){
+		function ($config, $scope, $routeParams, $location, $http, $interval, $q, $window, $timeout, Storage, Ballot, BallotPaper, api){
 
 								
 			$scope.adminSecret 		= $routeParams.admin_secret

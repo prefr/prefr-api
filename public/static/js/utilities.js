@@ -1,3 +1,5 @@
+"use strict";
+
 function _l(obj){
 
 	if(obj == undefined) {

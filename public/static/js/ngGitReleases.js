@@ -1,3 +1,5 @@
+"use strict";
+
 var  ngGitReleases = angular.module('ngGitReleases', []);
 
 

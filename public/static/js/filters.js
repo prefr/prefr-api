@@ -1,3 +1,5 @@
+"use strict";
+
 var prefrFilters = angular.module('prefrFilters', []);
 
 prefrFilters

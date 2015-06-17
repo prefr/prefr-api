@@ -1864,9 +1864,12 @@ i.flattr:before {
 	background-repeat:      no-repeat;
 }
 
-.FlattrButton{
+iframe[title="Flattr"]{
 	display:				block;
 	margin:					1em auto;
+	height:					5em;
+	width:					5em;
+	overflow:				hidden;
 }
 
 
