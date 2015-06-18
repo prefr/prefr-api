@@ -322,6 +322,14 @@ prefrControllers.controller(
 
 				$scope.lockPapers()
 		
+				if(data.result){
+					$scope.result	=	new BallotPaper({
+							        		participant: 'Result',
+							        		ranking: data.result
+							        	})
+
+					console.dir($scope.result)
+				}
 
 
 				if($scope.ballot.papers.length == 0 && !$scope.ballot.locked) {
@@ -338,7 +346,8 @@ prefrControllers.controller(
 					$scope.ballot.papers.forEach(function(paper){
 						if(!paper.removed)
 							$scope.savePaper(paper)
-					})
+					})					
+
 
 					angular.extend(Storage[data.id], {
 				   		id:				data.id,

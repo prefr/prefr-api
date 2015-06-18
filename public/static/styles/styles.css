@@ -1530,6 +1530,7 @@ preference-rank.nonempty > .tag:before{
 
 preference-ranking preference-rank.empty {
 	opacity:				0;	
+	transform:              scale(0.1);
 }
 
 preference-ranking.dragging preference-rank.empty {

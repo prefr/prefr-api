@@ -91,7 +91,7 @@ function HTMLpreferenceRanking($timeout) {
 										element.children().remove()
 
 										//copy rankingModel:
-										ranking_data = JSON.parse(JSON.stringify(rankingModel)) || []
+										var ranking_data = JSON.parse(JSON.stringify(rankingModel)) || []
 
 										scope.ranking = [['']]
 
@@ -163,9 +163,9 @@ function HTMLpreferenceRanking($timeout) {
 										scope.cleanRank(scope.active_rank)
 
 										var parent_rank = option.parents('preference-rank'),
-											prev		= scope.active_rank.prev('preference-rank')
-											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 1
-											next		= scope.active_rank.next('preference-rank')
+											prev		= scope.active_rank.prev('preference-rank'),
+											prev_empty 	= prev.length != 0 && prev.find('preference-option').length == 1,
+											next		= scope.active_rank.next('preference-rank'),
 											next_empty 	= next.length != 0 && next.find('preference-option').length == 1
 
 										if(scope.prev) scope.prev.insertBefore(scope.active_rank)
@@ -236,7 +236,7 @@ function HTMLpreferenceRanking($timeout) {
 											textNodes	= []
 
 
-										for(key in childNodes){
+										for(var key in childNodes){
 											var node = childNodes[key]
 											if(node.nodeType == 3) 
 												textNodes.push(node)

@@ -366,7 +366,7 @@ angular.module('services',[])
                 var base_tags   =   "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                     taken_tags  =   this.options.map(function(option){
                                         return option.tag
-                                    })
+                                    }),
                     i           =   0,
                     next_tag    =   'A'
 
@@ -396,8 +396,9 @@ angular.module('services',[])
                 if(this.locked)
                     return false
 
-                var ranking     = [this.options.map(function(option){ return option.tag })]
+                var ranking     = [this.options.map(function(option){ return option.tag })],
                     new_paper   = new BallotPaper(data || { ranking :  ranking })
+                    
                 this.papers.unshift(new_paper) 
                 return new_paper
             }
