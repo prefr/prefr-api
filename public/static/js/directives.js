@@ -199,6 +199,8 @@ function HTMLpreferenceRanking($timeout) {
 										$(document).on('mousemove',				scope.trackMouseMovement)							
 										$(document).on('mouseup mouseleave',	scope.drop)
 
+										scope.$broadcast('dragging-started')
+
 									}
 
 
@@ -288,7 +290,7 @@ function HTMLpreferenceRanking($timeout) {
 																return rank.indexOf(tag) != -1
 															})[0],
 											from_index 	=	from_rank && scope.ranking.indexOf(from_rank),
-											from_empty	=	from_rank && from_rank.length == 2 	// has dummy and moved option
+											from_empty	=	from_rank && from_rank.length == 2, 	// has dummy and moved option
 
 											to_index	=	from_index+ (from_empty ? 2*dir : dir),
 											to_rank		=	scope.ranking[to_index],
