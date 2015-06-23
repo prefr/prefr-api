@@ -19,7 +19,7 @@ object AccessControllFilter extends EssentialFilter {
       accessControllEnabled match {
         case Some("true") =>
           action.apply(request).map(_.withHeaders(
-//            ACCESS_CONTROL_ALLOW_METHODS -> "GET, POST, DELETE, PUT, OPTIONS",
+            ACCESS_CONTROL_ALLOW_METHODS -> "GET, POST, DELETE, PUT, OPTIONS",
             ACCESS_CONTROL_ALLOW_ORIGIN -> "*")//,
 //            ACCESS_CONTROL_ALLOW_HEADERS -> "Authorization, Content-type, X-File-Name, X-Max-Chunks, X-File-Size, X-File-Type, X-Index, X-TwoFactorToken")
           )
