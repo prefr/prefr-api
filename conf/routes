@@ -22,6 +22,9 @@ GET           /api/ballotBox/:id/preftoolResult            controllers.PreftoolC
 
 POST          /api/ballotBox/preftoolImport                controllers.PreftoolController.importPapers
 
+# deal with options requests
+OPTIONS        /api/*foo                                   controllers.Application.getOptions(foo)
+
 
 # calculation without saving to db
 #POST        /api/get_schulze_rank        controllers.directSchulze.direct()

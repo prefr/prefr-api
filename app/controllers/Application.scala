@@ -12,4 +12,9 @@ object Application extends Controller {
       Ok(views.html.index())
   }
 
+  def getOptions(foo: String) = Action {
+    request =>
+      Ok("")
+  }
+
 }
