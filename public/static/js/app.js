@@ -35,9 +35,12 @@ prefr.config([
     '$config',
     '$routeProvider',
     '$locationProvider',
+    'apiProvider',
     'ngGitReleasesProvider',
 
-    function($config, $routeProvider, $locationProvider, ngGitReleasesProvider) {
+    function($config, $routeProvider, $locationProvider, apiProvider, ngGitReleasesProvider) {
+
+        apiProvider.setApiUrl('http://api.prefr.org/api')
 
         $routeProvider
         .when(

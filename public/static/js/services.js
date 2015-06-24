@@ -235,6 +235,9 @@ angular.module('services',[])
         return BallotPaper
     }
 ])
+
+
+
 .factory('Ballot',[
 
     'BallotPaper',
@@ -464,56 +467,70 @@ angular.module('services',[])
         return Ballot
     }
 ])
-.service('api', [
-
-    '$http',
-
-    function($http){
-        return {
-
-            getBallot: function(box_id){
-                return  $http.get('/api/ballotBox/'+box_id)
-                        .then(function(result){
-                            return result.data
-                        })
-            },
-
-            saveBallot: function(ballot){
-                return $http.post('/api/ballotBox', ballot.exportData())
-                        .then(function(result){
-                            return result.data
-                        })                    
-            },
-
-            updateBallot: function(ballot, adminSecret){
-                var data = ballot.exportData() 
-
-                data.adminSecret = adminSecret              
-
-                return  $http.put('/api/ballotBox/'+data.id, data)
-                        .then(function(result){
-                            return result.data
-                        })
-            },
-
-            savePaper: function(ballot, paper){ //paper may just be diff data
-                var data        =   paper.diff 
-                                    ?   paper.diff() || paper.exportData()
-                                    :   paper,
-                    api_call    =   paper.id
-                                    ?   $http.put('/api/ballotBox/'+ballot.id+'/paper/'+paper.id, data)
-                                    :   $http.post('/api/ballotBox/'+ballot.id+'/paper', data)
-
-                return  api_call
-                        .then(function(result){
-                            return result.data
-                        })
-            }
 
 
-        }
+.provider('api', 
+
+    function(){
+
+        var api_url = '/api'
+
+
+        this.setApiUrl =    function(url){
+                                api_url = url
+                            }
+
+
+        this.$get      =    [
+                                '$http',
+
+                                function($http){
+                                    return {
+
+                                        getBallot: function(box_id){
+                                            return  $http.get(api_url+'/ballotBox/'+box_id)
+                                                    .then(function(result){
+                                                        return result.data
+                                                    })
+                                        },
+
+                                        saveBallot: function(ballot){
+                                            return $http.post(api_url+'/ballotBox', ballot.exportData())
+                                                    .then(function(result){
+                                                        return result.data
+                                                    })                    
+                                        },
+
+                                        updateBallot: function(ballot, adminSecret){
+                                            var data = ballot.exportData() 
+
+                                            data.adminSecret = adminSecret              
+
+                                            return  $http.put(api_url+'/ballotBox/'+data.id, data)
+                                                    .then(function(result){
+                                                        return result.data
+                                                    })
+                                        },
+
+                                        savePaper: function(ballot, paper){ //paper may just be diff data
+                                            var data        =   paper.diff 
+                                                                ?   paper.diff() || paper.exportData()
+                                                                :   paper,
+                                                api_call    =   paper.id
+                                                                ?   $http.put(api_url+'/ballotBox/'+ballot.id+'/paper/'+paper.id, data)
+                                                                :   $http.post(api_url+'/ballotBox/'+ballot.id+'/paper', data)
+
+                                            return  api_call
+                                                    .then(function(result){
+                                                        return result.data
+                                                    })
+                                        }
+
+                                    }
+                                }
+                            ]
     }
-])
+)
 
 
 .service('Storage', [
