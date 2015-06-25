@@ -405,7 +405,7 @@ angular.module('prefrServices',[])
 				var ranking     = [this.options.map(function(option){ return option.tag })],
 					new_paper   = new BallotPaper(data || { ranking :  ranking })
 					
-				this.papers.unshift(new_paper) 
+				this.papers.push(new_paper) 
 				return new_paper
 			}
 
