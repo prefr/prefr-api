@@ -439,13 +439,12 @@ angular.module('prefrServices',[])
 				if(this.locked)
 					return false
 
-				paper.removed = true
+				paper.removed 	= true
+				paper.locked	= true
+
 			}
 
 			this.restorePaper = function(paper){
-				if(this.locked)
-					return false
-
 				paper.removed = false
 			}
 
