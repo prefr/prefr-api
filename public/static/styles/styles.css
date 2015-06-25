@@ -2,7 +2,6 @@
 
 	blue:           rgba(100,125,140,1) / #647D8C;
 	saturated blue: #5f98f7; #5f98f7
-	light-blue:     #A7C7DC;
 	light-gray:     #ccc;
 	white:          rgba(245, 245, 240, 1);
 	dark-gray:      #444;
@@ -1947,3 +1946,120 @@ iframe[title="Flattr"]{
   }
   
 }
+
+
+
+
+
+
+/* api indicator */
+
+
+[api-indicator] {
+	width:				10em;
+	text-align:			center;
+	margin:				0 1em;
+	height:				1.5em;
+	display:			inline-block;
+}
+
+
+
+[api-indicator] {
+	opacity:			0;
+	transition:			opacity 1000ms linear;
+}
+
+[api-indicator].active {
+	opacity:			1;
+}
+
+[api-indicator] div{
+	display:			inline-block;
+	width:				0.5em;
+	height:				100%;
+	min-height:			1em;
+	background-color:	#647D8C;
+	vertical-align:		middle;
+	margin:				0 0.25em;
+	border-radius:		0.1em;
+	opacity:			0.2;
+}
+
+[api-indicator].active div{	
+	animation:			loading 1000ms infinite;
+	-webkit-animation:	loading 1000ms infinite;
+}
+
+[api-indicator] div:nth-child(1) {
+	animation-delay:			100ms;
+	-webkit-animation-delay:	100ms;
+}
+
+[api-indicator] div:nth-child(2) {
+	animation-delay:			200ms;
+	-webkit-animation-delay:	200ms;
+}
+
+[api-indicator] div:nth-child(3) {
+	animation-delay:			300ms;
+	-webkit-animation-delay:	300ms;
+}
+
+[api-indicator] div:nth-child(4) {
+	animation-delay:			400ms;
+	-webkit-animation-delay:	400ms;
+}
+
+[api-indicator] div:nth-child(5) {
+	animation-delay:			500ms;
+	-webkit-animation-delay:	500ms;
+}
+
+[api-indicator] div:nth-child(6) {
+	animation-delay:			600ms;
+	-webkit-animation-delay:	600ms;
+}
+
+[api-indicator] div:nth-child(7) {
+	animation-delay:			700ms;
+	-webkit-animation-delay:	700ms;
+}
+
+
+@keyframes loading {
+  40% {
+  	transform:			scale(1);
+  	opacity:			0.2;
+  }
+ 
+  70% {
+  	transform:			scale(1.5);
+  	background-color:	#5f98f7;
+  	opacity:			1;
+  }
+
+  100% {
+  	transform:			scale(1);
+  	opacity:			0.2;
+  }
+}
+
+@-webkit-keyframes loading {
+  40% {
+  	transform:			scale(1);
+  	opacity:			0.2;
+  }
+ 
+  70% {
+  	transform:			scale(1.5);
+  	background-color:	#5f98f7;
+  	opacity:			1;
+  }
+
+  100% {
+  	transform:			scale(1);
+  	opacity:			0.2;
+  }
+}
+

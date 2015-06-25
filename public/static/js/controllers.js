@@ -1,15 +1,17 @@
 "use strict";
 
-var prefrControllers = angular.module('prefrControllers', []);
+angular.module('prefrControllers', [])
 
-prefrControllers.controller(
+.controller(
 	'HeaderCtrl',
 	[
 		'$scope',
 		'Storage',
+		'api',
 		
-		function($scope, Storage, ngFlattr){
-			$scope.Storage = Storage
+		function($scope, Storage, api){
+			$scope.Storage 	= Storage
+			$scope.api 		= api
 
 			$scope.removeItem = function(id){
 				delete Storage[id]
@@ -18,7 +20,11 @@ prefrControllers.controller(
 	]
 )
 
-prefrControllers.controller(
+
+
+
+
+.controller(
 	'NewBallotBoxCtrl',
 	[
 		'$scope',
@@ -82,12 +88,16 @@ prefrControllers.controller(
 
 			$scope.saveBallot = function(use_status_quo){
 
+				if($scope.saving)
+					return null
+
 				if(use_status_quo)
 					$scope.ballot.options.push($scope.status_quo)
 
 				var url = $location.absUrl()
 
-				console.log(url)
+				$scope.saving = true
+				
 
 				return 	api.saveBallot($scope.ballot)
 						.then(function(data){							
@@ -109,6 +119,9 @@ prefrControllers.controller(
 
 
 							$scope.next()
+						})
+						.finally(function(){
+							delete $scope.saving
 						})
 			}	
 
@@ -137,7 +150,10 @@ prefrControllers.controller(
 	]
 ) 
 
-prefrControllers.controller(
+
+
+
+.controller(
 
 	'BallotBoxCtrl', 
 	[
@@ -145,7 +161,6 @@ prefrControllers.controller(
 		'$scope', 
 		'$routeParams',
 		'$location',
-		'$http',
 		'$interval',
 		'$q',
 		'$window',
@@ -155,9 +170,9 @@ prefrControllers.controller(
 		'BallotPaper',
 		'api',
 
-		function ($config, $scope, $routeParams, $location, $http, $interval, $q, $window, $timeout, Storage, Ballot, BallotPaper, api){
+		function ($config, $scope, $routeParams, $location, $interval, $q, $window, $timeout, Storage, Ballot, BallotPaper, api){
 
-								
+							
 			$scope.adminSecret 		= $routeParams.admin_secret
 			$scope.box_id			= $routeParams.box_id
 			$scope.isAdmin 			= !!$scope.adminSecret
@@ -169,22 +184,20 @@ prefrControllers.controller(
 		    }
 
 		    $scope.getSchulzeRanking = function() {
-		        $http.get('/api/ballotBox/'+$scope.box_id+'/result')
-		        .then(function(result){
+		        api.getResult($scope.ballot)
+		        .then(function(data){
 		        	$scope.result =	new BallotPaper({
 						        		participant: 'Result',
-						        		ranking: result.data.result
+						        		ranking: data.result
 						        	})
 		        	$scope.result.lock()
 		        })
 		    } 
 
 		    $scope.lockBallotBox = function(){
-		    	$http.post('/api/ballotBox/'+$scope.box_id+'/lock',{
-		        	'adminSecret' : $scope.adminSecret
-		        })
-		        .then(function(result){
-		        	$scope.ballot.importData(result.data)
+		    	api.lockBallot($scope.ballot, $scope.adminSecret)		    	
+		        .then(function(data){
+		        	$scope.ballot.importData(data)
 		        	if($scope.ballot.locked)
 						$scope.getSchulzeRanking()
 					$scope.lockPapers()
@@ -203,7 +216,7 @@ prefrControllers.controller(
 									    	if(!diff || paper.removed) return $q.reject()
 
 					    					return 	api.savePaper($scope.ballot, paper)  			
-						   				}, 2000)
+						   				}, 1000)
 						   									
 
 	    		return	paper.scheduledSave
@@ -215,7 +228,7 @@ prefrControllers.controller(
 		    $scope.removePaper = function(paper){
 		    	$scope.ballot.removePaper(paper)
 		    	return 	paper.id
-    					?	$http.delete('/api/ballotBox/'+$scope.ballot.id+'/paper/'+paper.id)	    	
+    					?	api.deletePaper($scope.ballot, paper)	    	
     					:	$q.when()
 		    }
 
@@ -223,7 +236,7 @@ prefrControllers.controller(
 		    	$scope.ballot.restorePaper(paper)
 
 		    	return	paper.id
-		    			?	$http.post('/api/ballotBox/'+$scope.ballot.id+'/paper', paper.exportData())
+		    			?	api.savePaper($scope.ballot, paper, true)
 			    			.then(function(result){
 			    				paper.importData(result.data)
 			    			})
@@ -327,8 +340,6 @@ prefrControllers.controller(
 							        		participant: 'Result',
 							        		ranking: data.result
 							        	})
-
-					console.dir($scope.result)
 				}
 
 

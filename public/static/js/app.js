@@ -7,9 +7,10 @@ var prefr   =   angular.module(
                                 'ngRoute',
                                 'ngAnimate',
                                 'ngSanitize',
-                                'prefrControllers',  
+                                'prefrServices',
+                                'prefrControllers',
+                                'prefrDirectives',
                                 'prefrFilters',  
-                                'services',
                                 'ngGitReleases',
                                 'ngFlattr'                                                             
                             ]
@@ -28,6 +29,7 @@ prefr.constant('$config', {
 prefr.run( function($rootScope, $config) {    
     $rootScope.console      = window.console
     $rootScope.$config      = $config
+
 })
 
 
@@ -35,12 +37,13 @@ prefr.config([
     '$config',
     '$routeProvider',
     '$locationProvider',
+    '$httpProvider',
     'apiProvider',
     'ngGitReleasesProvider',
 
-    function($config, $routeProvider, $locationProvider, apiProvider, ngGitReleasesProvider) {
+    function($config, $routeProvider, $locationProvider, $httpProvider, apiProvider, ngGitReleasesProvider) {
 
-        apiProvider.setApiUrl('http://api.prefr.org/api')
+        apiProvider.setApiUrl('http://api.prefr.org/api')        
 
         $routeProvider
         .when(
@@ -83,16 +86,5 @@ prefr.config([
         .config($config)
     }
 ])
-
-
-
-prefr.directive('manageOptions',        [manageOptions])
-
-prefr.directive('singleSelect',         [HTMLsingleSelect])
-prefr.directive('extendable',           ['$timeout', HTMLextendable])
-
-prefr.directive('preferenceRanking',    ['$timeout', '$window', HTMLpreferenceRanking])
-prefr.directive('preferenceRank',       [HTMLpreferenceRank])
-prefr.directive('preferenceOption',     [HTMLpreferenceOption])
 
                 
