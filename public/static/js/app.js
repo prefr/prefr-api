@@ -7,6 +7,7 @@ var prefr   =   angular.module(
                                 'ngRoute',
                                 'ngAnimate',
                                 'ngSanitize',
+                                'ngDrawable',
                                 'prefrServices',
                                 'prefrControllers',
                                 'prefrDirectives',
@@ -73,6 +74,12 @@ prefr.config([
             {
                 templateUrl :   'static/partials/releases.html',
                 controller  :   'GitReleasesCtrl'
+            }
+        )
+        .when(
+            '/pull',
+            {
+                templateUrl :   'static/partials/pull_test.html'
             }
         )
         .otherwise({
