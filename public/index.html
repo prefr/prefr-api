@@ -26,6 +26,7 @@
 	</head>
 	<body >
 		<header ng-controller = "HeaderCtrl">
+
 			<h1>prefr</h1>
 
 			<div api-indicator></div>
@@ -34,38 +35,40 @@
 				<a href="/ballotBox/new">
 					<i class = "fa fa-fw fa-plus-circle"></i>
 					new prefr ballot
-				</a>
-				<!-- 
-				<a href="#">personal decision</a>
-				<a href="/import">import</a>
-				-->
+				</a><!--
 
-				<nav>
+			 --><nav>
 					<a> <i class = "fa fa-fw fa-caret-down"></i> recent prefr ballots </a>
 					<ul class = "ui-white">
 						<li ng-repeat = "(id, item) in Storage">
-							<a href="{{item.link}}">{{item.subject || '(no subject)'}}</a>
-							<div class = "icons right">
-								<button ng-click = "removeItem(id)" title = "remove from list">
+							<a href="{{item.link}}">{{item.subject || '(no subject)'}}</a>							
+
+						 	<div class = "icons right">
+								<button ng-click = "confirm = true" title = "remove from list">
 									<i class = "fa fa-times"></i>
 								</button>
+							</div>		
+
+							<div ng-show = "confirm" class ="ui-inline-confirm">
+							 	<button class = "remove" ng-click = "removeItem(id)">	remove </button><!--					
+							 --><button class = "cancel" ng-click = "confirm = false">	cancel </button>
 							</div>
+
 						</li>
-						<li ng-if = "Storage|empty"><a>empty</a></li>
+
+						<li ng-if = "Storage|empty" class ="empty"><a>empty</a></li>
 						<li class = "ui-border-top ui-low-height ui-blue"></li>
 					</ul>
-				</nav>
+				</nav><!--
 
-
-				<a href = "https://github.com/prefr/prefr">
+			 --><a href = "https://github.com/prefr/prefr">
 					<i class = "fa fa-fw fa-github" ></i>
 					project on github
-				</a>
+				</a><!--
 
+				flattr
 
-
-				<!-- flattr -->
-				<nav>
+			 --><nav>
 					<a class ="flattr"><i class = "fa fa-fw flattr"></i> flattr us </a>
 					<ul class = "ui-white">
 						<li>

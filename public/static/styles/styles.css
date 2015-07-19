@@ -53,11 +53,12 @@ textarea {
 
 body > header {
 	position:               absolute;
+	display:				table;
 
 	top:                    0;
 	height:                 3.5em;
 	width:                  100%;
-	text-align:             center;
+	text-align:             right;
 	line-height:            3.5rem; 
 
 	background-color:       rgba(245, 245, 240, 1);
@@ -67,28 +68,29 @@ body > header {
 }
 
 body > header > * {
-	display:                inline-block;
+	display:                table-cell !important;
 	vertical-align:         top;
 	height:                 3.5rem;
 	line-height:            3.5rem;
 }
 
-nav {   
+header > nav {   
 	display:                inline-block;
 	position:               relative;
 	line-height:            3.5rem;
-	white-space:            nowrap;
-	float:                  right;
+	white-space:            nowrap;	
+	width:					1px;
 }
 
-nav > * {
+header nav > * {
 	vertical-align:         top;
 	color:                  #666;
-	float:                  left;
+	display:				inline-block;	
+	position:				relative;
 }
 
-nav > a,
-nav li > a {
+header nav > a,
+header nav li > a {
 	position:               relative;
 	display:                inline-block;
 	text-decoration:        none;
@@ -100,17 +102,17 @@ nav li > a {
 	transition:             background-color 400ms;
 }
 
-nav a:not([href]){
+header nav a:not([href]){
 	cursor:					default !important;
 }
 
-nav > a:hover,
-nav > nav li:hover a{
+header nav > a:hover,
+header nav > nav li:hover a{
 	background-color:       rgba(200, 200, 200, 0.5);
 	border:                 none;
 }
 
-nav nav > ul {	
+header nav nav > ul {	
 	position:               absolute;
 	bottom:					0;	
 	right:                  0;
@@ -121,17 +123,17 @@ nav nav > ul {
 }
 
 
-nav nav:hover > ul{
+header nav nav:hover > ul{
 	opacity:                1;
 	top:					100%;
 	bottom:					auto;		
 }
 
-nav nav:hover > ul > li{
+header nav nav:hover > ul > li{
 	position:               relative;
 }
 
-nav li > a{
+header nav li > a{
 	display:                block;
 	overflow:               hidden;
 	text-overflow:          ellipsis;
@@ -148,14 +150,12 @@ nav li > a{
 	opacity:				0.7;
 }
 
-body > header h1 {
-	display:                inline-block;
-	float:                  left;
-
-	margin:                 0 2em;
+header > h1 {
+	padding:                 0 1em;
+	width:					1px;
 	font-size:              2.5em;
 	line-height:            3.2rem;
-	font-weight:            bold;
+	font-weight:            bold;	
 
 	color:                  rgba(100,125,140,1);
 	text-shadow:            0 -0.05rem 0.01rem rgba(0, 0, 0, 0.7), 0 0.05rem 0.01rem rgba(255, 255, 255, 0.7);
@@ -679,6 +679,52 @@ h2,
 .ui-glow {
 	text-shadow:              0 0 0.2em #fff;
 }
+
+
+.ui-inline-confirm {
+	position:				absolute;
+	top:					0;
+	left:					0;
+	width:					100%;
+	bottom:					0;
+	overflow:				hidden;
+	white-space: 			nowrap;	
+	opacity:				1 !important;
+	transition:				all 200ms !important;
+}
+
+.ui-inline-confirm button{
+	width:					50%;
+	text-align:				center;
+	padding:				0;
+	font-size:				1em;
+	line-height:			1em;
+	height:					100%;	
+	vertical-align:			middle;	
+	
+}
+
+
+
+.ui-inline-confirm.ng-hide-remove {
+	padding-left:			100%;	
+}
+
+.ui-inline-confirm.ng-hide-remove.ng-hide-remove-active {
+	padding-left:			0%;
+}
+
+
+.ui-inline-confirm.ng-hide-add {
+	padding-left:			0%;	
+}
+
+.ui-inline-confirm.ng-hide-add.ng-hide-add-active {
+	padding-left:			100%;
+}
+
+
+
 
 
 
@@ -1961,16 +2007,12 @@ iframe[title="Flattr"]{
 
 
 [api-indicator] {
-	width:				10em;
 	text-align:			center;
-	margin:				0 1em;
-	height:				1.5em;
+	margin:				0 0em;
+	height:				1em;
 	display:			inline-block;
-}
+	white-space:		nowrap;
 
-
-
-[api-indicator] {
 	opacity:			0;
 	transition:			opacity 600ms linear;
 }
@@ -2033,7 +2075,7 @@ iframe[title="Flattr"]{
 
 
 @keyframes loading {
-  	40% {
+	40% {
 		transform:			scale(1);
 		opacity:			0.2;
 	}
@@ -2051,14 +2093,14 @@ iframe[title="Flattr"]{
 		background-color:	#647D8C;
 	}
 
-  	100% {
+	100% {
 		transform:			scale(1);
 		opacity:			0.2;
-  	}
+	}
 }
 
 @-webkit-keyframes loading {
-  	40% {
+	40% {
 		transform:			scale(1);
 		opacity:			0.2;
 	}
@@ -2076,9 +2118,9 @@ iframe[title="Flattr"]{
 		background-color:	#647D8C;
 	}
 
-  	100% {
+	100% {
 		transform:			scale(1);
 		opacity:			0.2;
-  	}
+	}
 }
 

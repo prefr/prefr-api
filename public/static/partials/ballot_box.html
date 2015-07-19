@@ -1,296 +1,291 @@
 <div
-    ng-if           =   "ballot"
+	ng-if           =   "ballot"
 	class			=	"ballot-box"
 	single-select	=	"{'ballot-paper': ballot.papers[0], 'ballot-option': undefined, 'mode' : 'prefr'}"		
 >
 
-    <table id = "main"> 
-        <tr single-select   = "{'edit-menu' : 'ranking'}">
-            <td id="left-column" class="ballot-overview">
-                
-
-
-                <!-- user is admin and ballot is not locked -->
-
-
-                <div class = "left right" ng-if = "isAdmin && !ballot.locked">
-
-                    <h2>Ballot settings</h2>
-
-                    <label class = "ui-white subject">
-                        <span> Subject: </span>
-                        <input 
-                            type        =   "text" 
-                            ng-model    =   "ballot.subject" 
-                            placeholder =   "Enter subject"                            
-                        >
-                        <div class = "icons right">
-                            <i class = "fa fa-pencil"></i>
-                        </div>
-                    </label>
-
-
-                    <label class = "ui-white">
-                        <span> Details: </span>
-                        <div class = "icons right">
-                            <i class = "fa fa-pencil"></i>
-                        </div>
-                        <br/>
-                        <div class="wrapper">
-                            <textarea 
-                                extendable 
-                                ng-model    = "ballot.details" 
-                                placeholder = "Enter details"                                
-                            ></textarea>
-                        </div>                        
-         
-                    </label>                    
+	<table id = "main"> 
+		<tr single-select   = "{'edit-menu' : 'ranking'}">
+			<td id="left-column" class="ballot-overview">
+				
+
+
+				<!-- user is admin and ballot is not locked -->
+
+
+				<div class = "left right" ng-if = "isAdmin && !ballot.locked">
+
+					<h2>Ballot settings</h2>
+
+					<label class = "ui-white subject">
+						<span> Subject: </span>
+						<input 
+							type        =   "text" 
+							ng-model    =   "ballot.subject" 
+							placeholder =   "Enter subject"                            
+						>
+						<div class = "icons right">
+							<i class = "fa fa-pencil"></i>
+						</div>
+					</label>
+
+
+					<label class = "ui-white">
+						<span> Details: </span>
+						<div class = "icons right">
+							<i class = "fa fa-pencil"></i>
+						</div>
+						<br/>
+						<div class="wrapper">
+							<textarea 
+								extendable 
+								ng-model    = "ballot.details" 
+								placeholder = "Enter details"                                
+							></textarea>
+						</div>                        
+		 
+					</label>                    
 
-                    <p ng-if = "adminSecret">
-                        Admin link: <br/>
-                        <small>
-                            <a href = "{{adminLink}}">{{adminLink}}</a><br/>             
-                        </small>
+					<p ng-if = "adminSecret">
+						Admin link: <br/>
+						<small>
+							<a href = "{{adminLink}}">{{adminLink}}</a><br/>             
+						</small>
 
-                        <br/>
+						<br/>
 
-                        Participant link: <br/>
-                        <small>
-                            <a href = "{{participantLink}}">{{participantLink}}</a>
-                        </small>
-                    </p>
+						Participant link: <br/>
+						<small>
+							<a href = "{{participantLink}}">{{participantLink}}</a>
+						</small>
+					</p>
 
-                    <p>
-                        <small>
-                           Add options to the ballot below. You may want to add a description alongside the title to your options if titles of different options are too similar.  
-                           Any changes to ballot's options or settings will only take effect after saving.
-                        </small>                    
-                    </p>
+					<p>
+						<small>
+						   Add options to the ballot below. You may want to add a description alongside the title to your options if titles of different options are too similar.  
+						   Any changes to ballot's options or settings will only take effect after saving.
+						</small>                    
+					</p>
 
 
-                    
-                    <label
-                        class           = "ui-border-top"                         
-                        ng-mousedown    = "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
-                    >
-                        Add new option
-                        <div class = "icons right">
-                            <i class = "fa fa-plus"></i>
-                        </div>
+					
+					<label
+						class           = "ui-border-top"                         
+						ng-mousedown    = "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
+					>
+						Add new option
+						<div class = "icons right">
+							<i class = "fa fa-plus"></i>
+						</div>
 
-                      
-                    </label>                       
+					  
+					</label>                       
 
-                </div>
+				</div>
 
 
 
-                <!-- user is admin and ballot is locked -->
+				<!-- user is admin and ballot is locked -->
 
 
-                <div class = "left right" ng-if = "isAdmin && ballot.locked">
+				<div class = "left right" ng-if = "isAdmin && ballot.locked">
 
-                    <h2>Ballot settings</h2>
+					<h2>Ballot settings</h2>
 
-                    <label class = "ui-white subject">
-                        <span> Subject: </span>                        
-                        <input 
-                            type        =   "text" 
-                            value       =   "{{ballot.subject || '(no subject)'}}" 
-                            disabled    =   "disabled"
-                        >
-                    </label>
+					<label class = "ui-white subject">
+						<span> Subject: </span>                        
+						<input 
+							type        =   "text" 
+							value       =   "{{ballot.subject || '(no subject)'}}" 
+							disabled    =   "disabled"
+						>
+					</label>
 
 
-                    <label class = "ui-white">
-                        <span> Details: </span>                        
-                        <br/>
-                        <div class="wrapper">
-                            <textarea 
-                                extendable 
-                                placeholder = "Enter details"    
-                                disabled    = "disabled"                            
-                            >{{ballot.details || '(no details)'}}</textarea>
-                        </div>                        
-         
-                    </label>                    
+					<label class = "ui-white">
+						<span> Details: </span>                        
+						<br/>
+						<div class="wrapper">
+							<textarea 
+								extendable 
+								placeholder = "Enter details"    
+								disabled    = "disabled"                            
+							>{{ballot.details || '(no details)'}}</textarea>
+						</div>                        
+		 
+					</label>                    
 
-                    <p ng-if = "adminSecret">
-                        Admin link: <br/>
-                        <small>
-                            <a href = "{{adminLink}}">{{adminLink}}</a><br/>             
-                        </small>
-
-                        <br/>
-
-                        Participant link: <br/>
-                        <small>
-                            <a href = "{{participantLink}}">{{participantLink}}</a>
-                        </small>
-                    </p>
+					<p ng-if = "adminSecret">
+						Admin link: <br/>
+						<small>
+							<a href = "{{adminLink}}">{{adminLink}}</a><br/>             
+						</small>
+
+						<br/>
+
+						Participant link: <br/>
+						<small>
+							<a href = "{{participantLink}}">{{participantLink}}</a>
+						</small>
+					</p>
 
-                    <p>
-                        Ballot is closed. No further changes allowed.
-                    </p>
-
-                    
-                    <label class = "ui-border-top">
-                        Options:
-                    </label>          
-                </div>
-
-
-
-
-
-                <!-- user is not admin -->
-
-
-                <div class = "left right" ng-if = "!isAdmin">
-
-
-                    <h2>                        
-                        Subject: {{ballot.subject || '(no subject)'}}
-                    </h2>
-
-
-                    <p>
-                        Details:<br/>                        
-                        {{ballot.details || '(no odetails)'}}
-                    </p>
-
-                    <label class = "ui-border-top">
-                        Options:
-                    </label>          
-
-                </div>
-
-
-                <hr/>
-
-
-                <!-- list of all ballot options start -->
-
-                <div class = "options-overview left right ui-dark-white ui-pixelate">                   
-
-                    <div 
-                        class           = "option"
-                        ng-repeat       = "option in ballot.options | removed : false | orderBy:'tag'" 
-                        ng-mousedown    = "select('ballot-option', option); $event.stopPropagation()" 
-                        ng-class        = "{'selected' : selectionBallotOption.value === option, 'result':  paper.id == -1}"
-                    >                       
-                        <label>                            
-                            <span class="tag">
-                                {{option.tag}}
-                            </span>
-
-                            <input 
-                                name        = "title" 
-                                type        = "text"
-                                ng-if       = "isAdmin && !ballot.locked" 
-                                placeholder = "Enter title" 
-                                ng-model    = "option.title"
-                                max-size    
-                            >
+					<p>
+						Ballot is closed. No further changes allowed.
+					</p>
+
+					
+					<label class = "ui-border-top">
+						Options:
+					</label>          
+				</div>
+
+
+
+
+
+				<!-- user is not admin -->
+
+
+				<div class = "left right" ng-if = "!isAdmin">
+
+
+					<h2>                        
+						Subject: {{ballot.subject || '(no subject)'}}
+					</h2>
+
+
+					<p>
+						Details:<br/>                        
+						{{ballot.details || '(no odetails)'}}
+					</p>
+
+					<label class = "ui-border-top">
+						Options:
+					</label>          
+
+				</div>
+
+
+				<hr/>
+
+
+				<!-- list of all ballot options start -->
+
+				<div class = "options-overview left right ui-dark-white ui-pixelate">                   
+
+					<div 
+						class           = "option"
+						ng-repeat       = "option in ballot.options | removed : false | orderBy:'tag'" 
+						ng-mousedown    = "select('ballot-option', option); $event.stopPropagation()" 
+						ng-class        = "{'selected' : selectionBallotOption.value === option, 'result':  paper.id == -1}"
+					>                       
+						<label>                            
+							<span class="tag">
+								{{option.tag}}
+							</span>
+
+							<input 
+								name        = "title" 
+								type        = "text"
+								ng-if       = "isAdmin && !ballot.locked" 
+								placeholder = "Enter title" 
+								ng-model    = "option.title"
+								max-size    
+							>
 
-                            <span ng-if = "!isAdmin || ballot.locked">{{option.title || 'No title'}} </span>
-                            <!--
-                                <div class="connector right"></div>
-                            -->
-                            <div class = "icons right" ng-if = "isAdmin && !ballot.locked">
-                                <button 
-                                    ng-mousedown    = "ballot.removeOption(option)"
-                                    title           = "move to trash"
-                                >
-                                    <i class = "fa fa-times"></i>
-                                </button>
-                            </div>
+							<span ng-if = "!isAdmin || ballot.locked">{{option.title || 'No title'}} </span>
+							<!--
+								<div class="connector right"></div>
+							-->
+							<div class = "icons right" ng-if = "isAdmin && !ballot.locked">
+								<button 
+									ng-mousedown    = "ballot.removeOption(option)"
+									title           = "move to trash"
+								>
+									<i class = "fa fa-times"></i>
+								</button>
+							</div>
 
-                           
+						   
 
-                        </label>
-                        <div 
-                            class   = "details"
-                        >
-                            <textarea 
-                                extendable 
-                                ng-model    = "option.details" 
-                                ng-if       = "isAdmin && !ballot.locked"
-                                placeholder = "Enter details"
-                            ></textarea>
-                            <div ng-if = "!isAdmin || ballot.locked">
-                                {{option.details || 'No details'}}
-                            </div>
-                        </div>
-                    </div>
+						</label>
+						<div 
+							class   = "details"
+						>
+							<textarea 
+								extendable 
+								ng-model    = "option.details" 
+								ng-if       = "isAdmin && !ballot.locked"
+								placeholder = "Enter details"
+							></textarea>
+							<div ng-if = "!isAdmin || ballot.locked">
+								{{option.details || 'No details'}}
+							</div>
+						</div>
+					</div>
 
-                    <!-- list of all ballot options end -->
+					<!-- list of all ballot options end -->
 
 
-                    <br/ >
-                    <button 
-                        ng-mousedown    =   "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
-                        class           =   "left"
-                        ng-if           =   "isAdmin && !ballot.locked"
-                    > 
-                        Add option
-                        <i class = "fa fa-plus"></i>                        
-                    </button>
-                    <br/>
+					<br/ >
+					<button 
+						ng-mousedown    =   "select('ballot-option', ballot.newOption()); $event.stopPropagation()"
+						class           =   "left"
+						ng-if           =   "isAdmin && !ballot.locked"
+					> 
+						Add option
+						<i class = "fa fa-plus"></i>                        
+					</button>
+					<br/>
 
 
-                    <!-- list of removed ballot options start -->
+					<!-- list of removed ballot options start -->
 
-                    <div
-                        class       = "removed"
-                        ng-if       = "(ballot.options  | removed : true).length > 0"
-                    >
-                        <h4> Removed options </h4>
-                        <br/>
+					<div
+						class       = "removed"
+						ng-if       = "(ballot.options  | removed : true).length > 0"
+					>
+						<h4> Removed options </h4>
+						<br/>
 
-                        <div 
-                            class       = "option"
-                            ng-repeat   = "removed_option in ballot.options  | removed : true | orderBy:'tag'" 
-                        >                       
-                            <label>                            
-                                <span class="tag">
-                                    {{removed_option.tag}}
-                                </span>
+						<div 
+							class       = "option"
+							ng-repeat   = "removed_option in ballot.options  | removed : true | orderBy:'tag'" 
+						>                       
+							<label>                            
+								<span class="tag">
+									{{removed_option.tag}}
+								</span>
 
-                                <span>
-                                    {{removed_option.title}}
-                                </span>
+								<span>
+									{{removed_option.title}}
+								</span>
 
-                                <div class = "icons right">
-                                    <button ng-mousedown = "ballot.restoreOption(removed_option); select('ballot-option', removed_option)">
-                                        <i class = "fa fa-arrow-circle-up"></i>
-                                    </button>
-                                </div>                          
+								<div class = "icons right">
+									<button ng-mousedown = "ballot.restoreOption(removed_option); select('ballot-option', removed_option)">
+										<i class = "fa fa-arrow-circle-up"></i>
+									</button>
+								</div>                          
 
-                            </label>
+							</label>
 
-                            <div class = "details">
-                                <textarea extendable disabled placeholder ="no further description">{{removed_option.details}}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                
-                </div>
+							<div class = "details">
+								<textarea extendable disabled placeholder ="no further description">{{removed_option.details}}</textarea>
+							</div>
+						</div>
+					</div>
+				
+				</div>
 
 
-                <hr class = "up" />
+				<hr class = "up" />
 
-                <div class = "ui-border-bottom ui-extended-height ui-blue"></div>
-
-                <div class = "ui-extended-height ui-white"></div>              
-                
-                <div class = "ui-border-top ui-extended-height ui-blue ui-bottom"></div>
-            </td>
-
-
-
-
+				<div class = "ui-border-bottom ui-extended-height ui-blue"></div>
 
+				<div class = "ui-extended-height ui-white"></div>              
+				
+				<div class = "ui-border-top ui-extended-height ui-blue ui-bottom"></div>
+			</td>
 
 
 
@@ -303,319 +298,301 @@
 
 
 
-        	<td class = "edit-paper ui-deep-shadow" >
 
-                <div class = "ui-relative "> 
 
-                    <div
-                        ng-repeat = "paper in ballot.papers.concat(result ? [result] : [])"
-                        ng-show   = " !ballot.diff() && selectionBallotPaper.value == paper"
-                        class     = "paper"
-                    >
-                        <div class = "ui-borders ui-corners-all ui-dark-white">
-                            <h2>{{paper.participant || 'no name'}}</h2>
-                            <div ng-if = "paper.locked ">
-                                (<i class = "fa fa-warning"></i> locked)
-                            </div>
-                        </div>
 
-                        <br/>
-                        <br/>
 
-                        <preference-ranking
-                            ranking-orientation =   "vertical"
-                            ranking-model       =   "paper.ranking"
-                            no-dragging         =   "paper.locked || ballot.locked"     
-                        >   
 
-                            <preference-rank
-                                ng-repeat   =   "rank in ranking"
-                                class       =   "ui-panel left vertical ui-borders ui-corners-all"
-                                ng-class    =   "{empty: rank.length <= 1, nonempty: rank.length > 1}"                
-                            >
-                                <div class = "tag">
-                					<!-- CSS will put the counter here-->
-                				</div>
+			<td class = "edit-paper ui-deep-shadow" >
 
-                                <preference-option 
-                					class		    = "ui-panel right ui-corners-all"
-                                    ng-class        = "{'selected': selectionBallotOption.value && selectionBallotOption.value === ballot.getOptionByTag(tag), 'touched': touchedTag == tag}"
-                					ng-repeat	    = "tag in rank | dummyLast"
-                					value		    = "{{tag}}"
-                                    ng-click        = "select('ballot-option', ballot.getOptionByTag(tag))"
-                				>
-                                    <div class = "move-rank up" ng-click = "up()">
-                                        <i class = "fa fa-caret-up"></i>
-                                    </div>
-                                    <div class = "move-rank down" ng-click = "down()">
-                                        <i class = "fa fa-caret-down"></i>
-                                    </div>
+				<div class = "ui-relative "> 
 
-                					<div class="content">	
-                						<div class="title"> 	{{ballot.getOptionByTag(tag).title}} 	</div>						
-                					</div>
-                					<div class = "tag">
-                						{{ballot.getOptionByTag(tag).tag}}
-                					</div>
-                				</preference-option>
-                            </preference-rank>
-                		</preference-ranking>
-                    </div>
+					<div
+						ng-repeat = "paper in ballot.papers.concat(result ? [result] : [])"
+						ng-show   = " !ballot.diff() && selectionBallotPaper.value == paper"
+						class     = "paper"
+					>
+						<div class = "ui-borders ui-corners-all ui-dark-white">
+							<h2>{{paper.participant || 'no name'}}</h2>
+							<div ng-if = "paper.locked ">
+								(<i class = "fa fa-warning"></i> locked)
+							</div>
+						</div>
 
+						<br/>
+						<br/>
 
-                    <div
-                        ng-show     = "selectionEditMenu.value == 'source'" 
-                        class       = "ui-panel ui-borders ui-corners-all"
-                    >
-                        <summary class="">
-                            <h3>{{selectionBallotPaper.value.participant}}</h3>
-                            <nav>
-                                <a
-                                    ng-mousedown = "select('mode', 'preftools')"
-                                >pref-tools syntax</a>
-                                <a
-                                    ng-mousedown = "select('mode', 'prefr')"
-                                >prefr syntax</a>                            
-                            </nav>
-                        </summary>                    
-                        <ranking-source
-                            ranking-data    = "selectionBallotPaper.value.ranking"
-                            mode            = "selectionMode.value"
-                        >
-                        </ranking-source>
-                    </div>
-                </div>
-        	</td>
+						<preference-ranking
+							ranking-orientation =   "vertical"
+							ranking-model       =   "paper.ranking"
+							no-dragging         =   "paper.locked || ballot.locked"     
+						>   
 
-        	<!-- selected ballot paper to end -->
+							<preference-rank
+								ng-repeat   =   "rank in ranking"
+								class       =   "ui-panel left vertical ui-borders ui-corners-all"
+								ng-class    =   "{empty: rank.length <= 1, nonempty: rank.length > 1}"                
+							>
+								<div class = "tag">
+									<!-- CSS will put the counter here-->
+								</div>
 
+								<preference-option 
+									class		    = "ui-panel right ui-corners-all"
+									ng-class        = "{'selected': selectionBallotOption.value && selectionBallotOption.value === ballot.getOptionByTag(tag), 'touched': touchedTag == tag}"
+									ng-repeat	    = "tag in rank | dummyLast"
+									value		    = "{{tag}}"
+									ng-click        = "select('ballot-option', ballot.getOptionByTag(tag))"
+								>
+									<div class = "move-rank up" ng-click = "up()">
+										<i class = "fa fa-caret-up"></i>
+									</div>
+									<div class = "move-rank down" ng-click = "down()">
+										<i class = "fa fa-caret-down"></i>
+									</div>
 
+									<div class="content">	
+										<div class="title"> 	{{ballot.getOptionByTag(tag).title}} 	</div>						
+									</div>
+									<div class = "tag">
+										{{ballot.getOptionByTag(tag).tag}}
+									</div>
+								</preference-option>
+							</preference-rank>
+						</preference-ranking>
+					</div>
 
+				</div>
+			</td>
 
+			<!-- selected ballot paper to end -->
 
 
 
 
 
+			<td
+				id              = "right-column"
+				single-select   = "{'overview-menu': 'papers'}"
+			>
 
+				<div ng-show = "!!ballot.diff()">
 
-            <td
-                id              = "right-column"
-                single-select   = "{'overview-menu': 'papers'}"
-            >
+						<div class="left right ui-white">
+							<h2>Ballot settings have been changed</h2>
 
-                <div ng-show = "!!ballot.diff()">
+							<div class ="ui-medium-height"></div>
 
-                        <div class="left right ui-white">
-                            <h2>Ballot settings have been changed</h2>
+							<p>
+								You changed some of the ballot settings. Please save or revert those changes before editing any papers.
+							</p>
 
-                            <div class ="ui-medium-height"></div>
+							<div class ="ui-medium-height"></div>
 
-                            <p>
-                                You changed some of the ballot settings. Please save or revert those changes before editing any papers.
-                            </p>
+							<div class = "ui-tac">
 
-                            <div class ="ui-medium-height"></div>
+								<button ng-mousedown = "updateBallotBox()">                            
+									save changes
+								</button>
 
-                            <div class = "ui-tac">
+								<br/>
+								<br/>
+									- or- 
+								<br/>
+								<br/>
 
-                                <button ng-mousedown = "updateBallotBox()">                            
-                                    save changes
-                                </button>
+								<button ng-mousedown = "ballot.revert()">                         
+									revert
+								</button>
 
-                                <br/>
-                                <br/>
-                                    - or- 
-                                <br/>
-                                <br/>
+							</div>
+							
+							<div class ="ui-medium-height"></div>
 
-                                <button ng-mousedown = "ballot.revert()">                         
-                                    revert
-                                </button>
 
-                            </div>
-                            
-                            <div class ="ui-medium-height"></div>
+							<p>
+								You can keep making as many changes as you like before saving them.
+							</p>
+						</div>             	
 
+				</div>
 
-                            <p>
-                                You can keep making as many changes as you like before saving them.
-                            </p>
-                        </div>             	
 
-                </div>
 
-                <div ng-show = "!ballot.diff()">
 
+				
 
-                        <div                            
-                            class   = "left right ui-white" 
-                            ng-if   = "ballot.locked"
-                        >
-                            <h2>Participants ({{ballot.paperCount()||0}})</h2> 
-                            <p>Ballot is closed.</p>
-                            <div class = "ui-border-top ui-blue ui-medium-height" ></div>
-                        </div>
+				<div ng-show = "!ballot.diff()">
 
-                        <div class="left right ui-white" ng-if ="!ballot.locked">
-                            <h2>Participants ({{ballot.paperCount()||0}})</h2>
-                            <p>
-                                Enter your name below and arrange the options in the middle column according to your preference.
-                            </p>
-                            <p>
-                                <small>
-                                    You can change preference ranking or the name of yours or another participant's later on if you like. In order to edit a name click the lock to unlock the input field.
-                                </small>
-                            </p>
-
-                            <p ng-if = "isAdmin">
-                                <button class = "ui-float-left" ng-mousedown = "lockBallotBox()">
-                                    Close ballot
-                                </button>
-                                <small>
-                                    When every participant has cast her vote, you can calculate the result. It will be visible to every participant as a new ballot paper below.
-                                </small>
-                            </p>
-
-                            <label 
-                                class           = "ui-border-top" 
-                                ng-mousedown    = "select('ballot-paper', ballot.newPaper())"                        
-                            >
-                                Add new particpant
-                                <div class = "icons right">
-                                    <i class = "fa fa-plus"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <hr/>
-
-
-                        <div class="participants-overview left ui-dark-white ui-pixelate">
-
-                            <label 
-                                ng-if       = "result"
-                                class       = "result"
-                                ng-init     = "select('ballot-paper', result)" 
-                                ng-class    = "{'selected' : selectionBallotPaper.value == result}"
-                                ng-mousedown    = "select('ballot-paper', result)" 
-                            >
-                                <div class = "connector left"></div>
-
-                                <span class = "name"> {{result.participant || 'no name'}} </span>
-
-                            </label>
-
-                            <label
-                                ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'locked' : paper.locked}"
-                                ng-repeat       = "paper in ballot.papers"    
-                                ng-if           = "!paper.removed"
-                                ng-mousedown    = "select('ballot-paper', paper)"                
-                            >
-                                <div class="connector left"></div>
-
-                                <span 
-                                    class   = "name"
-                                    ng-if = "paper.locked || ballot.locked"
-                                >
-                                    {{paper.participant || 'no name'}}
-                                </span>
-
-                                <input
-                                    type        = "text"                                 
-                                    ng-model    = "paper.participant"
-                                    placeholder = "Enter name"
-                                    ng-if       = "!paper.locked && !ballot.locked"
-                                />
-
-                                <div class = "icons right shift" ng-if = "!ballot.locked">
-
-                                    <span
-                                        disabled
-                                        ng-if   = "!!paper.diff()"
-                                        class   = "info"
-                                        title   = "saving"     
-                                    >
-                                        <i class = "fa fa-upload pulsing"></i>
-                                    </span>
-
-                                    <span
-                                        class   = "info ui-glow"
-                                        ng-if   = "!paper.participant && !paper.locked"
-                                        title   = "Please enter a name"
-                                    >
-                                        <i class = "fa fa-exclamation-circle"></i>
-                                    </span>
-
-
-                                    <button 
-                                        ng-disabled     = "paper.locked || !paper.diff(true)"
-                                        ng-mousedown    = "paper.revert()" 
-                                        title           = "undo all changes"
-                                    >
-                                        <i class = "fa fa-undo"></i>
-                                    </button>
-                                  
-                                    <button 
-                                        ng-mousedown    = "paper.locked ? paper.unlock() : paper.lock()"
-                                        title           = "{{paper.locked ? 'unlock to edit' : 'lock to disable editing'}}"
-                                    >
-                                        <i class = "fa" ng-class ="{'fa-lock': paper.locked, 'fa-unlock-alt' : !paper.locked}"></i>
-                                    </button>
-
-                                    <button
-                                        ng-disabled     = "paper.locked"   
-                                        ng-mousedown    = "removePaper(paper)"
-                                        title           = "move to trash"                                
-                                    >
-                                        <i class = "fa fa-times"></i>
-                                    </button>
-
-                                </div> 
-                            </label>
-
-                            <div
-                                class   = "removed"
-                                ng-if   = "(ballot.papers | filter: {removed : true}).length > 0"
-                            >
-                                <h4> Removed Participants</h4>
-                                <br/>
-                                <br/>
-
-                                <label
-                                    ng-class        = "{'selected' : selectionBallotPaper.value == removed_paper}"
-                                    ng-repeat       = "removed_paper in ballot.papers | orderBy:'-id':true"    
-                                    ng-if           = "removed_paper.removed"
-                                    ng-mousedown    = "select('ballot-paper', removed_paper)"  
-                                >
-                                    <div class="connector left"></div>
-
-                                    <span class   = "name">
-                                        {{removed_paper.participant || 'no name'}}
-                                    </span>
-
-                                    <div class = "icons right shift">
-                                        <button 
-                                            ng-mousedown    = "restorePaper(removed_paper); select('ballot-paper', removed_paper)"
-                                            title           = "restore"
-                                        >
-                                            <i class = "fa fa-arrow-circle-up"></i>
-                                        </button>
-                                    </div> 
-                                </label>
-                            </div>
-                        </div>
-
-                        <hr class = "up" />
-                        <div class = "ui-border-bottom ui-extended-height ui-blue"></div>
-                        <div class = "ui-extended-height ui-white"></div>
-
-                </div>
-
-                <div class = "ui-border-top ui-extended-height ui-blue ui-bottom"></div>
-
-            </td>
-        	
-
-        </tr>
-    </table>
+
+						<div                            
+							class   = "left right ui-white" 
+							ng-if   = "ballot.locked"
+						>
+							<h2>Participants ({{ballot.paperCount()||0}})</h2> 
+							<p>Ballot is closed.</p>
+							<div class = "ui-border-top ui-blue ui-medium-height" ></div>
+						</div>
+
+						<div class="left right ui-white" ng-if ="!ballot.locked">
+							<h2>Participants ({{ballot.paperCount()||0}})</h2>
+							<p>
+								Enter your name below and arrange the options in the middle column according to your preference.
+							</p>
+							<p>
+								<small>
+									You can change preference ranking or the name of yours or another participant's later on if you like. In order to edit a name click the lock to unlock the input field.
+								</small>
+							</p>
+
+							<p ng-if = "isAdmin">
+								<button class = "ui-float-left" ng-mousedown = "lockBallotBox()">
+									Close ballot
+								</button>
+								<small>
+									When every participant has cast her vote, you can calculate the result. It will be visible to every participant as a new ballot paper below.
+								</small>
+							</p>
+
+							<label 
+								class           = "ui-border-top" 
+								ng-mousedown    = "select('ballot-paper', ballot.newPaper())"                        
+							>
+								Add new particpant
+								<div class = "icons right">
+									<i class = "fa fa-plus"></i>
+								</div>
+							</label>
+						</div>
+						<hr/>
+
+
+						<div class="participants-overview left ui-dark-white ui-pixelate">
+
+							<label 
+								ng-if       = "result"
+								class       = "result"
+								ng-init     = "select('ballot-paper', result)" 
+								ng-class    = "{'selected' : selectionBallotPaper.value == result}"
+								ng-mousedown    = "select('ballot-paper', result)" 
+							>
+								<div class = "connector left"></div>
+
+								<span class = "name"> {{result.participant || 'no name'}} </span>
+
+							</label>
+
+							<label
+								ng-class        = "{'selected' : selectionBallotPaper.value == paper, 'locked' : paper.locked}"
+								ng-repeat       = "paper in ballot.papers"    
+								ng-if           = "!paper.removed"
+								ng-mousedown    = "select('ballot-paper', paper)"                
+							>
+								<div class="connector left"></div>
+
+								<span 
+									class   = "name"
+									ng-if = "paper.locked || ballot.locked"
+								>
+									{{paper.participant || 'no name'}}
+								</span>
+
+								<input
+									type        = "text"                                 
+									ng-model    = "paper.participant"
+									placeholder = "Enter name"
+									ng-if       = "!paper.locked && !ballot.locked"
+								/>
+
+								<div class = "icons right shift" ng-if = "!ballot.locked">
+
+									<span
+										disabled
+										ng-if   = "!!paper.diff()"
+										class   = "info"
+										title   = "saving"     
+									>
+										<i class = "fa fa-upload pulsing"></i>
+									</span>
+
+									<span
+										class   = "info ui-glow"
+										ng-if   = "!paper.participant && !paper.locked"
+										title   = "Please enter a name"
+									>
+										<i class = "fa fa-exclamation-circle"></i>
+									</span>
+
+
+									<button 
+										ng-disabled     = "paper.locked || !paper.diff(true)"
+										ng-mousedown    = "paper.revert()" 
+										title           = "undo all changes"
+									>
+										<i class = "fa fa-undo"></i>
+									</button>
+								  
+									<button 
+										ng-mousedown    = "paper.locked ? paper.unlock() : paper.lock()"
+										title           = "{{paper.locked ? 'unlock to edit' : 'lock to disable editing'}}"
+									>
+										<i class = "fa" ng-class ="{'fa-lock': paper.locked, 'fa-unlock-alt' : !paper.locked}"></i>
+									</button>
+
+									<button
+										ng-disabled     = "paper.locked"   
+										ng-mousedown    = "removePaper(paper)"
+										title           = "move to trash"                                
+									>
+										<i class = "fa fa-times"></i>
+									</button>
+
+								</div> 
+							</label>
+
+							<div
+								class   = "removed"
+								ng-if   = "(ballot.papers | filter: {removed : true}).length > 0"
+							>
+								<h4> Removed Participants</h4>
+								<br/>
+								<br/>
+
+								<label
+									ng-class        = "{'selected' : selectionBallotPaper.value == removed_paper}"
+									ng-repeat       = "removed_paper in ballot.papers | orderBy:'-id':true"    
+									ng-if           = "removed_paper.removed"
+									ng-mousedown    = "select('ballot-paper', removed_paper)"  
+								>
+									<div class="connector left"></div>
+
+									<span class   = "name">
+										{{removed_paper.participant || 'no name'}}
+									</span>
+
+									<div class = "icons right shift">
+										<button 
+											ng-mousedown    = "restorePaper(removed_paper); select('ballot-paper', removed_paper)"
+											title           = "restore"
+										>
+											<i class = "fa fa-arrow-circle-up"></i>
+										</button>
+									</div> 
+								</label>
+							</div>
+						</div>
+
+						<hr class = "up" />
+						<div class = "ui-border-bottom ui-extended-height ui-blue"></div>
+						<div class = "ui-extended-height ui-white"></div>
+
+				</div>
+
+				<div class = "ui-border-top ui-extended-height ui-blue ui-bottom"></div>
+
+			</td>
+			
+
+		</tr>
+	</table>
 </div>

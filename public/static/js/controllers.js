@@ -254,6 +254,13 @@ angular.module('prefrControllers', [])
 
                             if($scope.ballot.locked)
                                 $scope.getSchulzeRanking()
+
+                         	Storage[data.id] = Storage[data.id] || {}
+
+							angular.extend(Storage[data.id], {
+						   		id:			data.id,
+						   		subject:	data.subject						   		
+							})
                         })
 		    }
 
